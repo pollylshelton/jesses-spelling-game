@@ -7,50 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     
-    <!-- Firebase Cloud Integration -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Official Galactic Bank Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyATNU3KcsoehUoWxzPasVQrxUGgdVvjbq4",
-            authDomain: "jesses-spelling-game.firebaseapp.com",
-            projectId: "jesses-spelling-game",
-            storageBucket: "jesses-spelling-game.firebasestorage.app",
-            messagingSenderId: "768883009643",
-            appId: "1:768883009643:web:591162cc7c9180b26be92e",
-            measurementId: "G-FB6FCMJMB9"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = firebaseConfig.projectId;
-
-        window.galaxyDB = { db, auth, appId, user: null };
-
-        // Pilot Handshake
-        signInAnonymously(auth).catch(err => console.error("Bank Connection Failed:", err));
-
-        onAuthStateChanged(auth, (user) => {
-            window.galaxyDB.user = user;
-            const overlay = document.getElementById('connection-overlay');
-            if (overlay) overlay.classList.add('hidden');
-        });
-
-        window.getPilotDoc = (pilotName) => {
-            return doc(db, 'artifacts', appId, 'public', 'data', 'pilots', pilotName.toLowerCase());
-        };
-
-        // Safety Timeout
-        setTimeout(() => {
-            const overlay = document.getElementById('connection-overlay');
-            if (overlay) overlay.classList.add('hidden');
-        }, 5000);
-    </script>
-
     <style>
         body {
             font-family: 'Outfit', sans-serif;
@@ -65,54 +21,48 @@
         @keyframes livingGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         h1, h2, h3, .impact-font { font-family: 'Anton', sans-serif; text-transform: uppercase; letter-spacing: 0.1em; }
         .glass-panel { background: rgba(255, 255, 255, 0.01); backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
-        
-        /* BESPOKE VECTOR HELMETS */
-        .profile-btn { transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .profile-btn { transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
         .profile-btn:hover { transform: scale(1.1) translateY(-10px); }
-        .helmet-frame { width: 220px; height: 220px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 25px; border: 4px solid rgba(255, 255, 255, 0.05); background: #000; transition: all 0.4s; position: relative; box-shadow: 0 0 50px rgba(0,0,0,1); }
+        .helmet-frame { width: 220px; height: 220px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 25px; border: 4px solid rgba(255, 255, 255, 0.05); background: #000; transition: all 0.4s; position: relative; box-shadow: 0 0 50px rgba(0,0,0,1); pointer-events: none; }
         .profile-btn:hover .helmet-frame { border-color: #38bdf8; box-shadow: 0 0 60px rgba(56, 189, 248, 0.4); }
-
         .vault-dashboard { background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(56, 189, 248, 0.02)); border: 1px solid rgba(56, 189, 248, 0.2); border-left: 4px solid #38bdf8; }
         .game-tile { transition: all 0.4s; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); }
         .game-tile:hover { transform: translateY(-10px); border-color: rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.06); }
-        
         .word-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; width: 100%; padding: 0 20px; }
         .blank { border-bottom: 4px solid rgba(56, 189, 248, 0.5); min-width: 2.8rem; height: 4.5rem; display: flex; align-items: center; justify-content: center; font-size: clamp(1.8rem, 6vw, 3.5rem); font-weight: 600; transition: all 0.3s; }
-        
-        /* ERROR SCANNING */
         .error-char { color: #f43f5e; animation: errorShake 0.4s ease-in-out infinite; border-bottom-color: #f43f5e !important; }
         .correct-char { color: #4ade80; border-bottom-color: #4ade80 !important; }
         @keyframes errorShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
-
         @media print { .no-print { display: none !important; } .print-only { display: block !important; } }
         .print-only { display: none; }
         #certificate-view { background: #fff; color: #000; padding: 40px; border: 15px double #facc15; text-align: center; max-width: 800px; margin: auto; }
+        .aurora { position: absolute; width: 80vw; height: 80vw; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.15; animation: drift 40s infinite alternate ease-in-out; }
+        .aurora-1 { background: #ff0080; top: -30%; left: -20%; }
+        .aurora-2 { background: #4f46e5; bottom: -20%; right: -20%; }
+        @keyframes drift { from { transform: translate(-10%, -10%) rotate(0deg) scale(1); } to { transform: translate(15%, 15%) rotate(90deg) scale(1.1); } }
     </style>
 </head>
-<body class="p-4 sm:p-6">
-
+<body>
     <div id="connection-overlay" class="fixed inset-0 z-[2000] bg-black flex items-center justify-center transition-opacity duration-500">
         <div class="text-white impact-font text-2xl animate-pulse tracking-widest uppercase">Academy Connecting...</div>
     </div>
 
-    <div id="app-container" class="w-full max-w-4xl relative z-10 no-print">
+    <div class="no-print"><div class="aurora aurora-1"></div><div class="aurora aurora-2"></div></div>
+
+    <div id="app-container" class="w-full max-w-5xl relative z-10 no-print">
         
         <!-- PILOT SELECT -->
         <div id="screen-auth" class="text-center animate-in fade-in zoom-in duration-700">
-            <h1 class="text-6xl sm:text-7xl impact-font mb-16 tracking-tighter text-white/95">Who's Flying Today?</h1>
+            <h1 class="text-6xl sm:text-7xl impact-font mb-16 tracking-tighter text-white/95 uppercase">Who's Flying Today?</h1>
             <div class="flex flex-wrap justify-center gap-16 sm:gap-24">
-                <button onclick="selectPilot('Jesse')" class="profile-btn group">
-                    <div class="helmet-frame shadow-2xl overflow-hidden">
-                        <svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="chrome-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="50%" style="stop-color:#94a3b8"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#chrome-grad)" /><rect x="25" y="32" width="50" height="22" rx="4" fill="#000" /></svg>
-                    </div>
-                    <div class="text-4xl font-bold uppercase tracking-[0.4em] text-sky-400 group-hover:text-white transition-all">Jesse</div>
-                </button>
-                <button onclick="selectPilot('Friend')" class="profile-btn group">
-                    <div class="helmet-frame shadow-2xl overflow-hidden">
-                        <svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="50%" style="stop-color:#d97706"/><stop offset="100%" style="stop-color:#451a03"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#gold-grad)" /><rect x="25" y="35" width="50" height="30" rx="4" fill="#000" /><circle cx="35" cy="50" r="1.5" fill="#f43f5e" /><circle cx="65" cy="50" r="1.5" fill="#f43f5e" /></svg>
-                    </div>
-                    <div class="text-4xl font-bold uppercase tracking-[0.3em] text-amber-500 group-hover:text-white transition-all">Friend</div>
-                </button>
+                <div onclick="selectPilot('Jesse')" class="profile-btn group">
+                    <div class="helmet-frame shadow-2xl overflow-hidden"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="chrome-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="50%" style="stop-color:#94a3b8"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#chrome-grad)" /><rect x="25" y="32" width="50" height="22" rx="4" fill="#000" /></svg></div>
+                    <div class="text-4xl font-bold uppercase tracking-[0.4em] text-sky-400 group-hover:text-white transition-all text-center">Jesse</div>
+                </div>
+                <div onclick="selectPilot('Friend')" class="profile-btn group">
+                    <div class="helmet-frame shadow-2xl overflow-hidden"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="50%" style="stop-color:#d97706"/><stop offset="100%" style="stop-color:#451a03"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#gold-grad)" /><rect x="25" y="35" width="50" height="30" rx="4" fill="#000" /><circle cx="35" cy="50" r="1.5" fill="#f43f5e" /><circle cx="65" cy="50" r="1.5" fill="#f43f5e" /></svg></div>
+                    <div class="text-4xl font-bold uppercase tracking-[0.3em] text-amber-500 group-hover:text-white transition-all text-center">Friend</div>
+                </div>
             </div>
         </div>
 
@@ -138,34 +88,34 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                <button onclick="chooseGame('lunar')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group"><div class="p-5 w-fit bg-sky-500/10 rounded-2xl group-hover:bg-sky-500/30 transition-all text-sky-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C12 2 12 5 12 9C12 13 11 15 8 18L7 21L12 19L17 21L16 18C13 15 12 13 12 9Z"></path><circle cx="12" cy="9" r="1"></circle></svg></div><div><h3 class="text-4xl impact-font mb-2">Lunar Mission</h3><p class="text-white/40 text-base italic">Letter override training.</p></div></button>
-                <button onclick="chooseGame('echo')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group border-amber-500/20"><div class="p-5 w-fit bg-amber-500/10 rounded-2xl group-hover:bg-amber-500/30 transition-all text-amber-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div><h3 class="text-4xl impact-font mb-2">Silent Echo</h3><p class="text-rose-400/80 uppercase font-bold text-[10px] tracking-widest">Independent Mastery</p><p class="text-white/40 text-base italic">Decode signals with no clues. 2 attempts.</p></div></button>
+                <button onclick="chooseGame('lunar')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group"><div class="p-5 w-fit bg-sky-500/10 rounded-2xl group-hover:bg-sky-500/30 transition-all text-sky-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C12 2 12 5 12 9C12 13 11 15 8 18L7 21L12 19L17 21L16 18C13 15 12 13 12 9Z"></path><circle cx="12" cy="9" r="1"></circle></svg></div><div><h3 class="text-4xl impact-font mb-2">Lunar Mission</h3><p class="text-white/40 text-base italic">Standard manual override training.</p></div></button>
+                <button onclick="chooseGame('echo')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group border-amber-500/20"><div class="p-5 w-fit bg-amber-500/10 rounded-2xl group-hover:bg-amber-500/30 transition-all text-amber-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div><h3 class="text-4xl impact-font mb-2">Silent Echo</h3><p class="text-rose-400/80 uppercase font-bold text-[10px] tracking-widest">Independent Typing</p><p class="text-white/40 text-base italic">Decode signals with zero clues. 2 attempts.</p></div></button>
                 <button onclick="chooseGame('meteor')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group"><div class="p-5 w-fit bg-rose-500/10 rounded-2xl group-hover:bg-rose-500/30 transition-all text-rose-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m13 2-2 3M20 4l-2 2M4 20l2-2M12 12l8 8"/></svg></div><div><h3 class="text-4xl impact-font mb-2">Meteor Blast</h3><p class="text-white/40 text-base italic">High-velocity typing defense.</p></div></button>
-                <button onclick="chooseGame('void')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group"><div class="p-5 w-fit bg-indigo-500/10 rounded-2xl group-hover:bg-indigo-500/30 transition-all text-indigo-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"></path></svg></div><div><h3 class="text-4xl impact-font mb-2">Void Choice</h3><p class="text-white/40 text-base italic">Rapid fire pressure response.</p></div></button>
+                <button onclick="chooseGame('void')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group"><div class="p-5 w-fit bg-indigo-500/10 rounded-2xl group-hover:bg-indigo-500/30 transition-all text-indigo-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"></path></svg></div><div><h3 class="text-4xl impact-font mb-2">Void Choice</h3><p class="text-white/40 text-base italic">Rapid fire choice under pressure.</p></div></button>
             </div>
         </div>
 
-        <div id="screen-setup" class="hidden max-w-2xl mx-auto glass-panel p-14 rounded-[56px] space-y-10 text-center">
+        <div id="screen-setup" class="hidden max-w-2xl mx-auto glass-panel p-14 rounded-[56px] space-y-10 text-center animate-in fade-in">
             <h2 class="text-7xl impact-font tracking-tighter">Loadout</h2>
-            <div id="setup-choice" class="grid grid-cols-2 gap-6"><button onclick="setMode('custom')" class="p-10 rounded-3xl bg-white/5 border border-white/10 font-bold uppercase">Manual</button><button onclick="setMode('curriculum')" class="p-10 rounded-3xl bg-white/5 border border-white/10 font-bold uppercase">Academy</button></div>
-            <div id="setup-custom" class="hidden space-y-6"><textarea id="words-input" class="w-full h-40 bg-white/5 border border-white/10 rounded-[32px] p-6 text-white" placeholder="apple, banana..."></textarea><button onclick="launchMission()" class="w-full py-6 bg-white text-black impact-font rounded-full text-2xl shadow-xl">Engage Mission</button></div>
-            <div id="setup-curriculum" class="hidden space-y-6"><div class="space-y-3 text-left"><label class="flex items-center gap-5 p-6 bg-white/5 rounded-[24px] cursor-pointer hover:bg-white/10"><input type="checkbox" id="check-y2" checked class="w-6 h-6 rounded accent-sky-500"> Year 2 Training</label><label class="flex items-center gap-5 p-6 bg-white/5 rounded-[24px] cursor-pointer hover:bg-white/10"><input type="checkbox" id="check-y34" checked class="w-6 h-6 rounded accent-sky-500"> Year 3 & 4 Library</label><label class="flex items-center gap-5 p-6 bg-white/5 rounded-[24px] cursor-pointer hover:bg-white/10"><input type="checkbox" id="check-y56" checked class="w-6 h-6 rounded accent-sky-500"> Year 5 & 6 Library</label></div><button onclick="launchMission()" class="w-full py-6 bg-sky-500 text-white impact-font rounded-full text-2xl shadow-xl">Engage Mission</button></div>
-            <button onclick="showHome()" class="w-full text-white/20 uppercase text-xs font-bold hover:text-white transition">Abort</button>
+            <div id="setup-choice" class="grid grid-cols-2 gap-6"><button onclick="window.setMode('custom')" class="p-10 rounded-3xl bg-white/5 border border-white/10 font-bold uppercase">Manual</button><button onclick="window.setMode('curriculum')" class="p-10 rounded-3xl bg-white/5 border border-white/10 font-bold uppercase">Academy</button></div>
+            <div id="setup-custom" class="hidden space-y-6"><textarea id="words-input" class="w-full h-40 bg-white/5 border border-white/10 rounded-[32px] p-6 text-white" placeholder="apple, banana..."></textarea><button onclick="window.launchMission()" class="w-full py-6 bg-white text-black impact-font rounded-full text-2xl shadow-xl">Engage Mission</button></div>
+            <div id="setup-curriculum" class="hidden space-y-6"><div class="space-y-3 text-left"><label class="flex items-center gap-5 p-6 bg-white/5 rounded-[24px] cursor-pointer hover:bg-white/10"><input type="checkbox" id="check-y2" checked class="w-6 h-6 rounded accent-sky-500"> Year 2 Training</label><label class="flex items-center gap-5 p-6 bg-white/5 rounded-[24px] cursor-pointer hover:bg-white/10"><input type="checkbox" id="check-y34" checked class="w-6 h-6 rounded accent-sky-500"> Year 3 & 4 Library</label><label class="flex items-center gap-5 p-6 bg-white/5 rounded-[24px] cursor-pointer hover:bg-white/10"><input type="checkbox" id="check-y56" checked class="w-6 h-6 rounded accent-sky-500"> Year 5 & 6 Library</label></div><button onclick="window.launchMission()" class="w-full py-6 bg-sky-500 text-white impact-font rounded-full text-2xl shadow-xl">Engage Mission</button></div>
+            <button onclick="window.showHome()" class="w-full text-white/20 uppercase text-xs font-bold hover:text-white transition">Abort</button>
         </div>
 
         <div id="game-view" class="hidden glass-panel p-12 rounded-[56px] text-center max-w-4xl mx-auto">
              <div class="flex justify-between mb-8 text-[11px] tracking-widest text-white/40 uppercase font-bold"><div id="game-stats">Round 1 / 10</div><div id="game-lives" class="flex gap-4 text-2xl impact-font"></div></div>
              <div id="word-display" class="word-container mb-12 min-h-[6rem]"></div>
-             <button id="voice-btn" onclick="speakCurrentWord()" class="w-24 h-24 rounded-full bg-white/5 border border-white/10 mx-auto mb-12 flex items-center justify-center hover:bg-white/10 transition text-2xl text-white"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg></button>
+             <button id="voice-btn" onclick="window.speakCurrentWord()" class="w-24 h-24 rounded-full bg-white/5 border border-white/10 mx-auto mb-12 flex items-center justify-center hover:bg-white/10 transition text-2xl text-white"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg></button>
              <div id="keyboard" class="grid grid-cols-6 sm:grid-cols-9 gap-3"></div>
              <div id="multi-choice" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-             <div id="echo-controls" class="hidden space-y-6"><input type="text" id="echo-input" class="w-full p-8 bg-white/5 border border-white/10 rounded-full text-center text-4xl impact-font tracking-widest outline-none text-white uppercase shadow-inner" placeholder="..." autocomplete="off"><button id="echo-submit" onclick="submitEcho()" class="px-12 py-5 bg-amber-500 text-black impact-font rounded-full text-2xl shadow-2xl">Submit Sync</button></div>
+             <div id="echo-controls" class="hidden space-y-6"><input type="text" id="echo-input" class="w-full p-8 bg-white/5 border border-white/10 rounded-full text-center text-4xl impact-font tracking-widest outline-none text-white uppercase shadow-inner" placeholder="..." autocomplete="off"><button id="echo-submit" onclick="window.submitEcho()" class="px-12 py-5 bg-amber-500 text-black impact-font rounded-full text-2xl shadow-2xl">Submit Sync</button></div>
              <input type="text" id="typing-input" class="hidden w-full p-8 bg-white/5 border border-white/10 rounded-full text-center text-4xl impact-font tracking-widest focus:border-rose-500 outline-none text-white shadow-inner" placeholder="TYPE NOW">
         </div>
 
-        <div id="screen-prize" class="hidden glass-panel p-20 rounded-[72px] text-center max-w-3xl mx-auto space-y-12 animate-in fade-in duration-800"><h2 id="prize-title" class="text-8xl impact-font tracking-tighter text-green-400">Success</h2><div class="bg-white/5 p-10 rounded-[48px] border border-white/10 shadow-2xl"><div id="prize-amount" class="text-9xl impact-font text-green-400 mb-2">+0 SC</div><div class="text-[13px] tracking-[0.5em] text-white/40 uppercase font-bold text-center">Session Rewards Logged</div></div><button onclick="showHome()" class="w-full py-10 bg-white text-black rounded-full impact-font text-4xl shadow-2xl hover:bg-sky-400 transition-all">Return to Command</button></div>
+        <div id="screen-prize" class="hidden glass-panel p-20 rounded-[72px] text-center max-w-3xl mx-auto space-y-12 animate-in fade-in duration-800"><h2 id="prize-title" class="text-8xl impact-font tracking-tighter text-green-400">Success</h2><div class="bg-white/5 p-10 rounded-[48px] border border-white/10 shadow-2xl"><div id="prize-amount" class="text-9xl impact-font text-green-400 mb-2">+0 SC</div><div class="text-[13px] tracking-[0.5em] text-white/40 uppercase font-bold text-center">Session Rewards Logged</div></div><button onclick="window.showHome()" class="w-full py-10 bg-white text-black rounded-full impact-font text-4xl shadow-2xl hover:bg-sky-400 transition-all">Return to Command</button></div>
 
-        <div id="screen-withdraw" class="hidden glass-panel p-20 rounded-[72px] text-center max-w-2xl mx-auto space-y-12 animate-in fade-in"><h2 class="text-7xl impact-font text-green-400 font-bold uppercase text-center">Vault Withdrawal</h2><div class="text-9xl impact-font text-center" id="withdraw-total">0 SC</div><div class="grid grid-cols-1 gap-6"><button onclick="generateCertificate('Golden Ticket')" class="p-10 bg-yellow-500 text-black impact-font rounded-[40px] text-4xl shadow-2xl">Issue Golden Ticket</button><button onclick="generateCertificate('Mastery Certificate')" class="p-10 bg-sky-500 text-white impact-font rounded-[40px] text-4xl shadow-2xl">Issue Mastery Cert</button></div><button onclick="showHome()" class="text-white/20 uppercase font-bold text-[12px] tracking-[0.7em] hover:text-white transition w-full text-center">Abort Operation</button></div>
+        <div id="screen-withdraw" class="hidden glass-panel p-20 rounded-[72px] text-center max-w-2xl mx-auto space-y-12 animate-in fade-in"><h2 class="text-7xl impact-font text-green-400 font-bold uppercase text-center leading-tight">Vault Withdrawal</h2><div class="text-9xl impact-font text-center" id="withdraw-total">0 SC</div><div class="grid grid-cols-1 gap-6"><button onclick="window.generateCertificate('Golden Ticket')" class="p-10 bg-yellow-500 text-black impact-font rounded-[40px] text-4xl shadow-2xl">Issue Golden Ticket</button><button onclick="window.generateCertificate('Mastery Certificate')" class="p-10 bg-sky-500 text-white impact-font rounded-[40px] text-4xl shadow-2xl">Issue Mastery Cert</button></div><button onclick="window.showHome()" class="text-white/20 uppercase font-bold text-[12px] tracking-[0.7em] hover:text-white transition w-full text-center">Abort Operation</button></div>
     </div>
 
     <div id="certificate-print" class="print-only">
@@ -180,7 +130,12 @@
         </div>
     </div>
 
-    <script>
-        const wordsDB = {
-            y2: ["beautiful", "because", "climb", "door", "floor", "poor", "find", "kind", "mind", "behind", "child", "children", "wild", "climb", "most", "only", "both", "old", "cold", "gold", "hold", "told", "every", "everybody", "even", "great", "break", "steak", "pretty", "after", "fast", "last", "past", "father", "class", "grass", "pass", "plant", "path", "bath", "hour", "move", "prove", "improve", "sure", "sugar", "eye", "could", "should", "would", "who", "whole", "any", "many", "clothes", "busy", "people", "water", "again", "half", "money", "parents", "christmas"],
-            y34: ["accident", "actual", "address", "answer", "appear", "arrive", "believe", "bicycle", "breath", "breathe", "build", "busy", "calendar", "caught", "centre", "century", "certain", "circle", "complete", "consider", "continue", "decide", "describe", "different", "difficult", "disappear", "early", "earth", "eight", "enough", "exercise", "experience", "experiment", "extreme", "famous", "favourite", "february", "forward", "fruit", "grammar", "group", "guard", "guide", "heard", "heart", "height", "history", "imagine", "increase", "important", "interest", "island", "knowledge", "learn", "length", "library", "material", "medicine", "mention", "minute", "natural", "naughty", "notice", "occasion", "often", "opposite", "ordinary", "particular", "peculiar", "perhaps", "popular", "position", "possess", "possible", "potatoes", "pressure", "probably", "promise", "purpose", "quarter", "question", "recent", "regular", "reign",
+    <!-- MAIN SCRIPT (MODULE) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyATNU3KcsoehUoWxzPasVQrxUGgdVvjbq4",
+            authDomain: "j
