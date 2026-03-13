@@ -33,9 +33,26 @@
         .error-char { color: #f43f5e; animation: errorShake 0.4s ease-in-out infinite; border-bottom-color: #f43f5e !important; }
         .correct-char { color: #4ade80; border-bottom-color: #4ade80 !important; }
         @keyframes errorShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
-        @media print { .no-print { display: none !important; } .print-only { display: block !important; } }
+        
+        /* CERTIFICATE & TICKET DESIGN */
+        @media print {
+            body { background: white !important; color: black !important; -webkit-print-color-adjust: exact; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+        }
         .print-only { display: none; }
-        #certificate-view { background: #fff; color: #000; padding: 40px; border: 15px double #facc15; text-align: center; max-width: 800px; margin: auto; }
+        
+        #cert-container { padding: 40px; border: 2px solid #ddd; border-radius: 20px; max-width: 800px; margin: auto; text-align: center; color: #000; background: #fff; }
+        
+        /* THE GOLDEN TICKET UI */
+        .golden-ticket-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #facc15 50%, #d97706 100%) !important;
+            padding: 40px; border: 15px double #92400e; position: relative;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.1);
+        }
+        .cert-fancy-title { font-family: 'Anton', sans-serif; font-size: 60px; color: #78350f; text-shadow: 2px 2px 0px rgba(255,255,255,0.3); }
+        .bank-seal { border: 4px solid #78350f; border-radius: 50%; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #78350f; margin: 20px auto; transform: rotate(-15deg); }
+        
         .aurora { position: absolute; width: 80vw; height: 80vw; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.15; animation: drift 40s infinite alternate ease-in-out; }
         .aurora-1 { background: #ff0080; top: -30%; left: -20%; }
         .aurora-2 { background: #4f46e5; bottom: -20%; right: -20%; }
@@ -43,11 +60,10 @@
     </style>
 </head>
 <body>
-    <!-- LOADING OVERLAY -->
     <div id="connection-overlay" class="fixed inset-0 z-[2000] bg-black flex items-center justify-center transition-opacity duration-500">
         <div class="text-white impact-font text-2xl animate-pulse tracking-widest uppercase text-center p-8">
             Academy Connecting...<br>
-            <span class="text-[10px] text-white/40 mt-4 block">Securing Pilot Uplink</span>
+            <span class="text-[10px] text-white/40 mt-4 block font-sans tracking-normal uppercase">Securing Pilot Uplink</span>
         </div>
     </div>
 
@@ -55,7 +71,6 @@
 
     <div id="app-container" class="w-full max-w-5xl relative z-10 no-print">
         
-        <!-- PILOT SELECT -->
         <div id="screen-auth" class="text-center animate-in fade-in zoom-in duration-700">
             <h1 class="text-6xl sm:text-7xl impact-font mb-16 tracking-tighter text-white/95 uppercase">Who's Flying Today?</h1>
             <div class="flex flex-wrap justify-center gap-16 sm:gap-24">
@@ -70,7 +85,6 @@
             </div>
         </div>
 
-        <!-- HOME -->
         <div id="screen-home" class="hidden space-y-10 animate-in fade-in duration-700">
             <div class="flex flex-col lg:flex-row justify-between items-start gap-10">
                 <div class="text-left flex-1">
@@ -86,14 +100,14 @@
                     <div class="hidden sm:block w-px h-16 bg-white/10 mx-2"></div>
                     <div class="text-left flex-1">
                         <h4 class="text-[11px] uppercase font-bold tracking-widest text-sky-400 mb-1 flex items-center gap-2"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Rewards Protocol</h4>
-                        <p class="text-[11px] text-white/60 font-light leading-relaxed">Collect Credits for **REAL LIFE CASH** when you print a golden ticket. Inquire at Bank of Mum.</p>
+                        <p class="text-[11px] text-white/60 font-light leading-relaxed">Print Golden Tickets to trade for **REAL LIFE CASH** with Mum.</p>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                <div onclick="window.chooseGame('lunar')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group border-white/5"><div class="p-5 w-fit bg-sky-500/10 rounded-2xl group-hover:bg-sky-500/30 transition-all text-sky-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C12 2 12 5 12 9C12 13 11 15 8 18L7 21L12 19L17 21L16 18C13 15 12 13 12 9Z"></path><circle cx="12" cy="9" r="1"></circle></svg></div><div><h3 class="text-4xl impact-font mb-2">Lunar Mission</h3><p class="text-white/40 text-base italic">Standard manual override training.</p></div></div>
-                <div onclick="window.chooseGame('echo')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group border-amber-500/20"><div class="p-5 w-fit bg-amber-500/10 rounded-2xl group-hover:bg-amber-500/30 transition-all text-amber-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div><h3 class="text-4xl impact-font mb-2">Silent Echo</h3><p class="text-rose-400/80 uppercase font-bold text-[10px] tracking-widest">Independent Typing</p><p class="text-white/40 text-base italic">Decode signals with zero clues. 2 attempts.</p></div></div>
+                <div onclick="window.chooseGame('lunar')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group border-white/5"><div class="p-5 w-fit bg-sky-500/10 rounded-2xl group-hover:bg-sky-500/30 transition-all text-sky-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C12 2 12 5 12 9C12 13 11 15 8 18L7 21L12 19L17 21L16 18C13 15 12 13 12 9Z"></path><circle cx="12" cy="9" r="1"></circle></svg></div><div><h3 class="text-4xl impact-font mb-2">Lunar Mission</h3><p class="text-white/40 text-base italic">Letter override training.</p></div></div>
+                <div onclick="window.chooseGame('echo')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group border-amber-500/20"><div class="p-5 w-fit bg-amber-500/10 rounded-2xl group-hover:bg-amber-500/30 transition-all text-amber-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div><h3 class="text-4xl impact-font mb-2">Silent Echo</h3><p class="text-rose-400/80 uppercase font-bold text-[10px] tracking-widest">Independent Mastery</p><p class="text-white/40 text-base italic">Decode signals with no clues. 2 attempts.</p></div></div>
                 <div onclick="window.chooseGame('meteor')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group border-white/5"><div class="p-5 w-fit bg-rose-500/10 rounded-2xl group-hover:bg-rose-500/30 transition-all text-rose-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m13 2-2 3M20 4l-2 2M4 20l2-2M12 12l8 8"/></svg></div><div><h3 class="text-4xl impact-font mb-2">Meteor Blast</h3><p class="text-white/40 text-base italic">High-velocity typing defense.</p></div></div>
                 <div onclick="window.chooseGame('void')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group border-white/5"><div class="p-5 w-fit bg-indigo-500/10 rounded-2xl group-hover:bg-indigo-500/30 transition-all text-indigo-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"></path></svg></div><div><h3 class="text-4xl impact-font mb-2">Void Choice</h3><p class="text-white/40 text-base italic">Rapid fire choice under pressure.</p></div></div>
             </div>
@@ -117,24 +131,19 @@
              <input type="text" id="typing-input" class="hidden w-full p-8 bg-white/5 border border-white/10 rounded-full text-center text-4xl impact-font tracking-widest focus:border-rose-500 outline-none text-white shadow-inner" placeholder="TYPE NOW">
         </div>
 
-        <div id="screen-prize" class="hidden glass-panel p-20 rounded-[72px] text-center max-w-3xl mx-auto space-y-12 animate-in fade-in duration-800"><h2 id="prize-title" class="text-8xl impact-font tracking-tighter text-green-400">Success</h2><div class="bg-white/5 p-10 rounded-[48px] border border-white/10 shadow-2xl"><div id="prize-amount" class="text-9xl impact-font text-green-400 mb-2">+0 SC</div><div class="text-[13px] tracking-[0.5em] text-white/40 uppercase font-bold text-center font-mono">Session Rewards Logged</div></div><button onclick="window.showHome()" class="w-full py-10 bg-white text-black rounded-full impact-font text-4xl shadow-2xl hover:bg-sky-400 transition-all">Return to Command</button></div>
+        <div id="screen-prize" class="hidden glass-panel p-20 rounded-[72px] text-center max-w-3xl mx-auto space-y-12 animate-in fade-in duration-800"><h2 id="prize-title" class="text-8xl impact-font tracking-tighter text-green-400">Success</h2><div class="bg-white/5 p-10 rounded-[48px] border border-white/10 shadow-2xl"><div id="prize-amount" class="text-9xl impact-font text-green-400 mb-2">+0 SC</div><div class="text-[13px] tracking-[0.5em] text-white/40 uppercase font-bold text-center font-mono tracking-widest">Rewards Uploaded</div></div><button onclick="window.showHome()" class="w-full py-10 bg-white text-black rounded-full impact-font text-4xl shadow-2xl hover:bg-sky-400 transition-all">Return to Command</button></div>
 
-        <div id="screen-withdraw" class="hidden glass-panel p-20 rounded-[72px] text-center max-w-2xl mx-auto space-y-12 animate-in fade-in"><h2 class="text-7xl impact-font text-green-400 font-bold uppercase text-center leading-tight">Vault Withdrawal</h2><div class="text-9xl impact-font text-center" id="withdraw-total">0 SC</div><div class="grid grid-cols-1 gap-6"><button onclick="window.generateCertificate('Golden Ticket')" class="p-10 bg-yellow-500 text-black impact-font rounded-[40px] text-4xl shadow-2xl">Issue Golden Ticket</button><button onclick="window.generateCertificate('Mastery Certificate')" class="p-10 bg-sky-500 text-white impact-font rounded-[40px] text-4xl shadow-2xl">Issue Mastery Cert</button></div><button onclick="window.showHome()" class="text-white/20 uppercase font-bold text-[12px] tracking-[0.7em] hover:text-white transition w-full text-center">Abort Operation</button></div>
+        <div id="screen-withdraw" class="hidden glass-panel p-20 rounded-[72px] text-center max-w-2xl mx-auto space-y-12 animate-in fade-in"><h2 class="text-7xl impact-font text-green-400 font-bold uppercase text-center leading-tight">Vault Withdrawal</h2><div class="text-9xl impact-font text-center" id="withdraw-total">0 SC</div><div class="grid grid-cols-1 gap-6"><button onclick="window.generateCertificate('Golden Ticket')" class="p-10 bg-yellow-500 text-black impact-font rounded-[40px] text-4xl shadow-2xl hover:brightness-110 transition-all">Issue Golden Ticket</button><button onclick="window.generateCertificate('Mastery Cert')" class="p-10 bg-sky-500 text-white impact-font rounded-[40px] text-4xl shadow-2xl hover:brightness-110 transition-all">Issue Mastery Cert</button></div><button onclick="window.showHome()" class="text-white/20 uppercase font-bold text-[12px] tracking-[0.7em] hover:text-white transition w-full text-center">Abort Operation</button></div>
     </div>
 
+    <!-- CERTIFICATE PRINT TEMPLATE -->
     <div id="certificate-print" class="print-only">
-        <div id="certificate-view">
-            <h1 id="cert-title" style="font-size: 70px; color: #facc15; margin-bottom: 0; text-transform: uppercase;">GOLDEN TICKET</h1>
-            <p style="font-size: 26px; margin: 35px 0;">This document certifies that Pilot</p>
-            <h2 id="cert-pilot-name" style="font-size: 60px; border-bottom: 5px solid #000; display: inline-block; padding: 0 70px; margin-bottom: 10px; text-transform: uppercase;"></h2>
-            <p style="font-size: 18px; margin: 10px 0; font-weight: bold; color: #38bdf8;">Training Level: <span id="cert-level"></span></p>
-            <h3 style="font-size: 45px; margin-bottom: 50px;">GALACTIC ACADEMY</h3>
-            <div style="margin: 45px 0; border: 10px dashed #000; padding: 40px; display: inline-block;"><p id="cert-value" style="font-size: 60px; font-weight: bold; margin: 0;">0 SC</p></div>
-            <p id="cert-date" style="font-size: 14px; color: #666;"></p>
+        <div id="cert-wrapper">
+            <!-- Dynamic styles will be applied via generateCertificate function -->
         </div>
     </div>
 
-    <!-- SCRIPT CORE -->
+    <!-- ACADEMY CORE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -161,7 +170,7 @@
             y56: ["accommodate", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "necessary", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "sincerely", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht"]
         };
 
-        window.state = { pilotName: "", bank: 0, activeLevel: "Library", currentGame: null, mode: null, words: [], correctWords: [], currentRound: 0, lives: 3, currentWord: "", guessed: [], meteorTimer: null, echoAttempts: 0 };
+        window.state = { pilotName: "", bank: 0, activeLevel: "Standard", currentGame: null, mode: null, words: [], correctWords: [], currentRound: 0, lives: 3, currentWord: "", guessed: [], meteorTimer: null, echoAttempts: 0 };
         
         window.selectPilot = async (name) => {
             window.state.pilotName = name;
@@ -173,7 +182,7 @@
                     window.state.bank = snap.data().credits || 0;
                     document.getElementById('vault-balance').innerText = window.state.bank + " SC";
                 }
-            } catch (e) { console.warn("Bank handshake slow."); }
+            } catch (e) { console.warn("Sync delay."); }
         };
 
         window.showHome = () => { hideAll(); document.getElementById('screen-home').classList.remove('hidden'); document.getElementById('vault-balance').innerText = window.state.bank + " SC"; document.getElementById('display-pilot-name').innerText = window.state.pilotName; };
@@ -188,7 +197,7 @@
         window.speakCurrentWord = () => { 
             const msg = new SpeechSynthesisUtterance(window.state.currentWord); 
             const voices = window.speechSynthesis.getVoices(); 
-            const male = voices.find(v => (v.lang.startsWith('en-GB')) && (v.name.toLowerCase().includes('male'))) || voices.find(v => v.lang.startsWith('en-GB')); 
+            const male = voices.find(v => v.lang.startsWith('en-GB') && v.name.toLowerCase().includes('male')) || voices.find(v => v.lang.startsWith('en-GB')); 
             if (male) msg.voice = male; 
             msg.rate = 0.8; 
             window.speechSynthesis.speak(msg); 
@@ -201,12 +210,12 @@
             let list = []; let levels = []; 
             if (window.state.mode === 'custom') { 
                 list = document.getElementById('words-input').value.split(/[\s,]+/).filter(w => w.length > 1); 
-                window.state.activeLevel = "Custom"; 
+                window.state.activeLevel = "Custom Squadron"; 
             } else { 
-                if (document.getElementById('check-y2').checked) { list = list.concat(wordsDB.y2); levels.push("Y2"); } 
-                if (document.getElementById('check-y34').checked) { list = list.concat(wordsDB.y34); levels.push("Y3/4"); } 
-                if (document.getElementById('check-y56').checked) { list = list.concat(wordsDB.y56); levels.push("Y5/6"); } 
-                window.state.activeLevel = levels.join(" + "); 
+                if (document.getElementById('check-y2').checked) { list = list.concat(wordsDB.y2); levels.push("Year 2"); } 
+                if (document.getElementById('check-y34').checked) { list = list.concat(wordsDB.y34); levels.push("Year 3 & 4"); } 
+                if (document.getElementById('check-y56').checked) { list = list.concat(wordsDB.y56); levels.push("Year 5 & 6"); } 
+                window.state.activeLevel = levels.join(" + ") || "Basic Cadet"; 
                 list.sort(() => Math.random() - 0.5); list = list.slice(0, 10); 
             } 
             if (list.length === 0) return; 
@@ -242,15 +251,17 @@
                 document.getElementById('word-display').classList.remove('hidden'); 
                 renderBlanks(); renderKeyboard(); 
             } else if (window.state.currentGame === 'meteor') { 
-                document.getElementById('meteor-container').classList.remove('hidden'); 
                 document.getElementById('typing-input').classList.remove('hidden'); 
-                startMeteor(); 
+                document.getElementById('word-display').classList.remove('hidden'); 
+                renderBlanks(); startMeteor(); 
             } else if (window.state.currentGame === 'void') { 
                 document.getElementById('multi-choice').classList.remove('hidden'); 
                 renderMultiChoice(4); 
             } else if (window.state.currentGame === 'echo') { 
                 document.getElementById('echo-controls').classList.remove('hidden'); 
-                document.getElementById('echo-input').value = ""; document.getElementById('echo-input').focus(); 
+                const input = document.getElementById('echo-input');
+                input.value = ""; 
+                setTimeout(() => input.focus(), 100);
             } 
         };
 
@@ -263,7 +274,7 @@
             }); 
         };
 
-        const handleGuess = (l) => { 
+        window.handleGuess = (l) => { 
             window.state.guessed.push(l); 
             if (!window.state.currentWord.includes(l)) window.state.lives--; 
             renderBlanks(); 
@@ -309,16 +320,20 @@
             'abcdefghijklmnopqrstuvwxyz'.split('').forEach(l => { 
                 const b = document.createElement('button'); b.innerText = l.toUpperCase(); 
                 b.className = `p-4 rounded-2xl font-bold transition ${window.state.guessed.includes(l) ? 'opacity-20' : 'bg-white/5 border border-white/10 hover:bg-white/10'}`; 
-                b.disabled = window.state.guessed.includes(l); b.onclick = () => handleGuess(l); 
+                b.disabled = window.state.guessed.includes(l); b.onclick = () => window.handleGuess(l); 
                 kb.appendChild(b); 
             }); 
         };
 
         const startMeteor = () => { 
             const input = document.getElementById('typing-input'); 
-            input.value = ''; input.focus(); let pos = 0; clearInterval(window.state.meteorTimer); 
-            window.state.meteorTimer = setInterval(() => { pos += 1.8; if (pos > 200) { clearInterval(window.state.meteorTimer); window.state.lives--; nextRound(); } }, 50); 
-            input.oninput = () => { if (input.value.toLowerCase() === window.state.currentWord) { clearInterval(window.state.meteorTimer); window.state.bank += 10; window.state.correctWords.push(window.state.currentWord); setTimeout(nextRound, 500); } }; 
+            input.value = ''; input.focus();
+            input.oninput = () => { 
+                if (input.value.toLowerCase() === window.state.currentWord) { 
+                    window.state.bank += 10; window.state.correctWords.push(window.state.currentWord); 
+                    setTimeout(nextRound, 500); 
+                } 
+            }; 
         };
 
         const renderMultiChoice = (count) => { 
@@ -328,15 +343,25 @@
             options.forEach((opt, idx) => { 
                 const b = document.createElement('button'); b.innerHTML = `<span class="text-sky-400 mr-4">${idx+1}.</span> ${opt.toUpperCase()}`; 
                 b.className = 'p-10 rounded-3xl bg-white/5 border border-white/10 hover:border-sky-400 impact-font text-2xl transition text-left shadow-lg'; 
-                b.onclick = () => handleChoiceSelection(opt); container.appendChild(b); 
+                b.onclick = () => window.handleChoiceSelection(opt); container.appendChild(b); 
             }); 
         };
 
-        const handleChoiceSelection = (opt) => { if (opt === window.state.currentWord) { window.state.bank += 10; window.state.correctWords.push(window.state.currentWord); document.getElementById('word-display').classList.remove('hidden'); renderBlanks(); setTimeout(nextRound, 800); } else { window.state.lives--; nextRound(); } };
-        const makeBelievableTypo = (w) => { let word = w.toLowerCase(); const rules = [(s) => s.replace(/(.)\1/g, "$1"),(s) => s.replace(/ce$/, "se").replace(/se$/, "ce")]; for (let i = 0; i < 5; i++) { let strategy = rules[Math.floor(Math.random() * rules.length)]; let typo = strategy(word); if (typo !== word) return typo; } return word.substring(0, word.length-1) + (word.endsWith('e') ? 'i' : 'e'); };
+        window.handleChoiceSelection = (opt) => { if (opt === window.state.currentWord) { window.state.bank += 10; window.state.correctWords.push(window.state.currentWord); document.getElementById('word-display').classList.remove('hidden'); renderBlanks(); setTimeout(nextRound, 800); } else { window.state.lives--; nextRound(); } };
+        
+        const makeBelievableTypo = (w) => { 
+            let word = w.toLowerCase(); 
+            const rules = [(s) => s.replace(/(.)\1/g, "$1"),(s) => s.replace(/ce$/, "se").replace(/se$/, "ce"),(s) => s.replace(/ch/g, "c").replace(/kn/g, "n")]; 
+            for (let i = 0; i < 5; i++) { 
+                let strategy = rules[Math.floor(Math.random() * rules.length)]; 
+                let typo = strategy(word); 
+                if (typo !== word) return typo; 
+            } 
+            return word.substring(0, word.length-1) + (word.endsWith('e') ? 'i' : 'e'); 
+        };
         
         const endGame = async () => { 
-            clearInterval(window.state.meteorTimer); hideAll(); 
+            hideAll(); 
             document.getElementById('screen-prize').classList.remove('hidden'); 
             document.getElementById('prize-amount').innerText = "+" + (window.state.correctWords.length * 10) + " SC"; 
             if (auth.currentUser) { 
@@ -346,12 +371,51 @@
         };
 
         window.showWithdraw = () => { hideAll(); document.getElementById('screen-withdraw').classList.remove('hidden'); document.getElementById('withdraw-total').innerText = window.state.bank + " SC"; };
-        window.generateCertificate = (type) => { document.getElementById('cert-pilot-name').innerText = window.state.pilotName; document.getElementById('cert-title').innerText = type.toUpperCase(); document.getElementById('cert-value').innerText = window.state.bank + " SC"; document.getElementById('cert-level').innerText = window.state.activeLevel; document.getElementById('cert-date').innerText = new Date().toLocaleDateString(); window.print(); };
+        
+        window.generateCertificate = (type) => { 
+            const wrapper = document.getElementById('cert-wrapper');
+            const date = new Date().toLocaleDateString();
+            
+            if (type === 'Golden Ticket') {
+                wrapper.innerHTML = `
+                    <div class="golden-ticket-card">
+                        <div class="cert-fancy-title">GOLDEN TICKET</div>
+                        <p style="font-size: 24px; margin: 20px 0;">This official ticket certifies that Pilot</p>
+                        <h2 style="font-size: 50px; border-bottom: 3px solid #78350f; display: inline-block; padding: 0 40px; text-transform: uppercase;">${window.state.pilotName}</h2>
+                        <p style="font-size: 18px; margin: 20px 0; font-weight: bold; color: #78350f;">RANK: ELITE SPELLER (${window.state.activeLevel})</p>
+                        <div style="background: rgba(255,255,255,0.4); border: 4px dashed #78350f; padding: 20px; margin: 20px auto; display: inline-block;">
+                            <p style="font-size: 40px; font-weight: 900; margin: 0;">VALUED AT: ${window.state.bank} STAR CREDITS</p>
+                        </div>
+                        <div class="bank-seal">BANK OF MUM</div>
+                        <p style="font-size: 12px; opacity: 0.7;">Voucher Code: ACAD-${Date.now()}</p>
+                        <p style="font-size: 14px; margin-top: 10px;">Authorized on: ${date}</p>
+                    </div>
+                `;
+            } else {
+                wrapper.innerHTML = `
+                    <div id="cert-container" style="border: 10px solid #38bdf8; padding: 50px; background: #f0f9ff;">
+                        <h1 style="font-size: 45px; color: #0369a1; margin-bottom: 0;">MASTERY CERTIFICATE</h1>
+                        <p style="font-size: 22px; color: #0c4a6e;">GALACTIC ACADEMY HONOURS</p>
+                        <hr style="border: 2px solid #38bdf8; margin: 30px 0;">
+                        <p style="font-size: 20px;">The High Command hereby recognizes</p>
+                        <h2 style="font-size: 55px; margin: 10px 0; text-transform: uppercase;">${window.state.pilotName}</h2>
+                        <p style="font-size: 20px;">for completion of training on</p>
+                        <h3 style="font-size: 28px; color: #0369a1;">LEVEL: ${window.state.activeLevel}</h3>
+                        <div style="margin-top: 50px;">
+                            <p style="font-size: 18px; font-weight: bold;">TOTAL SCORE: ${window.state.bank} SC</p>
+                            <p style="font-size: 14px; color: #666;">Issued by the Galactic Ministry of Spelling</p>
+                        </div>
+                        <p style="font-size: 12px; margin-top: 30px;">ID: ${auth.currentUser?.uid || 'GUEST'}</p>
+                    </div>
+                `;
+            }
+            window.print(); 
+        };
 
         // INITIALIZATION
         onAuthStateChanged(auth, (user) => { document.getElementById('connection-overlay').classList.add('hidden'); });
         signInAnonymously(auth).catch(() => { document.getElementById('connection-overlay').classList.add('hidden'); });
-        setTimeout(() => { document.getElementById('connection-overlay').classList.add('hidden'); }, 5000); // 5s Emergency Hatch
+        setTimeout(() => { document.getElementById('connection-overlay').classList.add('hidden'); }, 6000); 
         
         window.addEventListener('keydown', (e) => { if(e.key === 'Enter') { if(window.state.currentGame === 'echo' && !document.getElementById('echo-controls').classList.contains('hidden')) window.submitEcho(); } });
     </script>
