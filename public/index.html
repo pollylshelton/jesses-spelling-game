@@ -26,7 +26,7 @@
         .helmet-frame { width: 220px; height: 220px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 25px; border: 4px solid rgba(255, 255, 255, 0.05); background: #000; transition: all 0.4s; position: relative; box-shadow: 0 0 50px rgba(0,0,0,1); pointer-events: none; }
         .profile-btn:hover .helmet-frame { border-color: #38bdf8; box-shadow: 0 0 60px rgba(56, 189, 248, 0.4); }
         .vault-dashboard { background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(56, 189, 248, 0.02)); border: 1px solid rgba(56, 189, 248, 0.2); border-left: 4px solid #38bdf8; }
-        .game-tile { transition: all 0.4s; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .game-tile { transition: all 0.4s; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); cursor: pointer; }
         .game-tile:hover { transform: translateY(-10px); border-color: rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.06); }
         .word-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; width: 100%; padding: 0 20px; }
         .blank { border-bottom: 4px solid rgba(56, 189, 248, 0.5); min-width: 2.8rem; height: 4.5rem; display: flex; align-items: center; justify-content: center; font-size: clamp(1.8rem, 6vw, 3.5rem); font-weight: 600; transition: all 0.3s; }
@@ -43,8 +43,12 @@
     </style>
 </head>
 <body>
+    <!-- LOADING OVERLAY -->
     <div id="connection-overlay" class="fixed inset-0 z-[2000] bg-black flex items-center justify-center transition-opacity duration-500">
-        <div class="text-white impact-font text-2xl animate-pulse tracking-widest uppercase">Academy Connecting...</div>
+        <div class="text-white impact-font text-2xl animate-pulse tracking-widest uppercase text-center p-8">
+            Academy Connecting...<br>
+            <span class="text-[10px] text-white/40 mt-4 block">Securing Pilot Uplink</span>
+        </div>
     </div>
 
     <div class="no-print"><div class="aurora aurora-1"></div><div class="aurora aurora-2"></div></div>
@@ -55,11 +59,11 @@
         <div id="screen-auth" class="text-center animate-in fade-in zoom-in duration-700">
             <h1 class="text-6xl sm:text-7xl impact-font mb-16 tracking-tighter text-white/95 uppercase">Who's Flying Today?</h1>
             <div class="flex flex-wrap justify-center gap-16 sm:gap-24">
-                <div onclick="selectPilot('Jesse')" class="profile-btn group">
+                <div onclick="window.selectPilot('Jesse')" class="profile-btn group">
                     <div class="helmet-frame shadow-2xl overflow-hidden"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="chrome-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="50%" style="stop-color:#94a3b8"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#chrome-grad)" /><rect x="25" y="32" width="50" height="22" rx="4" fill="#000" /></svg></div>
                     <div class="text-4xl font-bold uppercase tracking-[0.4em] text-sky-400 group-hover:text-white transition-all text-center">Jesse</div>
                 </div>
-                <div onclick="selectPilot('Friend')" class="profile-btn group">
+                <div onclick="window.selectPilot('Friend')" class="profile-btn group">
                     <div class="helmet-frame shadow-2xl overflow-hidden"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="50%" style="stop-color:#d97706"/><stop offset="100%" style="stop-color:#451a03"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#gold-grad)" /><rect x="25" y="35" width="50" height="30" rx="4" fill="#000" /><circle cx="35" cy="50" r="1.5" fill="#f43f5e" /><circle cx="65" cy="50" r="1.5" fill="#f43f5e" /></svg></div>
                     <div class="text-4xl font-bold uppercase tracking-[0.3em] text-amber-500 group-hover:text-white transition-all text-center">Friend</div>
                 </div>
@@ -77,7 +81,7 @@
                 <div class="vault-dashboard p-7 rounded-[40px] flex flex-col sm:flex-row items-center gap-10 min-w-full sm:min-w-[540px] shadow-2xl border border-white/10">
                     <div class="flex items-center gap-6">
                         <div class="p-6 bg-green-500/10 rounded-3xl text-green-400 border border-green-500/20 shadow-[0_0_20px_rgba(74,222,128,0.1)]"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg></div>
-                        <div class="text-left"><div class="text-[11px] tracking-[0.3em] text-white/40 uppercase font-bold">Galactic Bank</div><div id="vault-balance" class="text-6xl impact-font text-green-400 leading-tight">0 SC</div><button onclick="showWithdraw()" class="text-[10px] text-sky-400 hover:text-white transition uppercase font-bold mt-1 block">Trade Credits</button></div>
+                        <div class="text-left"><div class="text-[11px] tracking-[0.3em] text-white/40 uppercase font-bold">Galactic Bank</div><div id="vault-balance" class="text-6xl impact-font text-green-400 leading-tight">0 SC</div><button onclick="window.showWithdraw()" class="text-[10px] text-sky-400 hover:text-white transition uppercase font-bold mt-1 block">Trade Credits</button></div>
                     </div>
                     <div class="hidden sm:block w-px h-16 bg-white/10 mx-2"></div>
                     <div class="text-left flex-1">
@@ -88,22 +92,22 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                <button onclick="chooseGame('lunar')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group"><div class="p-5 w-fit bg-sky-500/10 rounded-2xl group-hover:bg-sky-500/30 transition-all text-sky-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C12 2 12 5 12 9C12 13 11 15 8 18L7 21L12 19L17 21L16 18C13 15 12 13 12 9Z"></path><circle cx="12" cy="9" r="1"></circle></svg></div><div><h3 class="text-4xl impact-font mb-2">Lunar Mission</h3><p class="text-white/40 text-base italic">Standard manual override training.</p></div></button>
-                <button onclick="chooseGame('echo')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group border-amber-500/20"><div class="p-5 w-fit bg-amber-500/10 rounded-2xl group-hover:bg-amber-500/30 transition-all text-amber-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div><h3 class="text-4xl impact-font mb-2">Silent Echo</h3><p class="text-rose-400/80 uppercase font-bold text-[10px] tracking-widest">Independent Typing</p><p class="text-white/40 text-base italic">Decode signals with zero clues. 2 attempts.</p></div></button>
-                <button onclick="chooseGame('meteor')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group"><div class="p-5 w-fit bg-rose-500/10 rounded-2xl group-hover:bg-rose-500/30 transition-all text-rose-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m13 2-2 3M20 4l-2 2M4 20l2-2M12 12l8 8"/></svg></div><div><h3 class="text-4xl impact-font mb-2">Meteor Blast</h3><p class="text-white/40 text-base italic">High-velocity typing defense.</p></div></button>
-                <button onclick="chooseGame('void')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group"><div class="p-5 w-fit bg-indigo-500/10 rounded-2xl group-hover:bg-indigo-500/30 transition-all text-indigo-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"></path></svg></div><div><h3 class="text-4xl impact-font mb-2">Void Choice</h3><p class="text-white/40 text-base italic">Rapid fire choice under pressure.</p></div></button>
+                <div onclick="window.chooseGame('lunar')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group border-white/5"><div class="p-5 w-fit bg-sky-500/10 rounded-2xl group-hover:bg-sky-500/30 transition-all text-sky-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C12 2 12 5 12 9C12 13 11 15 8 18L7 21L12 19L17 21L16 18C13 15 12 13 12 9Z"></path><circle cx="12" cy="9" r="1"></circle></svg></div><div><h3 class="text-4xl impact-font mb-2">Lunar Mission</h3><p class="text-white/40 text-base italic">Standard manual override training.</p></div></div>
+                <div onclick="window.chooseGame('echo')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group border-amber-500/20"><div class="p-5 w-fit bg-amber-500/10 rounded-2xl group-hover:bg-amber-500/30 transition-all text-amber-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div><h3 class="text-4xl impact-font mb-2">Silent Echo</h3><p class="text-rose-400/80 uppercase font-bold text-[10px] tracking-widest">Independent Typing</p><p class="text-white/40 text-base italic">Decode signals with zero clues. 2 attempts.</p></div></div>
+                <div onclick="window.chooseGame('meteor')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group border-white/5"><div class="p-5 w-fit bg-rose-500/10 rounded-2xl group-hover:bg-rose-500/30 transition-all text-rose-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m13 2-2 3M20 4l-2 2M4 20l2-2M12 12l8 8"/></svg></div><div><h3 class="text-4xl impact-font mb-2">Meteor Blast</h3><p class="text-white/40 text-base italic">High-velocity typing defense.</p></div></div>
+                <div onclick="window.chooseGame('void')" class="game-tile glass-panel p-10 rounded-[48px] text-left flex flex-col justify-between h-72 group border-white/5"><div class="p-5 w-fit bg-indigo-500/10 rounded-2xl group-hover:bg-indigo-500/30 transition-all text-indigo-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"></path></svg></div><div><h3 class="text-4xl impact-font mb-2">Void Choice</h3><p class="text-white/40 text-base italic">Rapid fire choice under pressure.</p></div></div>
             </div>
         </div>
 
         <div id="screen-setup" class="hidden max-w-2xl mx-auto glass-panel p-14 rounded-[56px] space-y-10 text-center animate-in fade-in">
             <h2 class="text-7xl impact-font tracking-tighter">Loadout</h2>
-            <div id="setup-choice" class="grid grid-cols-2 gap-6"><button onclick="window.setMode('custom')" class="p-10 rounded-3xl bg-white/5 border border-white/10 font-bold uppercase">Manual</button><button onclick="window.setMode('curriculum')" class="p-10 rounded-3xl bg-white/5 border border-white/10 font-bold uppercase">Academy</button></div>
-            <div id="setup-custom" class="hidden space-y-6"><textarea id="words-input" class="w-full h-40 bg-white/5 border border-white/10 rounded-[32px] p-6 text-white" placeholder="apple, banana..."></textarea><button onclick="window.launchMission()" class="w-full py-6 bg-white text-black impact-font rounded-full text-2xl shadow-xl">Engage Mission</button></div>
+            <div id="setup-choice" class="grid grid-cols-2 gap-6"><button onclick="window.setMode('custom')" class="p-10 rounded-3xl bg-white/5 border border-white/10 font-bold uppercase hover:bg-white/10">Manual</button><button onclick="window.setMode('curriculum')" class="p-10 rounded-3xl bg-white/5 border border-white/10 font-bold uppercase hover:bg-white/10">Academy</button></div>
+            <div id="setup-custom" class="hidden space-y-6"><textarea id="words-input" class="w-full h-40 bg-white/5 border border-white/10 rounded-[32px] p-6 text-white text-lg outline-none" placeholder="apple, banana..."></textarea><button onclick="window.launchMission()" class="w-full py-6 bg-white text-black impact-font rounded-full text-2xl shadow-xl">Engage Mission</button></div>
             <div id="setup-curriculum" class="hidden space-y-6"><div class="space-y-3 text-left"><label class="flex items-center gap-5 p-6 bg-white/5 rounded-[24px] cursor-pointer hover:bg-white/10"><input type="checkbox" id="check-y2" checked class="w-6 h-6 rounded accent-sky-500"> Year 2 Training</label><label class="flex items-center gap-5 p-6 bg-white/5 rounded-[24px] cursor-pointer hover:bg-white/10"><input type="checkbox" id="check-y34" checked class="w-6 h-6 rounded accent-sky-500"> Year 3 & 4 Library</label><label class="flex items-center gap-5 p-6 bg-white/5 rounded-[24px] cursor-pointer hover:bg-white/10"><input type="checkbox" id="check-y56" checked class="w-6 h-6 rounded accent-sky-500"> Year 5 & 6 Library</label></div><button onclick="window.launchMission()" class="w-full py-6 bg-sky-500 text-white impact-font rounded-full text-2xl shadow-xl">Engage Mission</button></div>
             <button onclick="window.showHome()" class="w-full text-white/20 uppercase text-xs font-bold hover:text-white transition">Abort</button>
         </div>
 
-        <div id="game-view" class="hidden glass-panel p-12 rounded-[56px] text-center max-w-4xl mx-auto">
+        <div id="game-view" class="hidden glass-panel p-12 rounded-[56px] text-center max-w-4xl mx-auto animate-in fade-in">
              <div class="flex justify-between mb-8 text-[11px] tracking-widest text-white/40 uppercase font-bold"><div id="game-stats">Round 1 / 10</div><div id="game-lives" class="flex gap-4 text-2xl impact-font"></div></div>
              <div id="word-display" class="word-container mb-12 min-h-[6rem]"></div>
              <button id="voice-btn" onclick="window.speakCurrentWord()" class="w-24 h-24 rounded-full bg-white/5 border border-white/10 mx-auto mb-12 flex items-center justify-center hover:bg-white/10 transition text-2xl text-white"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg></button>
@@ -113,7 +117,7 @@
              <input type="text" id="typing-input" class="hidden w-full p-8 bg-white/5 border border-white/10 rounded-full text-center text-4xl impact-font tracking-widest focus:border-rose-500 outline-none text-white shadow-inner" placeholder="TYPE NOW">
         </div>
 
-        <div id="screen-prize" class="hidden glass-panel p-20 rounded-[72px] text-center max-w-3xl mx-auto space-y-12 animate-in fade-in duration-800"><h2 id="prize-title" class="text-8xl impact-font tracking-tighter text-green-400">Success</h2><div class="bg-white/5 p-10 rounded-[48px] border border-white/10 shadow-2xl"><div id="prize-amount" class="text-9xl impact-font text-green-400 mb-2">+0 SC</div><div class="text-[13px] tracking-[0.5em] text-white/40 uppercase font-bold text-center">Session Rewards Logged</div></div><button onclick="window.showHome()" class="w-full py-10 bg-white text-black rounded-full impact-font text-4xl shadow-2xl hover:bg-sky-400 transition-all">Return to Command</button></div>
+        <div id="screen-prize" class="hidden glass-panel p-20 rounded-[72px] text-center max-w-3xl mx-auto space-y-12 animate-in fade-in duration-800"><h2 id="prize-title" class="text-8xl impact-font tracking-tighter text-green-400">Success</h2><div class="bg-white/5 p-10 rounded-[48px] border border-white/10 shadow-2xl"><div id="prize-amount" class="text-9xl impact-font text-green-400 mb-2">+0 SC</div><div class="text-[13px] tracking-[0.5em] text-white/40 uppercase font-bold text-center font-mono">Session Rewards Logged</div></div><button onclick="window.showHome()" class="w-full py-10 bg-white text-black rounded-full impact-font text-4xl shadow-2xl hover:bg-sky-400 transition-all">Return to Command</button></div>
 
         <div id="screen-withdraw" class="hidden glass-panel p-20 rounded-[72px] text-center max-w-2xl mx-auto space-y-12 animate-in fade-in"><h2 class="text-7xl impact-font text-green-400 font-bold uppercase text-center leading-tight">Vault Withdrawal</h2><div class="text-9xl impact-font text-center" id="withdraw-total">0 SC</div><div class="grid grid-cols-1 gap-6"><button onclick="window.generateCertificate('Golden Ticket')" class="p-10 bg-yellow-500 text-black impact-font rounded-[40px] text-4xl shadow-2xl">Issue Golden Ticket</button><button onclick="window.generateCertificate('Mastery Certificate')" class="p-10 bg-sky-500 text-white impact-font rounded-[40px] text-4xl shadow-2xl">Issue Mastery Cert</button></div><button onclick="window.showHome()" class="text-white/20 uppercase font-bold text-[12px] tracking-[0.7em] hover:text-white transition w-full text-center">Abort Operation</button></div>
     </div>
@@ -130,7 +134,7 @@
         </div>
     </div>
 
-    <!-- MAIN SCRIPT (MODULE) -->
+    <!-- SCRIPT CORE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -138,4 +142,218 @@
 
         const firebaseConfig = {
             apiKey: "AIzaSyATNU3KcsoehUoWxzPasVQrxUGgdVvjbq4",
-            authDomain: "j
+            authDomain: "jesses-spelling-game.firebaseapp.com",
+            projectId: "jesses-spelling-game",
+            storageBucket: "jesses-spelling-game.firebasestorage.app",
+            messagingSenderId: "768883009643",
+            appId: "1:768883009643:web:591162cc7c9180b26be92e",
+            measurementId: "G-FB6FCMJMB9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = firebaseConfig.projectId;
+
+        const wordsDB = {
+            y2: ["beautiful", "because", "climb", "door", "floor", "poor", "find", "kind", "mind", "behind", "child", "children", "wild", "most", "only", "both", "old", "cold", "gold", "hold", "told", "every", "everybody", "even", "great", "break", "steak", "pretty", "after", "fast", "last", "past", "father", "class", "grass", "pass", "plant", "path", "bath", "hour", "move", "prove", "improve", "sure", "sugar", "eye", "could", "should", "would", "who", "whole", "any", "many", "clothes", "busy", "people", "water", "again", "half", "money", "parents", "christmas"],
+            y34: ["accident", "actual", "address", "answer", "appear", "arrive", "believe", "bicycle", "breath", "breathe", "build", "busy", "calendar", "caught", "centre", "century", "certain", "circle", "complete", "consider", "continue", "decide", "describe", "different", "difficult", "disappear", "early", "earth", "eight", "enough", "exercise", "experience", "experiment", "extreme", "famous", "favourite", "february", "forward", "fruit", "grammar", "group", "guard", "guide", "heard", "heart", "height", "history", "imagine", "increase", "important", "interest", "island", "knowledge", "learn", "length", "library", "material", "medicine", "mention", "minute", "natural", "naughty", "notice", "occasion", "often", "opposite", "ordinary", "particular", "peculiar", "perhaps", "popular", "position", "possess", "possible", "potatoes", "pressure", "probably", "promise", "purpose", "quarter", "question", "recent", "regular", "reign", "remember", "sentence", "separate", "special", "straight", "strange", "strength", "suppose", "surprise", "therefore", "thought", "through", "various", "weight"],
+            y56: ["accommodate", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "necessary", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "sincerely", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht"]
+        };
+
+        window.state = { pilotName: "", bank: 0, activeLevel: "Library", currentGame: null, mode: null, words: [], correctWords: [], currentRound: 0, lives: 3, currentWord: "", guessed: [], meteorTimer: null, echoAttempts: 0 };
+        
+        window.selectPilot = async (name) => {
+            window.state.pilotName = name;
+            window.showHome();
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pilots', name.toLowerCase());
+                const snap = await getDoc(docRef);
+                if (snap.exists()) {
+                    window.state.bank = snap.data().credits || 0;
+                    document.getElementById('vault-balance').innerText = window.state.bank + " SC";
+                }
+            } catch (e) { console.warn("Bank handshake slow."); }
+        };
+
+        window.showHome = () => { hideAll(); document.getElementById('screen-home').classList.remove('hidden'); document.getElementById('vault-balance').innerText = window.state.bank + " SC"; document.getElementById('display-pilot-name').innerText = window.state.pilotName; };
+        
+        const hideAll = () => { 
+            ['screen-auth', 'screen-home', 'screen-setup', 'game-view', 'screen-prize', 'screen-withdraw'].forEach(s => { 
+                const el = document.getElementById(s); if (el) el.classList.add('hidden'); 
+            }); 
+            if (window.state.meteorTimer) clearInterval(window.state.meteorTimer); 
+        };
+
+        window.speakCurrentWord = () => { 
+            const msg = new SpeechSynthesisUtterance(window.state.currentWord); 
+            const voices = window.speechSynthesis.getVoices(); 
+            const male = voices.find(v => (v.lang.startsWith('en-GB')) && (v.name.toLowerCase().includes('male'))) || voices.find(v => v.lang.startsWith('en-GB')); 
+            if (male) msg.voice = male; 
+            msg.rate = 0.8; 
+            window.speechSynthesis.speak(msg); 
+        };
+
+        window.chooseGame = (game) => { window.state.currentGame = game; hideAll(); document.getElementById('screen-setup').classList.remove('hidden'); };
+        window.setMode = (mode) => { window.state.mode = mode; document.getElementById('setup-choice').classList.add('hidden'); document.getElementById(`setup-${mode}`).classList.remove('hidden'); };
+        
+        window.launchMission = () => { 
+            let list = []; let levels = []; 
+            if (window.state.mode === 'custom') { 
+                list = document.getElementById('words-input').value.split(/[\s,]+/).filter(w => w.length > 1); 
+                window.state.activeLevel = "Custom"; 
+            } else { 
+                if (document.getElementById('check-y2').checked) { list = list.concat(wordsDB.y2); levels.push("Y2"); } 
+                if (document.getElementById('check-y34').checked) { list = list.concat(wordsDB.y34); levels.push("Y3/4"); } 
+                if (document.getElementById('check-y56').checked) { list = list.concat(wordsDB.y56); levels.push("Y5/6"); } 
+                window.state.activeLevel = levels.join(" + "); 
+                list.sort(() => Math.random() - 0.5); list = list.slice(0, 10); 
+            } 
+            if (list.length === 0) return; 
+            window.state.words = list; window.state.correctWords = []; window.state.currentRound = 0; window.state.lives = 3; 
+            hideAll(); document.getElementById('game-view').classList.remove('hidden'); 
+            nextRound(); 
+        };
+
+        const nextRound = () => { 
+            if (window.state.currentRound >= window.state.words.length || window.state.lives <= 0) { endGame(); return; } 
+            window.state.currentWord = window.state.words[window.state.currentRound].toLowerCase(); 
+            window.state.guessed = []; window.state.echoAttempts = 0; window.state.currentRound++; 
+            updateGameUI(); 
+            window.speakCurrentWord(); 
+        };
+
+        const updateGameUI = () => { 
+            document.getElementById('game-stats').innerText = `Round ${window.state.currentRound} / ${window.state.words.length}`; 
+            const livesDiv = document.getElementById('game-lives'); 
+            livesDiv.innerHTML = ''; 
+            for(let i=0; i<3; i++) { 
+                const sym = document.createElement('span'); sym.innerText = "£"; 
+                sym.className = i < window.state.lives ? "text-green-400 glow-money" : "text-white/10"; 
+                livesDiv.appendChild(sym); 
+            } 
+            ['keyboard', 'multi-choice', 'typing-input', 'meteor-container', 'echo-controls', 'word-display'].forEach(id => { 
+                const el = document.getElementById(id); if(el) el.classList.add('hidden'); 
+            }); 
+            document.getElementById('voice-btn').classList.remove('hidden'); 
+            
+            if (window.state.currentGame === 'lunar') { 
+                document.getElementById('keyboard').classList.remove('hidden'); 
+                document.getElementById('word-display').classList.remove('hidden'); 
+                renderBlanks(); renderKeyboard(); 
+            } else if (window.state.currentGame === 'meteor') { 
+                document.getElementById('meteor-container').classList.remove('hidden'); 
+                document.getElementById('typing-input').classList.remove('hidden'); 
+                startMeteor(); 
+            } else if (window.state.currentGame === 'void') { 
+                document.getElementById('multi-choice').classList.remove('hidden'); 
+                renderMultiChoice(4); 
+            } else if (window.state.currentGame === 'echo') { 
+                document.getElementById('echo-controls').classList.remove('hidden'); 
+                document.getElementById('echo-input').value = ""; document.getElementById('echo-input').focus(); 
+            } 
+        };
+
+        const renderBlanks = () => { 
+            const display = document.getElementById('word-display'); display.innerHTML = ''; 
+            window.state.currentWord.split('').forEach(char => { 
+                const s = document.createElement('div'); s.className = 'blank'; 
+                s.innerText = window.state.guessed.includes(char) ? char.toUpperCase() : ''; 
+                display.appendChild(s); 
+            }); 
+        };
+
+        const handleGuess = (l) => { 
+            window.state.guessed.push(l); 
+            if (!window.state.currentWord.includes(l)) window.state.lives--; 
+            renderBlanks(); 
+            if (window.state.currentWord.split('').every(c => window.state.guessed.includes(c))) { 
+                window.state.bank += 10; window.state.correctWords.push(window.state.currentWord); 
+                setTimeout(nextRound, 800); 
+            } else if (window.state.lives <= 0) setTimeout(nextRound, 800); 
+            else updateGameUI(); 
+        };
+
+        window.submitEcho = () => { 
+            const inputEl = document.getElementById('echo-input'); 
+            const val = inputEl.value.trim().toLowerCase(); 
+            if(!val) return; 
+            if (val === window.state.currentWord) { 
+                window.state.bank += 15; window.state.correctWords.push(window.state.currentWord); 
+                showEchoAnalysis(val); setTimeout(nextRound, 1200); 
+            } else { 
+                window.state.lives--; window.state.echoAttempts++; 
+                showEchoAnalysis(val); 
+                if (window.state.echoAttempts >= 2 || window.state.lives <= 0) { setTimeout(nextRound, 2500); } 
+                else { setTimeout(() => { inputEl.value = ""; inputEl.focus(); document.getElementById('word-display').classList.add('hidden'); }, 2000); } 
+            } 
+        };
+
+        const showEchoAnalysis = (attempt) => { 
+            const display = document.getElementById('word-display'); display.innerHTML = ''; display.classList.remove('hidden'); 
+            const target = window.state.currentWord.split(''); const typed = attempt.split(''); 
+            typed.forEach((char, i) => { 
+                const s = document.createElement('div'); s.className = 'blank'; s.innerText = char.toUpperCase(); 
+                if (char === target[i]) s.classList.add('correct-char'); else s.classList.add('error-char'); 
+                display.appendChild(s); 
+            }); 
+            if (typed.length < target.length) { 
+                for (let i = typed.length; i < target.length; i++) { 
+                    const s = document.createElement('div'); s.className = 'blank error-char'; s.innerText = '?'; display.appendChild(s); 
+                } 
+            } 
+        };
+
+        const renderKeyboard = () => { 
+            const kb = document.getElementById('keyboard'); kb.innerHTML = ''; 
+            'abcdefghijklmnopqrstuvwxyz'.split('').forEach(l => { 
+                const b = document.createElement('button'); b.innerText = l.toUpperCase(); 
+                b.className = `p-4 rounded-2xl font-bold transition ${window.state.guessed.includes(l) ? 'opacity-20' : 'bg-white/5 border border-white/10 hover:bg-white/10'}`; 
+                b.disabled = window.state.guessed.includes(l); b.onclick = () => handleGuess(l); 
+                kb.appendChild(b); 
+            }); 
+        };
+
+        const startMeteor = () => { 
+            const input = document.getElementById('typing-input'); 
+            input.value = ''; input.focus(); let pos = 0; clearInterval(window.state.meteorTimer); 
+            window.state.meteorTimer = setInterval(() => { pos += 1.8; if (pos > 200) { clearInterval(window.state.meteorTimer); window.state.lives--; nextRound(); } }, 50); 
+            input.oninput = () => { if (input.value.toLowerCase() === window.state.currentWord) { clearInterval(window.state.meteorTimer); window.state.bank += 10; window.state.correctWords.push(window.state.currentWord); setTimeout(nextRound, 500); } }; 
+        };
+
+        const renderMultiChoice = (count) => { 
+            const container = document.getElementById('multi-choice'); container.innerHTML = ''; const options = [window.state.currentWord]; 
+            while(options.length < count) { const typo = makeBelievableTypo(window.state.currentWord); if (!options.includes(typo)) options.push(typo); } 
+            options.sort(() => Math.random() - 0.5); 
+            options.forEach((opt, idx) => { 
+                const b = document.createElement('button'); b.innerHTML = `<span class="text-sky-400 mr-4">${idx+1}.</span> ${opt.toUpperCase()}`; 
+                b.className = 'p-10 rounded-3xl bg-white/5 border border-white/10 hover:border-sky-400 impact-font text-2xl transition text-left shadow-lg'; 
+                b.onclick = () => handleChoiceSelection(opt); container.appendChild(b); 
+            }); 
+        };
+
+        const handleChoiceSelection = (opt) => { if (opt === window.state.currentWord) { window.state.bank += 10; window.state.correctWords.push(window.state.currentWord); document.getElementById('word-display').classList.remove('hidden'); renderBlanks(); setTimeout(nextRound, 800); } else { window.state.lives--; nextRound(); } };
+        const makeBelievableTypo = (w) => { let word = w.toLowerCase(); const rules = [(s) => s.replace(/(.)\1/g, "$1"),(s) => s.replace(/ce$/, "se").replace(/se$/, "ce")]; for (let i = 0; i < 5; i++) { let strategy = rules[Math.floor(Math.random() * rules.length)]; let typo = strategy(word); if (typo !== word) return typo; } return word.substring(0, word.length-1) + (word.endsWith('e') ? 'i' : 'e'); };
+        
+        const endGame = async () => { 
+            clearInterval(window.state.meteorTimer); hideAll(); 
+            document.getElementById('screen-prize').classList.remove('hidden'); 
+            document.getElementById('prize-amount').innerText = "+" + (window.state.correctWords.length * 10) + " SC"; 
+            if (auth.currentUser) { 
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pilots', window.state.pilotName.toLowerCase()); 
+                await setDoc(docRef, { credits: window.state.bank, lastLevel: window.state.activeLevel }, { merge: true }); 
+            } 
+        };
+
+        window.showWithdraw = () => { hideAll(); document.getElementById('screen-withdraw').classList.remove('hidden'); document.getElementById('withdraw-total').innerText = window.state.bank + " SC"; };
+        window.generateCertificate = (type) => { document.getElementById('cert-pilot-name').innerText = window.state.pilotName; document.getElementById('cert-title').innerText = type.toUpperCase(); document.getElementById('cert-value').innerText = window.state.bank + " SC"; document.getElementById('cert-level').innerText = window.state.activeLevel; document.getElementById('cert-date').innerText = new Date().toLocaleDateString(); window.print(); };
+
+        // INITIALIZATION
+        onAuthStateChanged(auth, (user) => { document.getElementById('connection-overlay').classList.add('hidden'); });
+        signInAnonymously(auth).catch(() => { document.getElementById('connection-overlay').classList.add('hidden'); });
+        setTimeout(() => { document.getElementById('connection-overlay').classList.add('hidden'); }, 5000); // 5s Emergency Hatch
+        
+        window.addEventListener('keydown', (e) => { if(e.key === 'Enter') { if(window.state.currentGame === 'echo' && !document.getElementById('echo-controls').classList.contains('hidden')) window.submitEcho(); } });
+    </script>
+</body>
+</html>
