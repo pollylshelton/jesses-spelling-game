@@ -39,28 +39,31 @@
             z-index: 10;
         }
         
-        /* Global Background Effects */
+        /* Background Layering */
         .bg-layer { position: fixed; inset: 0; z-index: -2; background: #030508; }
         .aurora { position: fixed; width: 100vw; height: 100vh; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.15; animation: drift 25s infinite alternate ease-in-out; pointer-events: none; }
         .aurora-1 { background: #ff0080; top: -30%; left: -20%; }
         .aurora-2 { background: #4f46e5; bottom: -20%; right: -20%; animation-delay: -5s; }
         @keyframes drift { from { transform: translate(-10%, -10%) rotate(0deg) scale(1); } to { transform: translate(15%, 15%) rotate(60deg) scale(1.3); } }
 
-        /* Sudden Death Specific Background (Inspired by screenshots) */
-        #death-bg { position: fixed; inset: 0; z-index: -1; opacity: 0; transition: opacity 1s; pointer-events: none; background: #050000; }
+        /* Mission Specific Overlays */
+        .mission-overlay { position: fixed; inset: 0; z-index: -1; opacity: 0; transition: opacity 1s; pointer-events: none; }
         .death-active #death-bg { opacity: 1; }
-        .death-orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.6; animation: orbMove 15s infinite alternate ease-in-out; }
-        .d-orb-1 { width: 450px; height: 450px; background: #ff0080; top: -50px; left: -50px; }
-        .d-orb-2 { width: 500px; height: 500px; background: #4f46e5; bottom: -100px; right: -50px; animation-delay: -3s; }
-        .d-orb-3 { width: 300px; height: 300px; background: #f59e0b; top: 40%; left: 30%; animation-delay: -7s; }
-        @keyframes orbMove { from { transform: translate(0, 0) rotate(0deg); } to { transform: translate(80px, 40px) rotate(45deg); } }
+        #death-bg { background: #050000; }
+        .meteor-active #meteor-bg { opacity: 1; }
+        #meteor-bg { background: #080200; }
+        .void-active #void-bg { opacity: 1; }
+        #void-bg { background: #010008; }
+
+        .orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.5; animation: orbMove 15s infinite alternate ease-in-out; }
+        @keyframes orbMove { from { transform: translate(0, 0) scale(1); } to { transform: translate(60px, 30px) scale(1.1); } }
 
         /* Sound Ripple Animation */
-        .ripple { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 4px solid rgba(56, 189, 248, 0.8); border-radius: 50%; pointer-events: none; opacity: 0; }
+        .ripple { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 3px solid rgba(56, 189, 248, 0.8); border-radius: 50%; pointer-events: none; opacity: 0; }
         .animate-ripple { animation: rippleEffect 1.5s cubic-bezier(0, 0.2, 0.8, 1); }
-        @keyframes rippleEffect { 0% { width: 0; height: 0; opacity: 1; } 100% { width: 1200px; height: 1200px; opacity: 0; } }
+        @keyframes rippleEffect { 0% { width: 0; height: 0; opacity: 1; } 100% { width: 1000px; height: 1000px; opacity: 0; } }
 
-        /* Explosion Effect */
+        /* Explosion / Shake */
         #explosion-overlay { position: fixed; inset: 0; z-index: 1000; pointer-events: none; background: radial-gradient(circle, #f43f5e 0%, transparent 70%); opacity: 0; display: flex; align-items: center; justify-content: center; }
         .animate-explosion { animation: explode 0.8s ease-out forwards; }
         @keyframes explode { 0% { opacity: 0; transform: scale(0.5); } 30% { opacity: 1; transform: scale(1.2); } 100% { opacity: 0; transform: scale(2); } }
@@ -69,8 +72,8 @@
 
         .profile-btn { cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); -webkit-tap-highlight-color: transparent; }
         .profile-btn:hover { transform: scale(1.1) translateY(-10px); }
-        .helmet-frame { width: 150px; height: 150px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border: 4px solid rgba(255, 255, 255, 0.05); background: #000; transition: all 0.4s; box-shadow: 0 0 40px rgba(0,0,0,1); }
-        .profile-btn:hover .helmet-frame { border-color: #38bdf8; box-shadow: 0 0 60px rgba(56, 189, 248, 0.4); }
+        .helmet-frame { width: 140px; height: 140px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; border: 4px solid rgba(255, 255, 255, 0.05); background: #000; transition: all 0.4s; box-shadow: 0 0 30px rgba(0,0,0,1); }
+        .profile-btn:hover .helmet-frame { border-color: #38bdf8; box-shadow: 0 0 50px rgba(56, 189, 248, 0.3); }
         
         .vault-dashboard { background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(56, 189, 248, 0.02)); border: 1px solid rgba(56, 189, 248, 0.3); border-left: 6px solid #38bdf8; padding: 25px; border-radius: 30px; width: 100%; position: relative; overflow: hidden; }
         
@@ -88,7 +91,7 @@
         .key-btn:active { background: #38bdf8; color: black; transform: scale(0.9); }
         .key-btn:disabled { opacity: 0.05; cursor: default; background: transparent; }
 
-        /* REVERSED HANGMAN VISUAL (LIMBS DISAPPEAR) */
+        /* HANGMAN VISUAL */
         #hangman-visual { width: 300px; height: 320px; margin: 0 auto 10px; position: relative; }
         .hangman-part { transition: opacity 0.5s, transform 0.5s; stroke: #38bdf8; stroke-width: 5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
         .hidden-part { opacity: 0 !important; transform: translateY(40px); pointer-events: none; }
@@ -99,7 +102,6 @@
         .custom-word-tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 4px 12px; border-radius: 20px; display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; }
         .custom-word-delete { color: #f43f5e; cursor: pointer; font-size: 14px; font-weight: 900; }
 
-        /* Print Settings */
         @media print { 
             .no-print { display: none !important; } 
             .print-only { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; } 
@@ -109,19 +111,27 @@
         .print-only { display: none; }
         
         .golden-ticket-wrap { background: linear-gradient(135deg, #fef3c7 0%, #facc15 40%, #eab308 60%, #b45309 100%) !important; padding: 40px; color: #451a03 !important; border: 15px double #78350f !important; text-align: center; clip-path: polygon(0 5%, 5% 0, 95% 0, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0 95%); }
-        .mastery-cert-wrap { background: #fff !important; color: #1e293b !important; padding: 60px; border: 25px double #0369a1 !important; text-align: center; }
+        .wonka-header { font-family: 'Anton', sans-serif; font-size: 85px; text-transform: uppercase; margin: 0; line-height: 0.9; letter-spacing: -2px; }
+        .mastery-cert-wrap { background: #fff !important; color: #1e293b !important; padding: 60px; border: 25px double #0369a1 !important; text-align: center; position: relative; }
         .cert-seal { position: absolute; bottom: 50px; right: 50px; width: 180px; height: 180px; background: radial-gradient(circle, #fde047 0%, #ca8a04 100%) !important; border: 10px double #a16207 !important; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(-15deg); color: #451a03 !important; font-weight: 900; }
 
-        @media (max-width: 640px) { .key-btn { height: 45px; font-size: 0.9rem; } .helmet-frame { width: 120px; height: 120px; } .glass-panel { padding: 20px !important; margin: 10px; } }
+        @media (max-width: 640px) { .key-btn { height: 45px; font-size: 0.9rem; } .helmet-frame { width: 110px; height: 110px; } .glass-panel { padding: 20px !important; margin: 10px; } }
     </style>
 </head>
 <body id="main-body">
 
     <div class="bg-layer"></div>
-    <div id="death-bg">
-        <div class="death-orb d-orb-1"></div>
-        <div class="death-orb d-orb-2"></div>
-        <div class="death-orb d-orb-3"></div>
+    <div id="death-bg" class="mission-overlay">
+        <div class="orb" style="background:#ff0080; width:400px; height:400px; top:-50px; left:-50px;"></div>
+        <div class="orb" style="background:#4f46e5; width:500px; height:500px; bottom:-100px; right:-50px; animation-delay:-3s;"></div>
+    </div>
+    <div id="meteor-bg" class="mission-overlay">
+        <div class="orb" style="background:#f43f5e; width:500px; height:500px; top:-100px; right:-100px;"></div>
+        <div class="orb" style="background:#f59e0b; width:450px; height:450px; bottom:-150px; left:-50px; animation-delay:-5s;"></div>
+    </div>
+    <div id="void-bg" class="mission-overlay">
+        <div class="orb" style="background:#4f46e5; width:500px; height:500px; top:-100px; left:-100px;"></div>
+        <div class="orb" style="background:#facc15; width:300px; height:300px; bottom:-50px; right:10%; animation-delay:-4s; opacity:0.3;"></div>
     </div>
     
     <div id="ripple-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
@@ -135,36 +145,110 @@
         </div>
     </div>
 
-    <div id="app-container" class="w-full max-w-5xl p-4 no-print flex flex-col items-center justify-center min-h-screen relative z-10">
+    <!-- Confirmation Dialog -->
+    <div id="confirm-dialog" class="fixed inset-0 z-[3000] bg-black/90 backdrop-blur hidden flex items-center justify-center p-4">
+        <div class="glass-panel p-10 rounded-[40px] max-w-sm w-full text-center border-red-500/30">
+            <h3 class="text-3xl impact-font text-red-500 mb-4 tracking-tighter uppercase">Danger zone</h3>
+            <p id="confirm-message" class="text-white/60 mb-8 font-bold text-[10px] tracking-widest uppercase">Permanent action required</p>
+            <div class="flex gap-4">
+                <button onclick="window.closeConfirm()" class="flex-1 p-4 bg-white/10 rounded-2xl uppercase font-bold text-xs hover:bg-white/20 transition">Cancel</button>
+                <button id="execute-reset-btn" class="flex-1 p-4 bg-red-600 rounded-2xl font-bold uppercase text-xs shadow-lg">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-container" class="w-full max-w-6xl p-4 no-print flex flex-col items-center justify-center min-h-screen relative z-10">
         
         <!-- SCREEN: AUTH -->
         <div id="screen-auth" class="text-center py-10 w-full animate-in fade-in duration-1000">
             <h1 class="text-5xl md:text-8xl impact-font mb-16 tracking-tighter leading-none uppercase">Moonshot Academy</h1>
-            <div class="flex flex-wrap justify-center gap-8 md:gap-12 max-w-4xl mx-auto">
+            <div class="flex flex-wrap justify-center gap-6 md:gap-10 max-w-5xl mx-auto">
+                <!-- JESSE (SILVER) -->
                 <div onclick="window.selectPilot('Jesse')" class="profile-btn group">
-                    <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="chrome-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="50%" style="stop-color:#94a3b8"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#chrome-grad)" /><rect x="25" y="32" width="50" height="22" rx="4" fill="#000" /></svg></div>
-                    <div class="text-xl font-bold tracking-[0.1em] text-sky-400">Jesse</div>
+                    <div class="helmet-frame">
+                        <svg viewBox="0 0 100 100" class="w-full h-full p-2">
+                            <defs><linearGradient id="chrome-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="50%" style="stop-color:#94a3b8"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs>
+                            <!-- Antennas -->
+                            <path d="M30 15 L20 5 M70 15 L80 5" stroke="url(#chrome-grad)" stroke-width="4" />
+                            <path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#chrome-grad)" />
+                            <rect x="25" y="32" width="50" height="22" rx="4" fill="#000" />
+                            <!-- Circular Eyes -->
+                            <circle cx="35" cy="43" r="3" fill="#38bdf8" class="animate-pulse" />
+                            <circle cx="65" cy="43" r="3" fill="#38bdf8" class="animate-pulse" />
+                        </svg>
+                    </div>
+                    <div class="text-lg font-bold tracking-[0.1em] text-sky-400 group-hover:text-white transition-colors">Jesse</div>
                 </div>
+
+                <!-- RUBEN (EMERALD) -->
                 <div onclick="window.selectPilot('Ruben')" class="profile-btn group">
-                    <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="ruben-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#10b981"/><stop offset="50%" style="stop-color:#059669"/><stop offset="100%" style="stop-color:#064e3b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#ruben-grad)" /><rect x="25" y="32" width="50" height="22" rx="4" fill="#000" /></svg></div>
-                    <div class="text-xl font-bold tracking-[0.1em] text-emerald-400">Ruben</div>
+                    <div class="helmet-frame">
+                        <svg viewBox="0 0 100 100" class="w-full h-full p-2">
+                            <defs><linearGradient id="ruben-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#10b981"/><stop offset="50%" style="stop-color:#059669"/><stop offset="100%" style="stop-color:#064e3b"/></linearGradient></defs>
+                            <!-- Signal Antenna -->
+                            <path d="M50 5 L50 -5" stroke="url(#ruben-grad)" stroke-width="6" stroke-linecap="round" />
+                            <path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#ruben-grad)" />
+                            <rect x="25" y="32" width="50" height="25" rx="4" fill="#000" />
+                            <!-- HUD Line -->
+                            <line x1="30" y1="44" x2="70" y2="44" stroke="#10b981" stroke-width="1.5" stroke-dasharray="2,2" />
+                        </svg>
+                    </div>
+                    <div class="text-lg font-bold tracking-[0.1em] text-emerald-400 group-hover:text-white transition-colors">Ruben</div>
                 </div>
+
+                <!-- POLLY (ROSE) -->
                 <div onclick="window.selectPilot('Polly')" class="profile-btn group">
-                    <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="polly-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f472b6"/><stop offset="50%" style="stop-color:#db2777"/><stop offset="100%" style="stop-color:#831843"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#polly-grad)" /><rect x="25" y="32" width="50" height="22" rx="4" fill="#000" /></svg></div>
-                    <div class="text-xl font-bold tracking-[0.1em] text-pink-400">Polly</div>
+                    <div class="helmet-frame">
+                        <svg viewBox="0 0 100 100" class="w-full h-full p-2">
+                            <defs><linearGradient id="polly-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f472b6"/><stop offset="50%" style="stop-color:#db2777"/><stop offset="100%" style="stop-color:#831843"/></linearGradient></defs>
+                            <!-- Ear Sensors -->
+                            <path d="M25 15 L15 5 M75 15 L85 5" stroke="url(#polly-grad)" stroke-width="8" stroke-linecap="round" />
+                            <path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#polly-grad)" />
+                            <rect x="25" y="35" width="50" height="22" rx="10" fill="#000" />
+                            <!-- Round Glow Eyes -->
+                            <circle cx="38" cy="46" r="4" fill="#f472b6" opacity="0.8" />
+                            <circle cx="62" cy="46" r="4" fill="#f472b6" opacity="0.8" />
+                        </svg>
+                    </div>
+                    <div class="text-lg font-bold tracking-[0.1em] text-pink-400 group-hover:text-white transition-colors">Polly</div>
                 </div>
+
+                <!-- JUDE (RED) -->
                 <div onclick="window.selectPilot('Jude')" class="profile-btn group">
-                    <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="jude-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f87171"/><stop offset="50%" style="stop-color:#dc2626"/><stop offset="100%" style="stop-color:#7f1d1d"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#jude-grad)" /><rect x="25" y="32" width="50" height="22" rx="4" fill="#000" /></svg></div>
-                    <div class="text-xl font-bold tracking-[0.1em] text-red-400">Jude</div>
+                    <div class="helmet-frame">
+                        <svg viewBox="0 0 100 100" class="w-full h-full p-2">
+                            <defs><linearGradient id="jude-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f87171"/><stop offset="50%" style="stop-color:#dc2626"/><stop offset="100%" style="stop-color:#7f1d1d"/></linearGradient></defs>
+                            <!-- Side Comm Array -->
+                            <rect x="80" y="45" width="8" height="15" fill="url(#jude-grad)" />
+                            <path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#jude-grad)" />
+                            <rect x="25" y="32" width="50" height="22" rx="2" fill="#000" />
+                            <!-- Rectangular Robot Eyes -->
+                            <rect x="30" y="38" width="12" height="6" fill="#f87171" rx="1" />
+                            <rect x="58" y="38" width="12" height="6" fill="#f87171" rx="1" />
+                        </svg>
+                    </div>
+                    <div class="text-lg font-bold tracking-[0.1em] text-red-400 group-hover:text-white transition-colors">Jude</div>
                 </div>
+
+                <!-- FRIEND (GOLD) -->
                 <div onclick="window.selectPilot('Friend')" class="profile-btn group">
-                    <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="50%" style="stop-color:#d97706"/><stop offset="100%" style="stop-color:#451a03"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#gold-grad)" /><rect x="25" y="35" width="50" height="30" rx="4" fill="#000" /><circle cx="35" cy="50" r="1.5" fill="#f43f5e" /><circle cx="65" cy="50" r="1.5" fill="#f43f5e" /></svg></div>
-                    <div class="text-xl font-bold tracking-[0.1em] text-amber-500">Friend</div>
+                    <div class="helmet-frame">
+                        <svg viewBox="0 0 100 100" class="w-full h-full p-2">
+                            <defs><linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="50%" style="stop-color:#d97706"/><stop offset="100%" style="stop-color:#451a03"/></linearGradient></defs>
+                            <path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#gold-grad)" />
+                            <rect x="25" y="35" width="50" height="30" rx="4" fill="#000" />
+                            <!-- Expressive Face -->
+                            <circle cx="35" cy="50" r="2" fill="#f43f5e" />
+                            <circle cx="65" cy="50" r="2" fill="#f43f5e" />
+                            <path d="M45 58 Q50 62 55 58" stroke="#f43f5e" stroke-width="1.5" fill="none" />
+                        </svg>
+                    </div>
+                    <div class="text-lg font-bold tracking-[0.1em] text-amber-500 group-hover:text-white transition-colors">Friend</div>
                 </div>
             </div>
         </div>
 
-        <!-- SCREEN: HOME -->
+        <!-- SCREEN: HOME (MISSION CONTROL) -->
         <div id="screen-home" class="hidden w-full space-y-10 py-6 animate-in fade-in">
             <div class="flex flex-col lg:flex-row justify-between items-end gap-6">
                 <div class="text-left w-full lg:w-auto">
@@ -195,23 +279,23 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div onclick="window.chooseGame('lunar')" class="game-tile">
                     <div class="w-full h-20 mb-4 flex items-center justify-center text-sky-400"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3m3.5 1.5L9 10m4.5 1.5L10 8"/><path d="m21.5 2.5-4.5 4-10.5 10.5 4.5 4.5L21.5 11l-4.5-4.5zM2 22s.5-5 2-6.5l3 3c-1.5 1.5-5 2-5 2z"/></svg></div>
-                    <div><h3 class="text-2xl impact-font mb-1">Lunar mission</h3><p class="text-white/40 text-[10px] font-bold tracking-wider uppercase">Rescue the stranded astronaut</p></div>
+                    <div><h3 class="text-2xl impact-font mb-1 uppercase">Lunar mission</h3><p class="text-white/40 text-[10px] font-bold tracking-wider uppercase">Rescue the stranded astronaut</p></div>
                 </div>
                 <div onclick="window.chooseGame('death')" class="game-tile border-rose-500/20 shadow-[0_0_30px_rgba(244,63,94,0.2)]">
                     <div class="w-full h-20 mb-4 flex items-center justify-center text-rose-400"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></div>
                     <div>
                         <div class="bg-rose-500 text-white text-[8px] font-black px-2 py-0.5 rounded-full w-fit mb-2 tracking-widest shadow-lg animate-pulse uppercase">Double stars</div>
-                        <h3 class="text-2xl impact-font mb-1">Sudden death</h3>
+                        <h3 class="text-2xl impact-font mb-1 uppercase">Sudden death</h3>
                         <p class="text-white/40 text-[10px] font-bold tracking-wider text-rose-500/60 uppercase">Audio accuracy challenge</p>
                     </div>
                 </div>
                 <div onclick="window.chooseGame('meteor')" class="game-tile border-rose-500/20">
                     <div class="w-full h-20 mb-4 flex items-center justify-center text-rose-400"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="m16 8-8 8m0-8 8 8"/></svg></div>
-                    <div><h3 class="text-2xl impact-font mb-1">Meteor blast</h3><p class="text-white/40 text-[10px] font-bold tracking-wider uppercase">Visual reaction defense</p></div>
+                    <div><h3 class="text-2xl impact-font mb-1 uppercase">Meteor blast</h3><p class="text-white/40 text-[10px] font-bold tracking-wider uppercase">Visual reaction defense</p></div>
                 </div>
                 <div onclick="window.chooseGame('void')" class="game-tile border-indigo-500/20">
                     <div class="w-full h-20 mb-4 flex items-center justify-center text-indigo-400"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="animate-spin" style="animation-duration: 10s"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20M2 12a10 10 0 0 1 20 0"/></svg></div>
-                    <div><h3 class="text-2xl impact-font mb-1">Void choice</h3><p class="text-white/40 text-[10px] font-bold tracking-wider uppercase">5s challenge rank</p></div>
+                    <div><h3 class="text-2xl impact-font mb-1 uppercase">Void choice</h3><p class="text-white/40 text-[10px] font-bold tracking-wider uppercase">5s challenge rank</p></div>
                 </div>
             </div>
         </div>
@@ -219,7 +303,7 @@
         <!-- SCREEN: MY STATS -->
         <div id="screen-stats" class="hidden glass-panel p-6 md:p-10 rounded-[40px] flex flex-col w-full animate-in fade-in h-[90vh]">
             <div class="mb-6"><button onclick="window.showHome()" class="back-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="glow-sky"><path d="M15 18l-6-6 6-6"/></svg> Hangar</button></div>
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8"><h2 class="text-4xl impact-font tracking-tighter uppercase">Pilot Academy stats</h2><div class="flex bg-white/5 p-1 rounded-xl border border-white/5"><button id="btn-week" onclick="window.setStatFilter('week')" class="px-6 py-2 rounded-lg text-[10px] font-bold bg-sky-500 shadow-lg uppercase">Recent (7d)</button><button id="btn-all" onclick="window.setStatFilter('all')" class="px-6 py-2 rounded-lg text-[10px] font-bold text-white/40 uppercase">All-time</button></div></div>
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8"><h2 class="text-4xl impact-font tracking-tighter uppercase">Pilot academy stats</h2><div class="flex bg-white/5 p-1 rounded-xl border border-white/5"><button id="btn-week" onclick="window.setStatFilter('week')" class="px-6 py-2 rounded-lg text-[10px] font-bold bg-sky-500 shadow-lg uppercase">Recent (7d)</button><button id="btn-all" onclick="window.setStatFilter('all')" class="px-6 py-2 rounded-lg text-[10px] font-bold text-white/40 uppercase">All-time</button></div></div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" id="mission-analytics"></div>
             <div class="overflow-y-auto flex-1 pr-4 custom-scrollbar">
                 <h3 class="text-xs font-black tracking-widest mb-4 text-sky-400 uppercase text-center">Detailed word logs</h3>
@@ -249,12 +333,14 @@
         </div>
 
         <!-- GAME VIEW -->
-        <div id="screen-game" class="hidden glass-panel p-8 rounded-[50px] text-center w-full animate-in fade-in min-h-[700px] flex flex-col justify-center">
-            <div class="text-left mb-auto"><button onclick="window.showHome()" class="back-btn">Abort</button></div>
+        <div id="screen-game" class="hidden glass-panel p-8 rounded-[50px] text-center w-full animate-in fade-in min-h-[600px] flex flex-col justify-center">
+            <div class="text-left mb-auto"><button onclick="window.showHome()" class="back-btn uppercase">Abort</button></div>
             <div class="flex justify-between mb-8 font-bold text-white/40 text-[11px] tracking-widest uppercase">
                 <div id="game-progress">Round 1 / 10</div><div id="game-lives" class="flex gap-2"></div>
             </div>
             <div id="void-timer-container" class="timer-container hidden"><div id="void-timer-bar"></div></div>
+            
+            <!-- REVERSED HANGMAN -->
             <div id="hangman-area" class="hidden mb-6">
                 <svg id="hangman-visual" viewBox="0 0 300 320">
                     <path d="M50 300 L250 300 M100 300 L100 20 L250 20 L250 60" stroke="#1e293b" stroke-width="4" fill="none" />
@@ -269,11 +355,13 @@
                     </g>
                 </svg>
             </div>
+
             <div id="standard-game-elements" class="flex flex-col items-center">
                 <div id="game-word-display" class="word-container mb-10 min-h-[60px] flex-row"></div>
                 <button onclick="window.speakWord()" id="speaker-btn" class="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-4xl hover:bg-white/10 transition-all shadow-xl mb-10"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>
             </div>
-            <div id="meteor-field" class="hidden"></div><div id="keyboard" class="hidden"></div><div id="multi-choice" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto w-full"></div>
+            
+            <div id="meteor-field" class="hidden"></div><div id="keyboard" class="hidden"></div><div id="multi-choice" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto w-full text-sm"></div>
             <div id="echo-input-container" class="hidden max-w-sm mx-auto space-y-6 w-full"><input type="text" id="echo-field" class="w-full p-8 bg-white/5 border border-white/10 rounded-3xl text-3xl text-center outline-none focus:border-rose-500 text-white shadow-2xl" placeholder="Type unit" autocomplete="off"><button onclick="window.submitEcho()" class="w-full py-5 bg-rose-500 text-white font-black rounded-3xl text-sm impact-font tracking-widest shadow-xl uppercase">Analyze signal</button></div>
         </div>
 
@@ -282,15 +370,15 @@
             <h2 class="text-7xl impact-font text-green-400 leading-none mb-6 uppercase">Mission success</h2>
             <div class="bg-green-500/5 p-10 rounded-[40px] w-full border border-green-500/20 glow-green mb-10">
                 <div id="earned-amount" class="text-8xl md:text-9xl impact-font text-green-400 tracking-tighter uppercase">+100 stars</div>
-                <p class="text-white/40 uppercase font-black text-[10px] tracking-[0.6em] mt-4">Stats saved to vault</p>
+                <p class="text-white/40 uppercase font-black text-[10px] tracking-[0.6em] mt-4 uppercase">Stats saved to vault</p>
             </div>
-            <button onclick="window.showHome()" class="w-full py-6 bg-white text-black rounded-full impact-font text-2xl uppercase shadow-2xl hover:bg-sky-400 transition-all">Return to Command</button>
+            <button onclick="window.showHome()" class="w-full py-6 bg-white text-black rounded-full impact-font text-2xl uppercase shadow-2xl hover:bg-sky-400 transition-all uppercase">Return to Command</button>
         </div>
 
         <!-- WITHDRAWAL -->
         <div id="screen-withdraw" class="hidden glass-panel p-12 rounded-[50px] text-center w-full max-w-lg animate-in fade-in">
             <div class="text-left mb-8"><button onclick="window.showHome()" class="back-btn">Back</button></div>
-            <h2 class="text-5xl impact-font text-green-400 mb-2 uppercase tracking-tighter text-center w-full">Bank vault</h2>
+            <h2 class="text-5xl impact-font text-green-400 mb-2 uppercase tracking-tighter text-center w-full uppercase">Bank vault</h2>
             <div id="withdraw-balance" class="text-8xl impact-font mb-12 text-white text-center w-full uppercase">0 stars</div>
             <div class="space-y-4">
                 <button onclick="window.printCert('gold')" class="w-full py-6 bg-yellow-500 text-black font-black rounded-3xl text-[10px] tracking-widest shadow-2xl hover:brightness-110 uppercase">Issue Golden ticket</button>
@@ -397,7 +485,7 @@
         };
 
         window.showHome = () => { 
-            document.body.classList.remove('death-active');
+            document.body.classList.remove('death-active', 'meteor-active', 'void-active');
             window.state.isTransitioning = false; clearAllTimers(); hideAll(); 
             document.getElementById('screen-home').classList.remove('hidden'); updateVaultUI(); 
             document.getElementById('pilot-name-display').innerText = window.state.pilotName; 
@@ -450,7 +538,7 @@
 
         window.triggerReset = (type) => {
             document.getElementById('confirm-dialog').classList.remove('hidden');
-            document.getElementById('confirm-message').innerText = type === 'bank' ? "Reset Star Credits?" : "Clear all stats and word history?";
+            document.getElementById('confirm-message').innerText = type === 'bank' ? "Reset star credits?" : "Clear all stats and word history?";
             document.getElementById('execute-reset-btn').onclick = () => executeDataReset(type);
         };
         window.closeConfirm = () => document.getElementById('confirm-dialog').classList.add('hidden');
@@ -465,6 +553,8 @@
         window.chooseGame = (game) => { 
             window.state.currentGame = game; hideAll(); 
             if (game === 'death') document.body.classList.add('death-active'); 
+            if (game === 'meteor') document.body.classList.add('meteor-active');
+            if (game === 'void') document.body.classList.add('void-active');
             document.getElementById('screen-setup').classList.remove('hidden'); 
         };
         
@@ -534,7 +624,7 @@
             } else if (window.state.currentGame === 'death') {
                 document.getElementById('standard-game-elements').classList.remove('hidden');
                 document.getElementById('echo-input-container').classList.remove('hidden');
-                if (window.state.echoAttempts === 0) document.getElementById('game-word-display').innerHTML = '<div class="text-sky-400/20 italic text-sm py-6 animate-pulse">Scanning signal...</div>';
+                if (window.state.echoAttempts === 0) document.getElementById('game-word-display').innerHTML = '<div class="text-sky-400/20 italic text-sm py-6 uppercase animate-pulse">Scanning signal...</div>';
                 const field = document.getElementById('echo-field'); field.value = ''; setTimeout(() => field.focus(), 300);
             } else if (window.state.currentGame === 'meteor') {
                 document.getElementById('meteor-field').classList.remove('hidden'); renderMeteorBlast();
@@ -553,7 +643,7 @@
             window.state.voidTimer = setInterval(() => {
                 timeLeft -= 0.1; bar.style.width = (timeLeft * 20) + '%';
                 if (timeLeft < 1.5) bar.style.backgroundColor = '#f43f5e';
-                if (timeLeft <= 0) { clearInterval(window.state.voidTimer); window.state.lives--; recordResult(false, "[Time Out]"); nextRound(); }
+                if (timeLeft <= 0) { clearInterval(window.state.voidTimer); window.state.lives--; recordResult(false, "[Time Out]"); triggerExplosion(nextRound); }
             }, 100);
         };
 
@@ -562,11 +652,7 @@
             const panel = document.getElementById('app-container');
             panel.classList.add('shake');
             exp.classList.add('animate-explosion');
-            setTimeout(() => {
-                panel.classList.remove('shake');
-                exp.classList.remove('animate-explosion');
-                if (callback) callback();
-            }, 800);
+            setTimeout(() => { panel.classList.remove('shake'); exp.classList.remove('animate-explosion'); if (callback) callback(); }, 800);
         };
 
         const renderBlanks = () => {
@@ -664,7 +750,7 @@
                 const b = document.createElement('button');
                 const displayOption = o.charAt(0).toUpperCase() + o.slice(1);
                 b.innerText = displayOption;
-                b.className = 'p-5 bg-white/5 border border-white/10 rounded-3xl font-bold text-sm tracking-widest hover:border-sky-500 transition-all';
+                b.className = 'p-5 bg-white/5 border border-white/10 rounded-3xl font-bold tracking-widest hover:border-sky-500 transition-all';
                 b.onclick = () => { if (window.state.isTransitioning) return; clearInterval(window.state.voidTimer); if (o === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; if (window.state.lives <= 0) { recordResult(false, o); triggerExplosion(nextRound); } else { triggerExplosion(nextRound); } } };
                 container.appendChild(b);
             });
@@ -673,7 +759,7 @@
         const recordResult = (ok, mistake = null) => {
             const gameRef = window.state.currentGame === 'death' ? 'echo' : window.state.currentGame;
             window.state.history.push({ word: window.state.currentWord, result: ok, timestamp: Date.now(), mistake: mistake, game: gameRef });
-            let baseReward = window.state.currentGame === 'death' ? 20 : 10;
+            let baseReward = (window.state.currentGame === 'death' ? 20 : 10);
             if (window.state.currentGame === 'lunar' && ok) {
                 const mistakes = 6 - window.state.lives;
                 baseReward = Math.max(1, 10 - mistakes);
