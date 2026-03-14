@@ -39,30 +39,37 @@
             z-index: 10;
         }
         
-        /* Background Effects */
+        /* Global Background Effects */
         .bg-layer { position: fixed; inset: 0; z-index: -2; background: #030508; }
         .aurora { position: fixed; width: 100vw; height: 100vh; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.15; animation: drift 25s infinite alternate ease-in-out; pointer-events: none; }
         .aurora-1 { background: #ff0080; top: -30%; left: -20%; }
         .aurora-2 { background: #4f46e5; bottom: -20%; right: -20%; animation-delay: -5s; }
         @keyframes drift { from { transform: translate(-10%, -10%) rotate(0deg) scale(1); } to { transform: translate(15%, 15%) rotate(60deg) scale(1.3); } }
 
-        /* Echo Specific Abstract Background */
-        #echo-overlay-bg { position: fixed; inset: 0; z-index: -1; opacity: 0; transition: opacity 2s; pointer-events: none; background: #030508; }
-        .echo-active #echo-overlay-bg { opacity: 1; }
-        .orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.4; animation: orbMove 20s infinite alternate ease-in-out; }
-        .orb-1 { width: 400px; height: 400px; background: rgba(255, 0, 128, 0.4); top: -100px; left: -100px; }
-        .orb-2 { width: 500px; height: 500px; background: rgba(79, 70, 229, 0.3); bottom: -150px; right: -100px; animation-delay: -4s; }
-        .orb-3 { width: 300px; height: 300px; background: rgba(251, 191, 36, 0.2); top: 40%; left: 50%; animation-delay: -8s; }
-        @keyframes orbMove { from { transform: translate(0, 0) scale(1); } to { transform: translate(100px, 50px) scale(1.2); } }
+        /* Sudden Death Specific Background (Inspired by screenshots) */
+        #death-bg { position: fixed; inset: 0; z-index: -1; opacity: 0; transition: opacity 1s; pointer-events: none; background: #050000; }
+        .death-active #death-bg { opacity: 1; }
+        .death-orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.6; animation: orbMove 15s infinite alternate ease-in-out; }
+        .d-orb-1 { width: 450px; height: 450px; background: #ff0080; top: -50px; left: -50px; }
+        .d-orb-2 { width: 500px; height: 500px; background: #4f46e5; bottom: -100px; right: -50px; animation-delay: -3s; }
+        .d-orb-3 { width: 300px; height: 300px; background: #f59e0b; top: 40%; left: 30%; animation-delay: -7s; }
+        @keyframes orbMove { from { transform: translate(0, 0) rotate(0deg); } to { transform: translate(80px, 40px) rotate(45deg); } }
 
         /* Sound Ripple Animation */
-        .ripple { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 3px solid rgba(56, 189, 248, 0.8); border-radius: 50%; pointer-events: none; opacity: 0; }
-        .animate-ripple { animation: rippleEffect 2s cubic-bezier(0, 0.2, 0.8, 1); }
-        @keyframes rippleEffect { 0% { width: 0; height: 0; opacity: 1; } 100% { width: 1000px; height: 1000px; opacity: 0; } }
+        .ripple { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 4px solid rgba(56, 189, 248, 0.8); border-radius: 50%; pointer-events: none; opacity: 0; }
+        .animate-ripple { animation: rippleEffect 1.5s cubic-bezier(0, 0.2, 0.8, 1); }
+        @keyframes rippleEffect { 0% { width: 0; height: 0; opacity: 1; } 100% { width: 1200px; height: 1200px; opacity: 0; } }
+
+        /* Explosion Effect */
+        #explosion-overlay { position: fixed; inset: 0; z-index: 1000; pointer-events: none; background: radial-gradient(circle, #f43f5e 0%, transparent 70%); opacity: 0; display: flex; align-items: center; justify-content: center; }
+        .animate-explosion { animation: explode 0.8s ease-out forwards; }
+        @keyframes explode { 0% { opacity: 0; transform: scale(0.5); } 30% { opacity: 1; transform: scale(1.2); } 100% { opacity: 0; transform: scale(2); } }
+        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(4px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-8px, 0, 0); } 40%, 60% { transform: translate3d(8px, 0, 0); } }
 
         .profile-btn { cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); -webkit-tap-highlight-color: transparent; }
         .profile-btn:hover { transform: scale(1.1) translateY(-10px); }
-        .helmet-frame { width: 180px; height: 180px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 4px solid rgba(255, 255, 255, 0.05); background: #000; transition: all 0.4s; box-shadow: 0 0 50px rgba(0,0,0,1); }
+        .helmet-frame { width: 150px; height: 150px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border: 4px solid rgba(255, 255, 255, 0.05); background: #000; transition: all 0.4s; box-shadow: 0 0 40px rgba(0,0,0,1); }
         .profile-btn:hover .helmet-frame { border-color: #38bdf8; box-shadow: 0 0 60px rgba(56, 189, 248, 0.4); }
         
         .vault-dashboard { background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(56, 189, 248, 0.02)); border: 1px solid rgba(56, 189, 248, 0.3); border-left: 6px solid #38bdf8; padding: 25px; border-radius: 30px; width: 100%; position: relative; overflow: hidden; }
@@ -81,25 +88,18 @@
         .key-btn:active { background: #38bdf8; color: black; transform: scale(0.9); }
         .key-btn:disabled { opacity: 0.05; cursor: default; background: transparent; }
 
-        .timer-container { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; margin-bottom: 25px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
-        #void-timer-bar { height: 100%; width: 100%; background: #38bdf8; transition: width 0.1s linear, background-color 0.5s; box-shadow: 0 0 15px #38bdf8; }
-
         /* REVERSED HANGMAN VISUAL (LIMBS DISAPPEAR) */
-        #hangman-visual { width: 320px; height: 320px; margin: 0 auto 10px; position: relative; }
+        #hangman-visual { width: 300px; height: 320px; margin: 0 auto 10px; position: relative; }
         .hangman-part { transition: opacity 0.5s, transform 0.5s; stroke: #38bdf8; stroke-width: 5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
         .hidden-part { opacity: 0 !important; transform: translateY(40px); pointer-events: none; }
         .dangle-group { transform-origin: 160px 20px; animation: sway 3.5s infinite ease-in-out; }
         @keyframes sway { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
 
-        #meteor-field { position: relative; width: 100%; height: 380px; background: rgba(0,0,0,0.4); border: 2px solid rgba(255,255,255,0.1); border-radius: 30px; overflow: hidden; margin: 20px 0; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); }
-        .meteor { position: absolute; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.15); padding: 15px 25px; border-radius: 50px; cursor: pointer; white-space: nowrap; font-weight: 900; box-shadow: 0 0 30px rgba(0,0,0,0.6); transition: transform 0.1s; color: #38bdf8; }
-        .meteor::after { content: ''; position: absolute; right: 100%; top: 50%; transform: translateY(-50%); width: 80px; height: 15px; background: linear-gradient(to right, transparent, rgba(56, 189, 248, 0.3)); border-radius: 50%; }
-
         .stat-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 20px; text-align: center; }
         .custom-word-tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 4px 12px; border-radius: 20px; display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; }
         .custom-word-delete { color: #f43f5e; cursor: pointer; font-size: 14px; font-weight: 900; }
 
-        /* --- PRINT STYLES --- */
+        /* Print Settings */
         @media print { 
             .no-print { display: none !important; } 
             .print-only { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; } 
@@ -108,66 +108,30 @@
         }
         .print-only { display: none; }
         
-        /* WONKA TICKET DESIGN */
-        .golden-ticket-wrap {
-            background: linear-gradient(135deg, #fef3c7 0%, #facc15 40%, #eab308 60%, #b45309 100%) !important;
-            padding: 40px; color: #451a03 !important; font-family: 'Outfit', sans-serif;
-            border: 15px double #78350f !important; position: relative;
-            clip-path: polygon(0 5%, 5% 0, 95% 0, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0 95%);
-            max-width: 850px; margin: auto; text-align: center;
-        }
-        .wonka-header { font-family: 'Anton', sans-serif; font-size: 85px; text-transform: uppercase; margin: 0; line-height: 0.9; letter-spacing: -2px; }
-        
-        /* OFFICIAL CERTIFICATE DESIGN */
-        .mastery-cert-wrap {
-            background: #fff !important; color: #1e293b !important; padding: 60px;
-            border: 25px double #0369a1 !important; max-width: 900px; margin: auto;
-            position: relative; font-family: 'Outfit', sans-serif; text-align: center;
-        }
-        .cert-seal {
-            position: absolute; bottom: 50px; right: 50px; width: 180px; height: 180px;
-            background: radial-gradient(circle, #fde047 0%, #ca8a04 100%) !important;
-            border: 10px double #a16207 !important; border-radius: 50%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transform: rotate(-15deg); color: #451a03 !important; font-weight: 900; line-height: 1;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
+        .golden-ticket-wrap { background: linear-gradient(135deg, #fef3c7 0%, #facc15 40%, #eab308 60%, #b45309 100%) !important; padding: 40px; color: #451a03 !important; border: 15px double #78350f !important; text-align: center; clip-path: polygon(0 5%, 5% 0, 95% 0, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0 95%); }
+        .mastery-cert-wrap { background: #fff !important; color: #1e293b !important; padding: 60px; border: 25px double #0369a1 !important; text-align: center; }
+        .cert-seal { position: absolute; bottom: 50px; right: 50px; width: 180px; height: 180px; background: radial-gradient(circle, #fde047 0%, #ca8a04 100%) !important; border: 10px double #a16207 !important; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(-15deg); color: #451a03 !important; font-weight: 900; }
 
-        @media (max-width: 640px) { 
-            .key-btn { height: 45px; font-size: 0.9rem; } 
-            .helmet-frame { width: 140px; height: 140px; } 
-            .glass-panel { padding: 25px !important; margin: 10px; } 
-        }
+        @media (max-width: 640px) { .key-btn { height: 45px; font-size: 0.9rem; } .helmet-frame { width: 120px; height: 120px; } .glass-panel { padding: 20px !important; margin: 10px; } }
     </style>
 </head>
-<body>
+<body id="main-body">
 
     <div class="bg-layer"></div>
-    <div id="echo-overlay-bg">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
+    <div id="death-bg">
+        <div class="death-orb d-orb-1"></div>
+        <div class="death-orb d-orb-2"></div>
+        <div class="death-orb d-orb-3"></div>
     </div>
     
     <div id="ripple-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
+    <div id="explosion-overlay"></div>
     <div class="no-print"><div class="aurora aurora-1"></div><div class="aurora aurora-2"></div></div>
 
     <div id="connection-overlay" class="fixed inset-0 z-[2000] bg-black flex items-center justify-center transition-opacity duration-500">
-        <div class="text-white impact-font text-2xl animate-pulse tracking-widest text-center">
+        <div class="text-white impact-font text-2xl animate-pulse tracking-widest text-center uppercase">
             Initializing Academy core...<br>
-            <span class="text-[10px] text-white/30 tracking-normal block mt-4 uppercase">Connecting to galactic bank</span>
-        </div>
-    </div>
-
-    <!-- Confirmation Dialog -->
-    <div id="confirm-dialog" class="fixed inset-0 z-[3000] bg-black/90 backdrop-blur hidden flex items-center justify-center p-4">
-        <div class="glass-panel p-10 rounded-[40px] max-w-sm w-full text-center border-red-500/30">
-            <h3 class="text-3xl impact-font text-red-500 mb-4 tracking-tighter uppercase">Danger zone</h3>
-            <p id="confirm-message" class="text-white/60 mb-8 font-bold text-[10px] tracking-widest">Permanent action required</p>
-            <div class="flex gap-4">
-                <button onclick="window.closeConfirm()" class="flex-1 p-4 bg-white/10 rounded-2xl uppercase font-bold text-xs hover:bg-white/20 transition">Cancel</button>
-                <button id="execute-reset-btn" class="flex-1 p-4 bg-red-600 rounded-2xl font-bold uppercase text-xs shadow-lg">Delete</button>
-            </div>
+            <span class="text-[10px] text-white/30 tracking-normal block mt-4">Connecting to galactic bank</span>
         </div>
     </div>
 
@@ -176,14 +140,26 @@
         <!-- SCREEN: AUTH -->
         <div id="screen-auth" class="text-center py-10 w-full animate-in fade-in duration-1000">
             <h1 class="text-5xl md:text-8xl impact-font mb-16 tracking-tighter leading-none uppercase">Moonshot Academy</h1>
-            <div class="flex flex-wrap justify-center gap-12 md:gap-20">
+            <div class="flex flex-wrap justify-center gap-8 md:gap-12 max-w-4xl mx-auto">
                 <div onclick="window.selectPilot('Jesse')" class="profile-btn group">
                     <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="chrome-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="50%" style="stop-color:#94a3b8"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#chrome-grad)" /><rect x="25" y="32" width="50" height="22" rx="4" fill="#000" /></svg></div>
-                    <div class="text-3xl font-bold tracking-[0.1em] text-sky-400 group-hover:text-white transition-colors">Jesse</div>
+                    <div class="text-xl font-bold tracking-[0.1em] text-sky-400">Jesse</div>
+                </div>
+                <div onclick="window.selectPilot('Ruben')" class="profile-btn group">
+                    <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="ruben-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#10b981"/><stop offset="50%" style="stop-color:#059669"/><stop offset="100%" style="stop-color:#064e3b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#ruben-grad)" /><rect x="25" y="32" width="50" height="22" rx="4" fill="#000" /></svg></div>
+                    <div class="text-xl font-bold tracking-[0.1em] text-emerald-400">Ruben</div>
+                </div>
+                <div onclick="window.selectPilot('Polly')" class="profile-btn group">
+                    <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="polly-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f472b6"/><stop offset="50%" style="stop-color:#db2777"/><stop offset="100%" style="stop-color:#831843"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#polly-grad)" /><rect x="25" y="32" width="50" height="22" rx="4" fill="#000" /></svg></div>
+                    <div class="text-xl font-bold tracking-[0.1em] text-pink-400">Polly</div>
+                </div>
+                <div onclick="window.selectPilot('Jude')" class="profile-btn group">
+                    <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="jude-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f87171"/><stop offset="50%" style="stop-color:#dc2626"/><stop offset="100%" style="stop-color:#7f1d1d"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#jude-grad)" /><rect x="25" y="32" width="50" height="22" rx="4" fill="#000" /></svg></div>
+                    <div class="text-xl font-bold tracking-[0.1em] text-red-400">Jude</div>
                 </div>
                 <div onclick="window.selectPilot('Friend')" class="profile-btn group">
                     <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="50%" style="stop-color:#d97706"/><stop offset="100%" style="stop-color:#451a03"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#gold-grad)" /><rect x="25" y="35" width="50" height="30" rx="4" fill="#000" /><circle cx="35" cy="50" r="1.5" fill="#f43f5e" /><circle cx="65" cy="50" r="1.5" fill="#f43f5e" /></svg></div>
-                    <div class="text-3xl font-bold tracking-[0.1em] text-amber-500 group-hover:text-white transition-colors">Friend</div>
+                    <div class="text-xl font-bold tracking-[0.1em] text-amber-500">Friend</div>
                 </div>
             </div>
         </div>
@@ -197,17 +173,7 @@
                         <p class="text-sky-400 font-bold text-[10px] tracking-[0.2em]">Pilot: <span id="pilot-name-display" class="text-white"></span></p>
                         <button onclick="location.reload()" class="text-[9px] text-rose-400 hover:text-white underline font-bold tracking-widest uppercase">Identify shift</button>
                     </div>
-                    <div class="mt-6 bg-white/5 border border-white/10 rounded-2xl p-5 inline-flex items-center gap-6">
-                        <div class="text-[10px] font-black uppercase tracking-widest text-white/40">Daily challenge progress</div>
-                        <div class="flex gap-4" id="challenge-dots">
-                            <svg width="22" height="22" id="dot-lunar" class="challenge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3m3.5 1.5L9 10m4.5 1.5L10 8"/></svg>
-                            <svg width="22" height="22" id="dot-echo" class="challenge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
-                            <svg width="22" height="22" id="dot-meteor" class="challenge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m16 8-8 8m0-8 8 8"/></svg>
-                            <svg width="22" height="22" id="dot-void" class="challenge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20M2 12a10 10 0 0 1 20 0"/></svg>
-                        </div>
-                    </div>
                 </div>
-                
                 <div class="vault-dashboard min-w-[320px] md:min-w-[450px]">
                     <div class="flex items-center gap-6">
                         <div id="badge-display" class="relative w-24 h-24 bg-amber-500/10 rounded-full border-4 border-amber-500/40 flex items-center justify-center shadow-[0_0_30px_rgba(251,191,36,0.3)]">
@@ -231,12 +197,12 @@
                     <div class="w-full h-20 mb-4 flex items-center justify-center text-sky-400"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3m3.5 1.5L9 10m4.5 1.5L10 8"/><path d="m21.5 2.5-4.5 4-10.5 10.5 4.5 4.5L21.5 11l-4.5-4.5zM2 22s.5-5 2-6.5l3 3c-1.5 1.5-5 2-5 2z"/></svg></div>
                     <div><h3 class="text-2xl impact-font mb-1">Lunar mission</h3><p class="text-white/40 text-[10px] font-bold tracking-wider uppercase">Rescue the stranded astronaut</p></div>
                 </div>
-                <div onclick="window.chooseGame('echo')" class="game-tile border-rose-500/20 shadow-[0_0_30px_rgba(244,63,94,0.15)]">
-                    <div class="w-full h-20 mb-4 flex items-center justify-center text-amber-400"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg></div>
+                <div onclick="window.chooseGame('death')" class="game-tile border-rose-500/20 shadow-[0_0_30px_rgba(244,63,94,0.2)]">
+                    <div class="w-full h-20 mb-4 flex items-center justify-center text-rose-400"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></div>
                     <div>
                         <div class="bg-rose-500 text-white text-[8px] font-black px-2 py-0.5 rounded-full w-fit mb-2 tracking-widest shadow-lg animate-pulse uppercase">Double stars</div>
-                        <h3 class="text-2xl impact-font mb-1">Silent echo</h3>
-                        <p class="text-white/40 text-[10px] font-bold tracking-wider text-amber-500/60 uppercase">Audio signal repeat</p>
+                        <h3 class="text-2xl impact-font mb-1">Sudden death</h3>
+                        <p class="text-white/40 text-[10px] font-bold tracking-wider text-rose-500/60 uppercase">Audio accuracy challenge</p>
                     </div>
                 </div>
                 <div onclick="window.chooseGame('meteor')" class="game-tile border-rose-500/20">
@@ -259,10 +225,7 @@
                 <h3 class="text-xs font-black tracking-widest mb-4 text-sky-400 uppercase text-center">Detailed word logs</h3>
                 <table class="w-full text-left"><thead><tr class="text-white/30 text-[10px] border-b border-white/10 tracking-widest uppercase"><th class="p-4">Word</th><th class="p-4 text-center">Mastery</th><th class="p-4 text-center">Mistakes made</th><th class="p-4 text-center">Encounters</th></tr></thead><tbody id="stats-body" class="text-xs font-bold tracking-wide"></tbody></table>
             </div>
-            <div class="mt-6 pt-6 border-t border-white/10 flex gap-10 justify-center">
-                <button onclick="window.triggerReset('bank')" class="text-[9px] text-rose-500 hover:text-white transition uppercase font-black underline">Reset bank</button>
-                <button onclick="window.triggerReset('history')" class="text-[9px] text-rose-500 hover:text-white transition uppercase font-black underline">Clear all stats</button>
-            </div>
+            <div class="mt-6 pt-6 border-t border-white/10 flex gap-10 justify-center"><button onclick="window.triggerReset('bank')" class="text-[9px] text-rose-500 hover:text-white transition uppercase font-black underline">Reset bank</button><button onclick="window.triggerReset('history')" class="text-[9px] text-rose-500 hover:text-white transition uppercase font-black underline">Clear all stats</button></div>
         </div>
 
         <!-- SETUP -->
@@ -291,37 +254,27 @@
             <div class="flex justify-between mb-8 font-bold text-white/40 text-[11px] tracking-widest uppercase">
                 <div id="game-progress">Round 1 / 10</div><div id="game-lives" class="flex gap-2"></div>
             </div>
-            
             <div id="void-timer-container" class="timer-container hidden"><div id="void-timer-bar"></div></div>
-            
-            <!-- ENLARGED REVERSED HANGMAN (6 LIVES) -->
             <div id="hangman-area" class="hidden mb-6">
                 <svg id="hangman-visual" viewBox="0 0 300 320">
-                    <!-- Permanent Gallows -->
                     <path d="M50 300 L250 300 M100 300 L100 20 L250 20 L250 60" stroke="#1e293b" stroke-width="4" fill="none" />
                     <g class="dangle-group">
                         <line x1="250" y1="60" x2="250" y2="80" stroke="#f43f5e" stroke-width="2" />
-                        <!-- Head/Helmet (Stage 6) -->
                         <circle id="part-head" class="hangman-part" cx="250" cy="110" r="30" />
-                        <!-- Body (Stage 5) -->
                         <path id="part-body" class="hangman-part" d="M250 140 L250 220" />
-                        <!-- Arms (Stage 3 & 4) -->
                         <path id="part-arm-l" class="hangman-part" d="M250 150 L210 190" />
                         <path id="part-arm-r" class="hangman-part" d="M250 150 L290 190" />
-                        <!-- Legs (Stage 1 & 2) -->
                         <path id="part-leg-l" class="hangman-part" d="M250 220 L220 270" />
                         <path id="part-leg-r" class="hangman-part" d="M250 220 L280 270" />
                     </g>
                 </svg>
             </div>
-
             <div id="standard-game-elements" class="flex flex-col items-center">
                 <div id="game-word-display" class="word-container mb-10 min-h-[60px] flex-row"></div>
-                <button onclick="window.speakWord()" id="speaker-btn" class="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-4xl hover:bg-white/10 transition-all glow-sky mb-10"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>
+                <button onclick="window.speakWord()" id="speaker-btn" class="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-4xl hover:bg-white/10 transition-all shadow-xl mb-10"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>
             </div>
-            
             <div id="meteor-field" class="hidden"></div><div id="keyboard" class="hidden"></div><div id="multi-choice" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto w-full"></div>
-            <div id="echo-input-container" class="hidden max-w-sm mx-auto space-y-6 w-full"><input type="text" id="echo-field" class="w-full p-8 bg-white/5 border border-white/10 rounded-3xl text-3xl text-center outline-none focus:border-sky-500 text-white shadow-2xl" placeholder="Type unit" autocomplete="off"><button onclick="window.submitEcho()" class="w-full py-5 bg-amber-500 text-black font-black rounded-3xl text-sm impact-font tracking-widest shadow-xl uppercase">Submit answer</button></div>
+            <div id="echo-input-container" class="hidden max-w-sm mx-auto space-y-6 w-full"><input type="text" id="echo-field" class="w-full p-8 bg-white/5 border border-white/10 rounded-3xl text-3xl text-center outline-none focus:border-rose-500 text-white shadow-2xl" placeholder="Type unit" autocomplete="off"><button onclick="window.submitEcho()" class="w-full py-5 bg-rose-500 text-white font-black rounded-3xl text-sm impact-font tracking-widest shadow-xl uppercase">Analyze signal</button></div>
         </div>
 
         <!-- PRIZE SCREEN -->
@@ -369,13 +322,13 @@
         const appId = firebaseConfig.projectId;
 
         const typoData = {
-            after: "afta", again: "agen", any: "eny", bath: "barth", beautiful: "beatiful", because: "becuase", behind: "behynd", both: "boath", break: "brake", busy: "bizzy", child: "chilled", children: "childrun", class: "clars", climb: "clime", clothes: "cloz", cold: "coled", could: "cud", door: "dor", every: "evry", everybody: "evrybody", eye: "ie", fast: "farst", father: "farther", find: "fynd", floor: "flor", gold: "goled", grass: "grars", great: "grate", half: "harf", hold: "holed", hour: "our", improve: "improove", kind: "kynd", last: "larst", many: "meny", mind: "mynd", money: "mony", most: "moast", move: "moove", old: "oled", only: "onley", parents: "parants", pass: "parss", past: "parst", path: "parth", people: "pepul", plant: "plarnt", poor: "por", pretty: "pritty", prove: "proove", should: "shud", steak: "stake", sugar: "shugar", sure: "shure", talk: "tork", they: "thay", told: "toled", water: "worter", whole: "hole", who: "hoo", wild: "wyld", would: "wud", accident: "acident", address: "adress", answer: "anser", appear: "apear", arrive: "arive", believe: "beleive", bicycle: "bisycle", breath: "breth", breathe: "breath", calendar: "calender", caught: "cort", centre: "center", certain: "sertin", circle: "serkle", complete: "compleat", consider: "considder", continue: "continyu", decide: "deside", describe: "discribe", different: "diffrent", difficult: "diffycult", disappear: "dissapear", early: "erly", earth: "erth", eight: "ate", enough: "enuff", exercise: "exersize", experience: "experiance", experiment: "experement", extreme: "extream", famous: "faimous", favourite: "favrit", February: "Febuary", forward: "forword", fruit: "froot", grammar: "grammer", group: "groop", guard: "gard", guide: "gyde", heard: "herd", heart: "hart", height: "hight", history: "histry", imagine: "imagin", increase: "increese", important: "importent", interest: "intrest", island: "iland", knowledge: "nolege", learn: "lern", length: "lenth", library: "libry", material: "materal", medicine: "medcin", mention: "menshun", minute: "minit", natural: "natchural", naughty: "norty", notice: "notiss", occasion: "ocasion", often: "offen", opposite: "opposit", ordinary: "ordinery", particular: "perticular", decimal: "decimel", peculiar: "peculyar", perhaps: "praps", popular: "populer", position: "pozishun", possess: "poses", possible: "possable", potatoes: "potatos", pressure: "preshur", probably: "probly", promise: "promiss", purpose: "purpuss", quarter: "corter", question: "kwestion", recent: "resent", regular: "reguler", reign: "rain", remember: "rember", sentence: "sentance", separate: "seperate", special: "speshal", straight: "strait", strange: "straynge", strength: "strenth", suppose: "supose", surprise: "suprise", therefore: "therefor", though: "tho", thought: "thort", through: "thru", various: "varyous", weight: "wait", woman: "womon", women: "woman", accommodate: "acommodate", accompany: "acompany", according: "acording", achieve: "acheive", aggressive: "agresive", amateur: "amature", ancient: "anshent", apparent: "apparant", appreciate: "apreciate", attached: "atached", available: "availible", average: "avrige", awkward: "akward", bargain: "bargin", bruise: "broose", category: "catagory", cemetery: "cemetary", committee: "comitee", communicate: "comunicate", community: "comunity", competition: "compitition", conscience: "conscense", conscious: "conshus", controversial: "controvershal", convenience: "conveenyence", correspond: "corespond", criticise: "critisise", curiosity: "curiousity", definite: "definate", desperate: "desparate", determined: "ditermined", develop: "develope", dictionary: "dictionery", disastrous: "disasterous", embarrass: "embaras", environment: "envirment", equipment: "equiptment", equipped: "equipt", especially: "especialy", exaggerate: "exagerate", excellent: "exclent", existence: "existance", explanation: "explaination", familiar: "familliar", foreign: "forren", forty: "fourty", frequently: "frequentley", government: "goverment", guarantee: "garantee", harass: "harrass", hindrance: "hinderance", identity: "indentity", immediate: "imediate", individual: "indavidual", interfere: "interfear", interrupt: "interupt", language: "langwage", leisure: "lesure", lightning: "lightening", marvellous: "marvelous", mischievous: "mischievious", muscle: "mussel", necessary: "neccessary", neighbour: "naibor", nuisance: "newtance", occupy: "ockupy", occur: "ocur", opportunity: "oportunity", parliament: "parlyment", persuade: "perswade", physical: "fisical", prejudice: "prejudiss", privilege: "privilage", profession: "profeshun", programme: "program", pronunciation: "pronunciation", recognise: "reconise", recommend: "reccommend", relevant: "relevent", restaurant: "resturant", rhyme: "ryme", rhythm: "rythm", sacrifice: "sacrifise", secretary: "secratary", shoulder: "sholder", signature: "signiture", sincere: "sinsere", soldier: "soljer", stomach: "stomack", sufficient: "suffishent", suggest: "sugest", symbol: "simbol", system: "sistem", temperature: "temprature", thorough: "thuro", twelfth: "twelth", variety: "vareity", vegetable: "vegtable", vehicle: "vehical", yacht: "yot"
+            after: "afta", again: "agen", any: "eny", bath: "barth", beautiful: "beatiful", because: "becuase", behind: "behynd", both: "boath", break: "brake", busy: "bizzy", child: "chilled", children: "childrun", class: "clars", climb: "clime", clothes: "cloz", cold: "coled", could: "cud", door: "dor", every: "evry", everybody: "evrybody", eye: "ie", fast: "farst", father: "farther", find: "fynd", floor: "flor", gold: "goled", grass: "grars", great: "grate", half: "harf", hold: "holed", hour: "our", improve: "improove", kind: "kynd", last: "larst", many: "meny", mind: "mynd", money: "mony", most: "moast", move: "moove", old: "oled", only: "onley", parents: "parants", pass: "parss", past: "parst", path: "parth", people: "pepul", plant: "plarnt", poor: "por", pretty: "pritty", prove: "proove", should: "shud", steak: "stake", sugar: "shugar", sure: "shure", talk: "tork", they: "thay", told: "toled", water: "worter", whole: "hole", who: "hoo", wild: "wyld", would: "wud", accident: "acident", address: "adress", answer: "anser", appear: "apear", arrive: "arive", believe: "beleive", bicycle: "bisycle", breath: "breth", breathe: "breath", calendar: "calender", caught: "cort", centre: "center", certain: "sertin", circle: "serkle", complete: "compleat", consider: "considder", continue: "continyu", decide: "deside", describe: "discribe", different: "diffrent", difficult: "diffycult", disappear: "dissapear", early: "erly", earth: "erth", eight: "ate", enough: "enuff", exercise: "exersize", experience: "experiance", experiment: "experement", extreme: "extream", famous: "faimous", favourite: "favrit", February: "Febuary", forward: "forword", fruit: "froot", grammar: "grammer", group: "groop", guard: "gard", guide: "gyde", heard: "herd", heart: "hart", height: "hight", history: "histry", imagine: "imagin", increase: "increese", important: "importent", interest: "intrest", island: "iland", knowledge: "nolege", learn: "lern", length: "lenth", library: "libry", material: "materal", medicine: "medcin", mention: "menshun", minute: "minit", natural: "natchural", naughty: "norty", notice: "notiss", occasion: "ocasion", often: "offen", opposite: "opposit", ordinary: "ordinery", particular: "perticular", decimal: "decimel", peculiar: "peculyar", perhaps: "praps", popular: "populer", position: "pozishun", possess: "poses", possible: "possable", potatoes: "potatos", pressure: "preshur", probably: "probly", promise: "promiss", purpose: "purpuss", quarter: "corter", question: "kwestion", recent: "resent", regular: "reguler", reign: "rain", remember: "rember", sentence: "sentance", separate: "seperate", special: "speshal", straight: "strait", strange: "straynge", strength: "strenth", suppose: "supose", surprise: "suprise", therefore: "therefor", though: "tho", thought: "thort", through: "thru", various: "varyous", weight: "wait", woman: "womon", women: "woman", accommodate: "acommodate", accompany: "acompany", according: "acording", achieve: "acheive", aggressive: "agresive", amateur: "amature", ancient: "anshent", apparent: "apparant", appreciate: "apreciate", attached: "atached", available: "availible", average: "avrige", awkward: "akward", bargain: "bargin", bruise: "broose", category: "catagory", cemetery: "cemetary", committee: "comitee", communicate: "comunicate", community: "comunity", competition: "compitition", conscience: "conscense", conscious: "conshus", controversial: "controvershal", convenience: "conveenyence", correspond: "corespond", criticise: "critisise", curiosity: "curiousity", definite: "definate", desperate: "desparate", determined: "ditermined", develop: "develope", dictionary: "dictionery", disastrous: "disasterous", embarrass: "embaras", environment: "envirment", equipment: "equiptment", equipped: "equipt", especially: "especialy", exaggerate: "exagerate", excellent: "exclent", existence: "existance", explanation: "explaination", familiar: "familliar", foreign: "forren", forty: "fourty", frequently: "frequentley", government: "goverment", guarantee: "garantee", harass: "harrass", hindrance: "hinderance", identity: "indentity", immediate: "imediate", individual: "indavidual", interfere: "interfear", interrupt: "interupt", language: "langwage", leisure: "lesure", lightning: "lightening", marvellous: "marvelous", mischievous: "mischievious", muscle: "mussel", necessary: "neccessary", neighbour: "naibor", nuisance: "newtance", occupy: "ockupy", occur: "ocur", opportunity: "oportunity", parliament: "parlyment", persuasion: "perswasion", persuade: "perswade", physical: "fisical", prejudice: "prejudiss", privilege: "privilage", profession: "profeshun", programme: "program", pronunciation: "pronunciation", recognise: "reconise", recognize: "reconize", recommend: "reccommend", relevant: "relevent", restaurant: "resturant", rhyme: "ryme", rhythm: "rythm", sacrifice: "sacrifise", secretary: "secratary", shoulder: "sholder", signature: "signiture", sincere: "sinsere", soldier: "soljer", stomach: "stomack", sufficient: "suffishent", suggest: "sugest", symbol: "simbol", system: "sistem", temperature: "temprature", thorough: "thuro", twelfth: "twelth", variety: "vareity", vegetable: "vegtable", vehicle: "vehical", yacht: "yot"
         };
 
         const wordsDB = {
             y2: ["beautiful", "because", "climb", "door", "floor", "poor", "find", "kind", "mind", "behind", "child", "children", "wild", "most", "only", "both", "old", "cold", "gold", "hold", "told", "every", "everybody", "even", "great", "break", "steak", "pretty", "after", "fast", "last", "past", "father", "class", "grass", "pass", "plant", "path", "bath", "hour", "move", "prove", "improve", "sure", "sugar", "eye", "could", "should", "would", "who", "whole", "any", "many", "clothes", "busy", "people", "water", "again", "half", "money", "parents", "christmas"],
             y34: ["accident", "actual", "address", "answer", "appear", "arrive", "believe", "bicycle", "breath", "breathe", "build", "busy", "calendar", "caught", "centre", "century", "certain", "circle", "complete", "consider", "continue", "decide", "describe", "different", "difficult", "disappear", "early", "earth", "eight", "enough", "exercise", "experience", "experiment", "extreme", "famous", "favourite", "february", "forward", "fruit", "grammar", "group", "guard", "guide", "heard", "heart", "height", "history", "imagine", "increase", "important", "interest", "island", "knowledge", "learn", "length", "library", "material", "medicine", "mention", "minute", "natural", "naughty", "notice", "occasion", "often", "opposite", "ordinary", "particular", "peculiar", "perhaps", "popular", "position", "possess", "possible", "potatoes", "pressure", "probably", "promise", "purpose", "quarter", "question", "recent", "regular", "reign", "remember", "sentence", "separate", "special", "straight", "strange", "strength", "suppose", "surprise", "therefore", "thought", "through", "various", "weight"],
-            y56: ["accommodate", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "necessary", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "sincerely", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht"]
+            y56: ["accommodate", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediate", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "necessary", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recognize", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "sincerely", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht"]
         };
 
         window.state = { pilotName: "", bank: 0, activeLevel: "", currentGame: null, words: [], currentRound: 0, lives: 3, currentWord: "", guessed: [], history: [], statFilter: 'week', meteorTimers: [], echoAttempts: 0, completedToday: [], challengeLevel: 0, voidTimer: null, isTransitioning: false, sessionCredits: 0, customWords: [] };
@@ -395,16 +348,15 @@
                     const todayStr = new Date().toLocaleDateString();
                     if (data.lastChallengeDate === todayStr) window.state.completedToday = data.completedToday || [];
                     else window.state.completedToday = [];
-                    updateVaultUI();
-                    renderCustomWordTags();
+                    updateVaultUI(); renderCustomWordTags();
                 }
-            } catch (e) { console.error("Database sync delay."); }
+            } catch (e) { console.error("Database connection failure."); }
         };
 
         const updateVaultUI = () => {
             document.getElementById('balance-display').innerText = window.state.bank + " stars";
             document.getElementById('badge-level-text').innerText = "Rank " + window.state.challengeLevel;
-            ['lunar', 'echo', 'meteor', 'void'].forEach(id => {
+            ['lunar', 'death', 'meteor', 'void'].forEach(id => {
                 const dot = document.getElementById(`dot-${id}`);
                 if (dot) {
                     if (window.state.completedToday.includes(id)) dot.classList.add('challenge-complete');
@@ -418,16 +370,13 @@
             const word = input.value.trim().toLowerCase();
             if (word && !window.state.customWords.includes(word)) {
                 window.state.customWords.push(word);
-                input.value = '';
-                renderCustomWordTags();
-                saveCustomWords();
+                input.value = ''; renderCustomWordTags(); saveCustomWords();
             }
         };
 
         window.removeCustomWord = (word) => {
             window.state.customWords = window.state.customWords.filter(w => w !== word);
-            renderCustomWordTags();
-            saveCustomWords();
+            renderCustomWordTags(); saveCustomWords();
         };
 
         const renderCustomWordTags = () => {
@@ -448,7 +397,7 @@
         };
 
         window.showHome = () => { 
-            document.body.classList.remove('echo-active');
+            document.body.classList.remove('death-active');
             window.state.isTransitioning = false; clearAllTimers(); hideAll(); 
             document.getElementById('screen-home').classList.remove('hidden'); updateVaultUI(); 
             document.getElementById('pilot-name-display').innerText = window.state.pilotName; 
@@ -466,14 +415,14 @@
             document.getElementById('btn-all').className = window.state.statFilter === 'all' ? 'px-6 py-2 rounded-lg text-[10px] font-bold bg-sky-500 shadow-lg uppercase' : 'px-6 py-2 rounded-lg text-[10px] font-bold text-white/40 uppercase';
             const weekLimit = Date.now() - (7 * 24 * 60 * 60 * 1000);
             let wordMap = {};
-            let gameMap = { lunar: { plays:0, wins:0, score:0 }, echo: { plays:0, wins:0, score:0 }, meteor: { plays:0, wins:0, score:0 }, void: { plays:0, wins:0, score:0 } };
+            let gameMap = { lunar: { plays:0, wins:0, score:0 }, death: { plays:0, wins:0, score:0 }, meteor: { plays:0, wins:0, score:0 }, void: { plays:0, wins:0, score:0 } };
 
             window.state.history.forEach(entry => {
                 if (window.state.statFilter === 'all' || entry.timestamp > weekLimit) {
-                    if (entry.game) {
-                        if (!gameMap[entry.game]) gameMap[entry.game] = { plays:0, wins:0, score:0 };
-                        if (entry.result) { gameMap[entry.game].wins++; gameMap[entry.game].score += (entry.game === 'echo' ? 20 : 10); }
-                        gameMap[entry.game].plays++;
+                    const gameKey = entry.game === 'echo' ? 'death' : entry.game;
+                    if (gameKey && gameMap[gameKey]) {
+                        if (entry.result) { gameMap[gameKey].wins++; gameMap[gameKey].score += (gameKey === 'death' ? 20 : 10); }
+                        gameMap[gameKey].plays++;
                     }
                     if (!wordMap[entry.word]) wordMap[entry.word] = { success: 0, total: 0, mistakes: [] };
                     wordMap[entry.word].total++;
@@ -513,7 +462,11 @@
             if (type === 'history') window.showStats(); else window.showHome();
         };
 
-        window.chooseGame = (game) => { window.state.currentGame = game; hideAll(); if (game === 'echo') document.body.classList.add('echo-active'); document.getElementById('screen-setup').classList.remove('hidden'); };
+        window.chooseGame = (game) => { 
+            window.state.currentGame = game; hideAll(); 
+            if (game === 'death') document.body.classList.add('death-active'); 
+            document.getElementById('screen-setup').classList.remove('hidden'); 
+        };
         
         window.launchMission = () => {
             let list = [];
@@ -521,11 +474,9 @@
             if (document.getElementById('check-y34').checked) list = list.concat(wordsDB.y34);
             if (document.getElementById('check-y56').checked) list = list.concat(wordsDB.y56);
             if (document.getElementById('check-custom').checked) list = list.concat(window.state.customWords);
-            
             if (list.length === 0) return;
             window.state.words = list.sort(() => Math.random() - 0.5).slice(0, 10);
             window.state.currentRound = 0; 
-            // SPECIAL RULE: Lunar mission has 6 lives for the 6 limbs
             window.state.lives = window.state.currentGame === 'lunar' ? 6 : 3;
             window.state.sessionCredits = 0;
             hideAll(); document.getElementById('screen-game').classList.remove('hidden'); nextRound();
@@ -549,10 +500,8 @@
 
         const updateUI = () => {
             document.getElementById('game-progress').innerText = `Round ${window.state.currentRound} / 10`;
-            
             const livesDiv = document.getElementById('game-lives');
             livesDiv.innerHTML = '';
-            // Hide hearts for Lunar as the limbs represent lives
             if (window.state.currentGame !== 'lunar') {
                 for(let i=0; i<3; i++) {
                     const color = i < window.state.lives ? '#4ade80' : '#4b5563';
@@ -560,7 +509,6 @@
                 }
             }
 
-            // REVERSE HANGMAN LOGIC (Losing parts - 6 total)
             const mistakes = (window.state.currentGame === 'lunar' ? 6 : 3) - window.state.lives;
             ['part-leg-r', 'part-leg-l', 'part-arm-r', 'part-arm-l', 'part-body', 'part-head'].forEach(id => {
                 document.getElementById(id)?.classList.remove('hidden-part');
@@ -583,10 +531,10 @@
                 document.getElementById('keyboard').classList.remove('hidden');
                 document.getElementById('hangman-area').classList.remove('hidden');
                 renderBlanks(); renderKeyboard();
-            } else if (window.state.currentGame === 'echo') {
+            } else if (window.state.currentGame === 'death') {
                 document.getElementById('standard-game-elements').classList.remove('hidden');
                 document.getElementById('echo-input-container').classList.remove('hidden');
-                if (window.state.echoAttempts === 0) document.getElementById('game-word-display').innerHTML = '<div class="text-sky-400/20 italic text-sm py-6 uppercase animate-pulse">Scanning signal...</div>';
+                if (window.state.echoAttempts === 0) document.getElementById('game-word-display').innerHTML = '<div class="text-sky-400/20 italic text-sm py-6 animate-pulse">Scanning signal...</div>';
                 const field = document.getElementById('echo-field'); field.value = ''; setTimeout(() => field.focus(), 300);
             } else if (window.state.currentGame === 'meteor') {
                 document.getElementById('meteor-field').classList.remove('hidden'); renderMeteorBlast();
@@ -607,6 +555,18 @@
                 if (timeLeft < 1.5) bar.style.backgroundColor = '#f43f5e';
                 if (timeLeft <= 0) { clearInterval(window.state.voidTimer); window.state.lives--; recordResult(false, "[Time Out]"); nextRound(); }
             }, 100);
+        };
+
+        const triggerExplosion = (callback) => {
+            const exp = document.getElementById('explosion-overlay');
+            const panel = document.getElementById('app-container');
+            panel.classList.add('shake');
+            exp.classList.add('animate-explosion');
+            setTimeout(() => {
+                panel.classList.remove('shake');
+                exp.classList.remove('animate-explosion');
+                if (callback) callback();
+            }, 800);
         };
 
         const renderBlanks = () => {
@@ -642,9 +602,9 @@
                 m.style.left = x + 'px'; m.style.top = y + 'px'; field.appendChild(m);
                 const timer = setInterval(() => {
                     x += speed; m.style.left = x + 'px';
-                    if (x > field.offsetWidth + 250) { clearInterval(timer); if (text === window.state.currentWord && !window.state.isTransitioning) { window.state.lives--; if (window.state.lives <= 0) recordResult(false, "[Flew Past]"); nextRound(); } }
+                    if (x > field.offsetWidth + 250) { clearInterval(timer); if (text === window.state.currentWord && !window.state.isTransitioning) { window.state.lives--; if (window.state.lives <= 0) { recordResult(false, "[Flew Past]"); triggerExplosion(nextRound); } else { triggerExplosion(nextRound); } } }
                 }, 16); window.state.meteorTimers.push(timer);
-                m.onclick = () => { if (window.state.isTransitioning) return; m.style.pointerEvents = 'none'; if (text === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; m.style.background = 'rgba(244, 63, 94, 0.5)'; if (window.state.lives <= 0) { recordResult(false, text); nextRound(); } } };
+                m.onclick = () => { if (window.state.isTransitioning) return; m.style.pointerEvents = 'none'; if (text === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; m.style.background = 'rgba(244, 63, 94, 0.5)'; if (window.state.lives <= 0) { recordResult(false, text); triggerExplosion(nextRound); } else { triggerExplosion(nextRound); } } };
             });
         };
 
@@ -665,8 +625,8 @@
             if (window.state.guessed.includes(l)) return;
             window.state.guessed.push(l); if (!window.state.currentWord.includes(l)) window.state.lives--;
             renderBlanks();
-            if (window.state.currentWord.split('').every(c => window.state.guessed.includes(c))) { recordResult(true); setTimeout(nextRound, 1500); } 
-            else if (window.state.lives <= 0) { recordResult(false, "[Mission Fail]"); setTimeout(nextRound, 1500); } 
+            if (window.state.currentWord.split('').every(c => window.state.guessed.includes(c))) { recordResult(true); setTimeout(nextRound, 1200); } 
+            else if (window.state.lives <= 0) { recordResult(false, "[Mission Fail]"); triggerExplosion(nextRound); } 
             else updateUI();
         };
 
@@ -687,13 +647,13 @@
                         if (valArr[idx] === char) s.classList.add('correct-char'); else s.classList.add('error-char');
                         display.appendChild(s);
                     });
-                    setTimeout(() => {
-                        if (window.state.currentGame === 'echo') {
+                    triggerExplosion(() => {
+                        if (window.state.currentGame === 'death') {
                             document.getElementById('echo-field').value = ''; document.getElementById('echo-field').focus();
-                            document.getElementById('game-word-display').innerHTML = '<div class="text-sky-400/20 italic text-sm py-6 uppercase animate-pulse">Try again...</div>';
+                            document.getElementById('game-word-display').innerHTML = '<div class="text-rose-400/20 italic text-sm py-6 animate-pulse">Retrying...</div>';
                         }
-                    }, 3000);
-                } else { recordResult(false, val); nextRound(); }
+                    });
+                } else { recordResult(false, val); triggerExplosion(nextRound); }
             }
         };
 
@@ -705,23 +665,19 @@
                 const displayOption = o.charAt(0).toUpperCase() + o.slice(1);
                 b.innerText = displayOption;
                 b.className = 'p-5 bg-white/5 border border-white/10 rounded-3xl font-bold text-sm tracking-widest hover:border-sky-500 transition-all';
-                b.onclick = () => { if (window.state.isTransitioning) return; clearInterval(window.state.voidTimer); if (o === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; if (window.state.lives <= 0) recordResult(false, o); nextRound(); } };
+                b.onclick = () => { if (window.state.isTransitioning) return; clearInterval(window.state.voidTimer); if (o === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; if (window.state.lives <= 0) { recordResult(false, o); triggerExplosion(nextRound); } else { triggerExplosion(nextRound); } } };
                 container.appendChild(b);
             });
         };
 
         const recordResult = (ok, mistake = null) => {
-            window.state.history.push({ word: window.state.currentWord, result: ok, timestamp: Date.now(), mistake: mistake, game: window.state.currentGame });
-            
-            // POINT LOGIC UPDATE
-            let baseReward = window.state.currentGame === 'echo' ? 20 : 10;
-            
-            // LUNAR MISSION: Subtract 1 star for every limb lost (mistake)
+            const gameRef = window.state.currentGame === 'death' ? 'echo' : window.state.currentGame;
+            window.state.history.push({ word: window.state.currentWord, result: ok, timestamp: Date.now(), mistake: mistake, game: gameRef });
+            let baseReward = window.state.currentGame === 'death' ? 20 : 10;
             if (window.state.currentGame === 'lunar' && ok) {
                 const mistakes = 6 - window.state.lives;
                 baseReward = Math.max(1, 10 - mistakes);
             }
-
             if (ok) { window.state.bank += baseReward; window.state.sessionCredits += baseReward; }
         };
 
@@ -729,8 +685,9 @@
             window.state.isTransitioning = false; clearAllTimers(); hideAll();
             document.getElementById('screen-prize').classList.remove('hidden');
             document.getElementById('earned-amount').innerText = "+" + (window.state.sessionCredits) + " stars"; 
-            if (!window.state.completedToday.includes(window.state.currentGame)) window.state.completedToday.push(window.state.currentGame);
             const todayStr = new Date().toLocaleDateString();
+            const gameKey = window.state.currentGame === 'death' ? 'echo' : window.state.currentGame;
+            if (!window.state.completedToday.includes(gameKey)) window.state.completedToday.push(gameKey);
             if (window.state.completedToday.length === 4) { window.state.challengeLevel++; window.state.completedToday = []; }
             if (auth.currentUser) {
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pilots', window.state.pilotName.toLowerCase());
@@ -740,10 +697,10 @@
 
         window.speakWord = () => {
             const rippleCont = document.getElementById('ripple-container');
-            if (window.state.currentGame === 'echo' && rippleCont) {
+            if (window.state.currentGame === 'death' && rippleCont) {
                 const ripple = document.createElement('div'); ripple.className = 'ripple-circle animate-ripple';
                 rippleCont.appendChild(ripple);
-                setTimeout(() => ripple.remove(), 2000);
+                setTimeout(() => ripple.remove(), 1500);
             }
             const msg = new SpeechSynthesisUtterance(window.state.currentWord);
             const findBritishVoice = () => {
@@ -761,7 +718,7 @@
             const date = new Date().toLocaleDateString();
             const target = document.getElementById('cert-target');
             if (type === 'gold') {
-                target.innerHTML = `<div class="golden-ticket-wrap"><h1 class="wonka-header">Golden ticket</h1><div class="wonka-sub">Moonshot Academy edition</div><div style="margin: 30px 0; border-top: 2px dashed #451a03; border-bottom: 2px dashed #451a03; padding: 20px 0;"><p style="font-size: 20px; font-weight: 900; margin: 0 0 10px 0;">Authorized for pilot</p><h2 style="font-size: 45px; text-transform: uppercase; margin: 0;">${window.state.pilotName}</h2></div><div style="display: flex; justify-content: space-around; margin: 30px 0;"><div><p style="font-size: 10px; font-weight: 900; margin: 0;">DATE</p><p style="font-size: 20px; font-weight: 900; margin: 0;">${date}</p></div><div><p style="font-size: 10px; font-weight: 900; margin: 0;">RANK</p><p style="font-size: 20px; font-weight: 900; margin: 0;">LEVEL ${window.state.challengeLevel}</p></div><div><p style="font-size: 10px; font-weight: 900; margin: 0;">OFFICE</p><p style="font-size: 20px; font-weight: 900; margin: 0;">MUM</p></div></div><div style="background: rgba(255,255,255,0.4) !important; border: 4px solid #451a03 !important; padding: 20px; display: inline-block;"><h3 style="font-size: 55px; margin: 0; font-family: Anton, sans-serif;">${window.state.bank} stars</h3></div><p style="font-size: 12px; margin-top: 30px; font-weight: 900; font-style: italic;">"Greetings to you, the lucky finder of this golden ticket!"</p></div>`;
+                target.innerHTML = `<div class="golden-ticket-wrap"><h1 class="wonka-header">Golden ticket</h1><p style="font-size: 20px; font-weight: 900; margin: 20px 0;">Moonshot Academy edition</p><div style="margin: 30px 0; border-top: 2px dashed #451a03; border-bottom: 2px dashed #451a03; padding: 20px 0;"><p style="font-size: 20px; font-weight: 900; margin: 0 0 10px 0;">Authorized for pilot</p><h2 style="font-size: 45px; text-transform: uppercase; margin: 0;">${window.state.pilotName}</h2></div><div style="display: flex; justify-content: space-around; margin: 30px 0;"><div><p style="font-size: 10px; font-weight: 900; margin: 0;">DATE</p><p style="font-size: 20px; font-weight: 900; margin: 0;">${date}</p></div><div><p style="font-size: 10px; font-weight: 900; margin: 0;">RANK</p><p style="font-size: 20px; font-weight: 900; margin: 0;">LEVEL ${window.state.challengeLevel}</p></div><div><p style="font-size: 10px; font-weight: 900; margin: 0;">OFFICE</p><p style="font-size: 20px; font-weight: 900; margin: 0;">MUM</p></div></div><div style="background: rgba(255,255,255,0.4) !important; border: 4px solid #451a03 !important; padding: 20px; display: inline-block;"><h3 style="font-size: 55px; margin: 0; font-family: Anton, sans-serif;">${window.state.bank} stars</h3></div><p style="font-size: 12px; margin-top: 30px; font-weight: 900; font-style: italic;">"Greetings to you, the lucky finder of this golden ticket!"</p></div>`;
             } else {
                 target.innerHTML = `<div class="mastery-cert-wrap"><h1 style="font-size: 50px; color: #0369a1 !important; margin: 0; font-family: Anton, sans-serif; text-transform: uppercase;">Mastery certificate</h1><p style="letter-spacing: 5px; font-weight: 900; color: #0c4a6e !important; margin-bottom: 40px; font-size: 14px; text-transform: uppercase;">Official Moonshot Academy honours</p><hr style="border: 2px solid #0369a1 !important; margin-bottom: 40px;"><p style="font-size: 24px;">This certifies that the distinguished pilot</p><h2 style="font-size: 60px; text-transform: uppercase; margin: 20px 0; color: #0369a1 !important; font-family: Anton, sans-serif; border-bottom: 2px solid #cbd5e1;">${window.state.pilotName}</h2><p style="font-size: 24px;">Has successfully achieved Academy Level ${window.state.challengeLevel}</p><div style="margin-top: 60px; padding-top: 40px; border-top: 2px solid #cbd5e1 !important; display: flex; justify-content: space-between; align-items: center;"><div style="text-align: left;"><p style="font-size: 18px; font-weight: 900;">Total earnings: ${window.state.bank} stars</p><p style="font-size: 14px; color: #64748b !important;">Issued by the Ministry of Galactic Spelling on ${date}</p></div></div><div class="cert-seal"><span style="font-size: 60px;">🦁</span><span>OFFICIAL SEAL</span></div></div>`;
             }
@@ -770,10 +727,7 @@
 
         onAuthStateChanged(auth, () => {
             const overlay = document.getElementById('connection-overlay');
-            if (overlay) {
-                overlay.classList.add('opacity-0');
-                setTimeout(() => overlay.classList.add('hidden'), 500);
-            }
+            if (overlay) { overlay.classList.add('opacity-0'); setTimeout(() => overlay.classList.add('hidden'), 500); }
         });
         signInAnonymously(auth);
         
@@ -784,7 +738,7 @@
                     if (!window.state.guessed.includes(l)) window.handleOnScreenKey(l);
                 }
             }
-            if (e.key === 'Enter' && (window.state.currentGame === 'echo' || !document.getElementById('echo-input-container').classList.contains('hidden'))) window.submitEcho();
+            if (e.key === 'Enter' && (window.state.currentGame === 'death' || !document.getElementById('echo-input-container').classList.contains('hidden'))) window.submitEcho();
         });
     </script>
 </body>
