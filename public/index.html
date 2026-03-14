@@ -109,7 +109,7 @@
         }
 
         #meteor-field { position: relative; width: 100%; height: 450px; background: rgba(0,0,0,0.6); border-radius: 40px; overflow: hidden; margin: 20px 0; border: 1px solid rgba(255,255,255,0.1); }
-        .meteor { position: absolute; background: rgba(56, 189, 248, 0.15); border: 2px solid #38bdf8; padding: 24px 40px; border-radius: 60px; font-size: 1.25rem; cursor: pointer; white-space: nowrap; font-weight: 900; box-shadow: 0 0 20px rgba(56,189,248,0.4); color: white; z-index: 50; }
+        .meteor { position: absolute; background: rgba(56, 189, 248, 0.15); border: 2px solid #38bdf8; padding: 24px 40px; border-radius: 60px; font-size: 1.25rem; cursor: pointer; white-space: nowrap; font-weight: 900; box-shadow: 0 0 20px rgba(56,189,248,0.4); color: white; text-transform: uppercase; z-index: 50; }
 
         .illustration-card { background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 35px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; width: 180px; height: 180px; }
         .illustration-card svg { width: 110px; height: 110px; pointer-events: none; }
@@ -226,7 +226,7 @@
                     <h3 class="text-2xl impact-font uppercase">Lunar Mission</h3>
                 </div>
                 <div onclick="window.chooseGame('death')" class="game-tile border-rose-500/20">
-                    <div class="w-16 h-16 md:w-20 md:h-20 mb-4 flex items-center justify-center text-rose-400"><svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41"/></svg></div>
+                    <div class="w-16 h-16 md:w-20 md:h-20 mb-4 flex items-center justify-center text-rose-400"><svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v2M12 20v2 extinction-tagM4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41"/></svg></div>
                     <h3 class="text-2xl impact-font uppercase">Sudden Death</h3>
                 </div>
                 <div onclick="window.chooseGame('meteor')" class="game-tile">
@@ -360,7 +360,7 @@
         const db = getFirestore(app);
 
         // State Management
-        window.state = { pilotName: "", bank: 0, activeLevel: "", currentGame: null, words: [], currentRound: 0, lives: 3, currentWord: "", guessed: [], history: [], statFilter: 'week', meteorTimers: [], echoAttempts: 0, completedToday: [], challengeLevel: 0, voidTimer: null, isTransitioning: false, sessionCredits: 0, customWords: [] };
+        window.state = { pilotName: "", bank: 0, activeLevel: "", currentGame: null, words: [], currentRound: 0, lives: 3, currentWord: "", currentAnchor: null, guessed: [], history: [], statFilter: 'week', meteorTimers: [], echoAttempts: 0, completedToday: [], challengeLevel: 0, voidTimer: null, isTransitioning: false, sessionCredits: 0, customWords: [] };
 
         const illusts = {
             cat: '🐱', dog: '🐶', sun: '☀️', cup: '☕', box: '📦', hat: '🎩',
@@ -397,55 +397,55 @@
 
         const phonicsList = ["s", "a", "t", "p", "i", "n", "m", "d", "g", "o", "c", "k", "ck", "e", "u", "r", "h", "b", "f", "ff", "l", "ll", "ss", "qu", "ch", "sh", "th", "ng", "ai", "ee", "igh", "oa", "oo", "ar", "or", "ur", "ow", "oi", "ear", "air", "ure", "er", "ay", "ou", "oy", "wh", "ph"];
 
-        // Anchors for Phonics Logic
+        // BROADER LIBRARY OF PHONIC ANCHORS
         const phonicAnchors = {
-            s: { word: "sun", pos: "beginning" },
-            a: { word: "tap", pos: "middle" },
-            t: { word: "tap", pos: "beginning" },
-            p: { word: "pan", pos: "beginning" },
-            i: { word: "it", pos: "beginning" },
-            n: { word: "night", pos: "beginning" },
-            m: { word: "man", pos: "beginning" },
-            d: { word: "dog", pos: "beginning" },
-            g: { word: "go", pos: "beginning" },
-            o: { word: "hot", pos: "middle" },
-            c: { word: "cat", pos: "beginning" },
-            k: { word: "kit", pos: "beginning" },
-            ck: { word: "back", pos: "end" },
-            e: { word: "egg", pos: "beginning" },
-            u: { word: "up", pos: "beginning" },
-            r: { word: "run", pos: "beginning" },
-            h: { word: "hat", pos: "beginning" },
-            b: { word: "bat", pos: "beginning" },
-            f: { word: "fish", pos: "beginning" },
-            ff: { word: "off", pos: "end" },
-            l: { word: "leaf", pos: "beginning" },
-            ll: { word: "bell", pos: "end" },
-            ss: { word: "hiss", pos: "end" },
-            qu: { word: "quack", pos: "beginning" },
-            ch: { word: "chip", pos: "beginning" },
-            sh: { word: "shop", pos: "beginning" },
-            th: { word: "thin", pos: "beginning" },
-            ng: { word: "ring", pos: "end" },
-            ai: { word: "rain", pos: "middle" },
-            ee: { word: "feet", pos: "middle" },
-            igh: { word: "night", pos: "middle" },
-            oa: { word: "boat", pos: "middle" },
-            oo: { word: "wood", pos: "middle" },
-            ar: { word: "park", pos: "middle" },
-            or: { word: "fork", pos: "middle" },
-            ur: { word: "burn", pos: "middle" },
-            ow: { word: "town", pos: "middle" },
-            oi: { word: "coin", pos: "middle" },
-            ear: { word: "near", pos: "end" },
-            air: { word: "stair", pos: "end" },
-            ure: { word: "pure", pos: "end" },
-            er: { word: "butter", pos: "end" },
-            ay: { word: "play", pos: "end" },
-            ou: { word: "cloud", pos: "middle" },
-            oy: { word: "boy", pos: "end" },
-            wh: { word: "wheel", pos: "beginning" },
-            ph: { word: "photo", pos: "beginning" }
+            s: [{ word: "sun", pos: "beginning" }, { word: "sit", pos: "beginning" }, { word: "hiss", pos: "end" }, { word: "bus", pos: "end" }],
+            a: [{ word: "apple", pos: "beginning" }, { word: "tap", pos: "middle" }, { word: "cat", pos: "middle" }, { word: "dad", pos: "middle" }],
+            t: [{ word: "tap", pos: "beginning" }, { word: "top", pos: "beginning" }, { word: "ten", pos: "beginning" }, { word: "net", pos: "end" }, { word: "hat", pos: "end" }],
+            p: [{ word: "pan", pos: "beginning" }, { word: "pig", pos: "beginning" }, { word: "pot", pos: "beginning" }, { word: "tap", pos: "end" }, { word: "cup", pos: "end" }],
+            i: [{ word: "it", pos: "beginning" }, { word: "ink", pos: "beginning" }, { word: "sit", pos: "middle" }, { word: "bin", pos: "middle" }],
+            n: [{ word: "night", pos: "beginning" }, { word: "net", pos: "beginning" }, { word: "sun", pos: "end" }, { word: "ten", pos: "end" }],
+            m: [{ word: "man", pos: "beginning" }, { word: "map", pos: "beginning" }, { word: "mum", pos: "beginning" }, { word: "ham", pos: "end" }],
+            d: [{ word: "dog", pos: "beginning" }, { word: "dad", pos: "beginning" }, { word: "dig", pos: "beginning" }, { word: "red", pos: "end" }],
+            g: [{ word: "go", pos: "beginning" }, { word: "get", pos: "beginning" }, { word: "dog", pos: "end" }, { word: "big", pos: "end" }],
+            o: [{ word: "orange", pos: "beginning" }, { word: "hot", pos: "middle" }, { word: "pot", pos: "middle" }, { word: "dog", pos: "middle" }],
+            c: [{ word: "cat", pos: "beginning" }, { word: "can", pos: "beginning" }, { word: "cup", pos: "beginning" }, { word: "cot", pos: "beginning" }],
+            k: [{ word: "kit", pos: "beginning" }, { word: "kid", pos: "beginning" }, { word: "king", pos: "beginning" }],
+            ck: [{ word: "back", pos: "end" }, { word: "duck", pos: "end" }, { word: "sock", pos: "end" }, { word: "neck", pos: "end" }],
+            e: [{ word: "egg", pos: "beginning" }, { word: "elbow", pos: "beginning" }, { word: "net", pos: "middle" }, { word: "red", pos: "middle" }],
+            u: [{ word: "up", pos: "beginning" }, { word: "us", pos: "beginning" }, { word: "sun", pos: "middle" }, { word: "cup", pos: "middle" }],
+            r: [{ word: "run", pos: "beginning" }, { word: "red", pos: "beginning" }, { word: "rat", pos: "beginning" }, { word: "rug", pos: "beginning" }],
+            h: [{ word: "hat", pos: "beginning" }, { word: "hot", pos: "beginning" }, { word: "hen", pos: "beginning" }, { word: "hug", pos: "beginning" }],
+            b: [{ word: "bat", pos: "beginning" }, { word: "big", pos: "beginning" }, { word: "box", pos: "beginning" }, { word: "bed", pos: "beginning" }],
+            f: [{ word: "fish", pos: "beginning" }, { word: "fan", pos: "beginning" }, { word: "fox", pos: "beginning" }],
+            ff: [{ word: "off", pos: "end" }, { word: "puff", pos: "end" }, { word: "cliff", pos: "end" }],
+            l: [{ word: "leg", pos: "beginning" }, { word: "leaf", pos: "beginning" }, { word: "log", pos: "beginning" }, { word: "lip", pos: "beginning" }],
+            ll: [{ word: "bell", pos: "end" }, { word: "doll", pos: "end" }, { word: "pill", pos: "end" }, { word: "shell", pos: "end" }],
+            ss: [{ word: "hiss", pos: "end" }, { word: "mess", pos: "end" }, { word: "kiss", pos: "end" }],
+            qu: [{ word: "quack", pos: "beginning" }, { word: "queen", pos: "beginning" }, { word: "quick", pos: "beginning" }],
+            ch: [{ word: "chip", pos: "beginning" }, { word: "chop", pos: "beginning" }, { word: "rich", pos: "end" }, { word: "such", pos: "end" }],
+            sh: [{ word: "shop", pos: "beginning" }, { word: "ship", pos: "beginning" }, { word: "fish", pos: "end" }, { word: "dash", pos: "end" }],
+            th: [{ word: "thin", pos: "beginning" }, { word: "thick", pos: "beginning" }, { word: "bath", pos: "end" }, { word: "moth", pos: "end" }],
+            ng: [{ word: "ring", pos: "end" }, { word: "song", pos: "end" }, { word: "king", pos: "end" }, { word: "long", pos: "end" }],
+            ai: [{ word: "rain", pos: "middle" }, { word: "sail", pos: "middle" }, { word: "wait", pos: "middle" }],
+            ee: [{ word: "feet", pos: "middle" }, { word: "tree", pos: "end" }, { word: "bee", pos: "end" }, { word: "seed", pos: "middle" }],
+            igh: [{ word: "night", pos: "middle" }, { word: "light", pos: "middle" }, { word: "high", pos: "end" }, { word: "sigh", pos: "end" }],
+            oa: [{ word: "boat", pos: "middle" }, { word: "coat", pos: "middle" }, { word: "road", pos: "middle" }, { word: "soap", pos: "middle" }],
+            oo: [{ word: "moon", pos: "middle" }, { word: "wood", pos: "middle" }, { word: "book", pos: "middle" }, { word: "food", pos: "middle" }],
+            ar: [{ word: "park", pos: "middle" }, { word: "farm", pos: "middle" }, { word: "car", pos: "end" }, { word: "star", pos: "end" }],
+            or: [{ word: "fork", pos: "middle" }, { word: "born", pos: "middle" }, { word: "horn", pos: "middle" }, { word: "sort", pos: "middle" }],
+            ur: [{ word: "burn", pos: "middle" }, { word: "curl", pos: "middle" }, { word: "surf", pos: "beginning" }],
+            ow: [{ word: "town", pos: "middle" }, { word: "cow", pos: "end" }, { word: "how", pos: "end" }, { word: "down", pos: "middle" }],
+            oi: [{ word: "coin", pos: "middle" }, { word: "soil", pos: "middle" }, { word: "join", pos: "middle" }, { word: "oil", pos: "beginning" }],
+            ear: [{ word: "near", pos: "end" }, { word: "fear", pos: "end" }, { word: "hear", pos: "end" }, { word: "gear", pos: "end" }],
+            air: [{ word: "stair", pos: "end" }, { word: "hair", pos: "end" }, { word: "fair", pos: "end" }, { word: "chair", pos: "end" }],
+            ure: [{ word: "pure", pos: "end" }, { word: "cure", pos: "end" }, { word: "lure", pos: "end" }],
+            er: [{ word: "butter", pos: "end" }, { word: "river", pos: "end" }, { word: "winter", pos: "end" }, { word: "faster", pos: "end" }],
+            ay: [{ word: "play", pos: "end" }, { word: "stay", pos: "end" }, { word: "day", pos: "end" }, { word: "clay", pos: "end" }],
+            ou: [{ word: "cloud", pos: "middle" }, { word: "out", pos: "beginning" }, { word: "mouth", pos: "middle" }, { word: "shout", pos: "middle" }],
+            oy: [{ word: "boy", pos: "end" }, { word: "toy", pos: "end" }, { word: "joy", pos: "end" }, { word: "enjoy", pos: "end" }],
+            wh: [{ word: "wheel", pos: "beginning" }, { word: "whale", pos: "beginning" }, { word: "whip", pos: "beginning" }, { word: "white", pos: "beginning" }],
+            ph: [{ word: "photo", pos: "beginning" }, { word: "graph", pos: "end" }, { word: "phone", pos: "beginning" }, { word: "dolphin", pos: "middle" }]
         };
 
         // Enforce Lowercase logic for phonics/graphemes
@@ -503,6 +503,7 @@
             if (display) display.innerText = window.state.pilotName; 
             updateVaultUI(); 
         }
+        window.showHome = showHome;
 
         async function saveStateToCloud() {
             if (auth.currentUser && window.state.pilotName) {
@@ -613,6 +614,15 @@
             clearAllTimers();
             if (window.state.currentRound >= 10 || window.state.lives <= 0) { endGame(); return; }
             window.state.currentWord = window.state.words[window.state.currentRound].toLowerCase();
+            
+            // Randomly select one anchor word from the library for this sound
+            if (window.state.currentGame === 'mermaid') {
+                const anchors = phonicAnchors[window.state.currentWord] || [{ word: window.state.currentWord, pos: "beginning" }];
+                window.state.currentAnchor = anchors[Math.floor(Math.random() * anchors.length)];
+            } else {
+                window.state.currentAnchor = null;
+            }
+
             window.state.guessed = []; window.state.echoAttempts = 0; window.state.currentRound++;
             updateUI(); 
 
@@ -663,8 +673,7 @@
             let opts = [target];
             
             if (window.state.currentGame === 'mermaid') {
-                const anchor = phonicAnchors[target];
-                const anchorWord = anchor ? anchor.word.toLowerCase() : "";
+                const anchorWord = window.state.currentAnchor ? window.state.currentAnchor.word.toLowerCase() : "";
                 // Rule: Distractors must not exist in the anchor word
                 const distractors = phonicsList.filter(p => !anchorWord.includes(p) && p !== target);
                 while(opts.length < 4) {
@@ -736,7 +745,7 @@
         window.speakWord = () => {
             let txt = window.state.currentWord;
             if (window.state.currentGame === 'mermaid') {
-                const anchor = phonicAnchors[txt];
+                const anchor = window.state.currentAnchor;
                 if (anchor) txt = `Find the ${anchor.pos} sound in ${anchor.word}`;
             }
             const msg = new SpeechSynthesisUtterance(txt);
@@ -756,6 +765,26 @@
             if (type === 'gold') target.innerHTML = `<div class="golden-ticket-wrap"><h1 class="wonka-header">Golden ticket</h1><p style="font-size: 20px; font-weight: 900; margin: 20px 0;">Moonshot Academy edition</p><div style="margin: 30px 0; border-top: 2px dashed #451a03; border-bottom: 2px dashed #451a03; padding: 20px 0;"><p style="font-size: 20px; font-weight: 900;">Authorized for pilot</p><h2 style="font-size: 45px; text-transform: uppercase; font-family: Anton;">${window.state.pilotName}</h2></div><h3 style="font-size: 55px; font-family: Anton;">${window.state.bank} stars</h3></div>`;
             else target.innerHTML = `<div class="mastery-cert-wrap"><h1 style="font-size: 50px; color: #0369a1; font-family: Anton;">Mastery certificate</h1><hr style="border: 2px solid #0369a1; margin: 30px 0;"><p>This certifies that the distinguished pilot</p><h2 style="font-size: 55px; text-transform: uppercase; font-family: Anton;">${window.state.pilotName}</h2><p>Has successfully achieved Academy Level ${window.state.challengeLevel}</p><div style="margin-top: 30px; padding: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px;"><h3 style="font-size: 12px; font-weight: 900;">Mastered words gallery</h3><div class="mastery-list">${wordsHtml}</div></div><p style="margin-top: 40px; font-weight: 900;">Total earnings: ${window.state.bank} stars</p></div>`;
             window.print();
+        };
+
+        window.initiateWithdrawal = (type) => {
+            const dialog = document.getElementById('confirm-dialog');
+            const msg = document.getElementById('confirm-message');
+            msg.innerText = "Processing this withdrawal will reset your Galactic Bank to zero. Ready to issue certificate?";
+            dialog.classList.remove('hidden');
+            document.getElementById('execute-reset-btn').onclick = async () => {
+                window.printCert(type);
+                window.state.bank = 0;
+                await saveStateToCloud();
+                updateVaultUI();
+                window.closeConfirm();
+                showHome();
+            };
+        };
+
+        window.closeConfirm = () => { 
+            const dialog = document.getElementById('confirm-dialog');
+            if (dialog) dialog.classList.add('hidden');
         };
 
         window.addCustomWord = function() { const input = document.getElementById('custom-word-input'); if (!input) return; const word = input.value.trim().toLowerCase(); if (word && !window.state.customWords.includes(word)) { window.state.customWords.push(word); input.value = ''; renderCustomWordTags(); saveStateToCloud(); } };
