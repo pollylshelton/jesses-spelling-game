@@ -109,7 +109,7 @@
         }
 
         #meteor-field { position: relative; width: 100%; height: 450px; background: rgba(0,0,0,0.6); border-radius: 40px; overflow: hidden; margin: 20px 0; border: 1px solid rgba(255,255,255,0.1); }
-        .meteor { position: absolute; background: rgba(56, 189, 248, 0.15); border: 2px solid #38bdf8; padding: 24px 40px; border-radius: 60px; font-size: 1.25rem; cursor: pointer; white-space: nowrap; font-weight: 900; box-shadow: 0 0 20px rgba(56,189,248,0.4); color: white; text-transform: uppercase; z-index: 50; }
+        .meteor { position: absolute; background: rgba(56, 189, 248, 0.15); border: 2px solid #38bdf8; padding: 24px 40px; border-radius: 60px; font-size: 1.25rem; cursor: pointer; white-space: nowrap; font-weight: 900; box-shadow: 0 0 20px rgba(56,189,248,0.4); color: white; z-index: 50; }
 
         .illustration-card { background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 35px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; width: 180px; height: 180px; }
         .illustration-card svg { width: 110px; height: 110px; pointer-events: none; }
@@ -181,7 +181,7 @@
                     <div class="text-xl font-black text-pink-400 mt-4">Elodie</div>
                 </div>
                 <div onclick="window.selectPilot('Friend')" class="profile-btn group cursor-pointer transition-transform hover:scale-110">
-                    <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="f-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="100%" style="stop-color:#451a03"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#f-grad)"/><rect x="25" y="35" width="50" height="30" rx="4" fill="#000"/><circle cx="35" cy="50" r="2" fill="#f43f5e"/><circle cx="65" cy="50" r="2" fill="#f43f5e"/><path d="M45 58 Q50 62 55 58" stroke="#f43f5e" stroke-width="1.5" fill="none" /></svg></div>
+                    <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="g-grad-h" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="100%" style="stop-color:#451a03"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#g-grad-h)"/><rect x="25" y="35" width="50" height="30" rx="4" fill="#000"/><circle cx="35" cy="50" r="2" fill="#f43f5e"/><circle cx="65" cy="50" r="2" fill="#f43f5e"/><path d="M45 58 Q50 62 55 58" stroke="#f43f5e" stroke-width="1.5" fill="none" /></svg></div>
                     <div class="text-xl font-black text-amber-500 mt-4">Friend</div>
                 </div>
             </div>
@@ -362,22 +362,28 @@
         // State Management
         window.state = { pilotName: "", bank: 0, activeLevel: "", currentGame: null, words: [], currentRound: 0, lives: 3, currentWord: "", currentAnchor: null, guessed: [], history: [], statFilter: 'week', meteorTimers: [], echoAttempts: 0, completedToday: [], challengeLevel: 0, voidTimer: null, isTransitioning: false, sessionCredits: 0, customWords: [] };
 
+        // CONCRETE OBJECTS LIBRARY (Expanded for Unicorn game match and broad phonic anchors)
         const illusts = {
             cat: '🐱', dog: '🐶', sun: '☀️', cup: '☕', box: '📦', hat: '🎩',
             pig: '🐷', bed: '🛏️', tap: '🚰', fan: '🎐', map: '🗺️', pen: '🖊️',
             net: '🥅', dad: '👨', mum: '👩', hot: '🔥', pot: '🍲', ten: '🔟',
-            pin: '📍', pan: '🍳', sit: '🪑', sat: '🪑',
-            no: '🚫', go: '🚶', he: '👦', she: '👧', her: '👧', big: '🐘',
-            today: '📅', love: '❤️', one: '1️⃣', friend: '🧑‍🤝‍🧑', school: '🏫', 
-            push: '🫸', house: '🏠',
-            beautiful: '🌹', climb: '🧗', door: '🚪', find: '🔍', child: '🧒', 
-            children: '🚸', wild: '🦁', break: '💔', steak: '🥩',
-            accident: '💥', address: '📮', answer: '🙋', bicycle: '🚲', breath: '😮‍💨', 
-            breathe: '😮‍💨', build: '🏗️', busy: '🐝', calendar: '📆', caught: '🎣', 
-            centre: '🎯', century: '💯', circle: '⭕',
-            achieve: '🏆', aggressive: '😠', amateur: '🔰', ancient: '🏛️', 
-            attached: '📎', bargain: '🏷️', bruise: '🤕', cemetery: '🪦', 
-            communicate: '💬', community: '🏘️', competition: '🏅'
+            pin: '📍', pan: '🍳', sit: '🪑', sat: '🪑', 
+            ant: '🐜', apple: '🍎', bag: '🎒', ball: '⚽', banana: '🍌',
+            bat: '🏏', bee: '🐝', bell: '🔔', bike: '🚲', bird: '🐦', 
+            boat: '⛵', book: '📖', bus: '🚌', cake: '🍰', car: '🚗',
+            carrot: '快樂', chair: '🪑', cloud: '☁️', corn: '🌽', cow: '🐮',
+            door: '🚪', duck: '🦆', egg: '🥚', fish: '🐟',
+            flower: '🌸', fox: '🦊', frog: '🐸', ham: '🍖', leaf: '🍃',
+            milk: '🥛', moon: '🌙', mug: '☕', nut: '🥜', owl: '🦉',
+            pea: '🫛', pear: '🍐', rain: '🌧️', ring: '💍', river: '🏞️',
+            road: '🛣️', rug: '🧶', school: '🏫', shell: '🐚', ship: '🚢',
+            shoe: '👟', sock: '🧦', star: '⭐', tree: '🌳', train: '🚂',
+            hen: '🐔', jet: '✈️', kit: '🧰', lid: '🥣', log: '🪵', mud: '💩',
+            rat: '🐀', rod: '🎣', tub: '🛁', van: '🚐', wig: '💇', ant: '🐜',
+            bin: '🗑️', cap: '🧢', gum: '🍬', peg: '👗', brick: '🧱', brush: '🖌️',
+            clock: '⏰', crab: '🦀', desk: '🖥️', drink: '🥤', drum: '🥁', flag: '🚩',
+            hand: '✋', king: '👑', lamp: '💡', nest: '🪹', plant: '🌱', plum: '🫐',
+            pond: '🏞️', shop: '🛒', sled: '🛷', slug: '🐌', tent: '⛺', truck: '🚚'
         };
 
         const helmets = {
@@ -388,8 +394,8 @@
         };
 
         const wordsDB = {
-            recep: ["i", "the", "to", "no", "go", "into", "he", "she", "we", "me", "be", "was", "my", "you", "her", "they", "all", "are", "cat", "dog", "dad", "mum", "get", "big", "hot", "sun", "pot", "ten", "pin", "net", "tap", "pan", "sit", "sat"],
-            y1: ["a", "do", "today", "of", "said", "says", "your", "so", "by", "here", "there", "where", "love", "come", "some", "one", "once", "ask", "friend", "school", "put", "push", "pull", "full", "house", "our"],
+            recep: ["i", "the", "to", "no", "go", "into", "he", "she", "we", "me", "be", "was", "my", "you", "her", "they", "all", "are", "is", "it", "in", "at", "and", "up", "am", "on", "can", "off", "big", "yes", "get", "back", "if", "but", "cat", "dog", "dad", "mum", "hot", "sun", "pot", "ten", "pin", "net", "tap", "pan", "sit", "sat", "ant", "bag", "bin", "box", "bug", "bus", "cap", "cup", "fan", "fox", "gum", "ham", "hat", "hen", "jet", "kit", "leg", "lid", "lip", "log", "map", "mat", "mud", "mug", "nut", "peg", "pen", "pig", "rat", "red", "rug", "run", "top", "tub", "van", "wig"],
+            y1: ["a", "do", "today", "of", "said", "says", "your", "so", "by", "here", "there", "where", "love", "come", "some", "one", "once", "ask", "friend", "school", "put", "push", "pull", "full", "house", "our", "black", "blue", "brick", "brush", "clock", "crab", "desk", "drink", "drum", "duck", "flag", "frog", "glad", "glass", "grass", "hand", "jump", "king", "lamp", "milk", "nest", "pink", "plant", "plum", "pond", "ship", "shop", "skin", "skip", "sled", "slug", "snip", "spot", "step", "stop", "swim", "tent", "trap", "tree", "truck", "wind"],
             y2: ["beautiful", "because", "climb", "door", "floor", "find", "kind", "mind", "child", "children", "wild", "only", "both", "even", "great", "break", "steak", "pretty", "after", "every"],
             y34: ["accident", "actual", "address", "answer", "appear", "arrive", "believe", "bicycle", "breath", "breathe", "build", "busy", "calendar", "caught", "centre", "century", "certain", "circle", "complete", "consider"],
             y56: ["accommodate", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition"]
@@ -397,7 +403,7 @@
 
         const phonicsList = ["s", "a", "t", "p", "i", "n", "m", "d", "g", "o", "c", "k", "ck", "e", "u", "r", "h", "b", "f", "ff", "l", "ll", "ss", "qu", "ch", "sh", "th", "ng", "ai", "ee", "igh", "oa", "oo", "ar", "or", "ur", "ow", "oi", "ear", "air", "ure", "er", "ay", "ou", "oy", "wh", "ph"];
 
-        // BROADER LIBRARY OF PHONIC ANCHORS
+        // Anchors for Phonics Logic - Expanded word library per phoneme
         const phonicAnchors = {
             s: [{ word: "sun", pos: "beginning" }, { word: "sit", pos: "beginning" }, { word: "hiss", pos: "end" }, { word: "bus", pos: "end" }],
             a: [{ word: "apple", pos: "beginning" }, { word: "tap", pos: "middle" }, { word: "cat", pos: "middle" }, { word: "dad", pos: "middle" }],
@@ -597,15 +603,26 @@
 
         window.launchMission = () => {
             let list = [];
-            if (document.getElementById('check-recep').checked) list = list.concat(wordsDB.recep);
-            if (document.getElementById('check-y1').checked) list = list.concat(wordsDB.y1);
-            if (document.getElementById('check-y2').checked) list = list.concat(wordsDB.y2);
-            if (document.getElementById('check-y34').checked) list = list.concat(wordsDB.y34);
-            if (document.getElementById('check-y56').checked) list = list.concat(wordsDB.y56);
-            if (document.getElementById('check-custom').checked) list = list.concat(window.state.customWords);
+            // Unicorn Match pulls only from concrete emoji objects
+            if (window.state.currentGame === 'unicorn') {
+                list = Object.keys(illusts);
+            } else {
+                if (document.getElementById('check-recep').checked) list = list.concat(wordsDB.recep);
+                if (document.getElementById('check-y1').checked) list = list.concat(wordsDB.y1);
+                if (document.getElementById('check-y2').checked) list = list.concat(wordsDB.y2);
+                if (document.getElementById('check-y34').checked) list = list.concat(wordsDB.y34);
+                if (document.getElementById('check-y56').checked) list = list.concat(wordsDB.y56);
+                if (document.getElementById('check-custom').checked) list = list.concat(window.state.customWords);
+            }
+
             if (list.length === 0 && window.state.currentGame !== 'mermaid') return;
-            if (window.state.currentGame === 'mermaid') window.state.words = phonicsList.sort(() => Math.random() - 0.5).slice(0, 10);
-            else window.state.words = list.sort(() => Math.random() - 0.5).slice(0, 10);
+
+            if (window.state.currentGame === 'mermaid') {
+                window.state.words = phonicsList.sort(() => Math.random() - 0.5).slice(0, 10);
+            } else {
+                window.state.words = list.sort(() => Math.random() - 0.5).slice(0, 10);
+            }
+
             window.state.currentRound = 0; window.state.lives = window.state.currentGame === 'lunar' ? 6 : 3; window.state.sessionCredits = 0;
             hideAll(); document.getElementById('screen-game')?.classList.remove('hidden'); nextRound();
         };
@@ -682,14 +699,26 @@
                 }
             } else if (window.state.currentGame === 'unicorn') {
                 const pool = Object.keys(illusts);
-                while(opts.length < 3) { let r = pool[Math.floor(Math.random()*pool.length)]; if(!opts.includes(r)) opts.push(r); }
+                while(opts.length < 3) { 
+                    let r = pool[Math.floor(Math.random()*pool.length)]; 
+                    if(!opts.includes(r)) opts.push(r); 
+                }
             } else {
-                while(opts.length < 4) { let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)]; if(!opts.includes(r)) opts.push(r); }
+                while(opts.length < 4) { 
+                    let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)]; 
+                    if(!opts.includes(r)) opts.push(r); 
+                }
             }
+
             opts.sort(() => Math.random() - 0.5).forEach(o => {
                 const b = document.createElement('button');
-                if (window.state.currentGame === 'unicorn') { b.className = 'illustration-card text-6xl drop-shadow-xl'; b.innerHTML = illusts[o] || `❔`; }
-                else { b.className = (window.state.currentGame === 'mermaid' ? 'bubble-btn text-white' : 'p-6 bg-white/10 rounded-3xl text-2xl font-bold'); b.innerText = window.toSentenceCase(o); }
+                if (window.state.currentGame === 'unicorn') { 
+                    b.className = 'illustration-card text-6xl drop-shadow-xl'; 
+                    b.innerHTML = illusts[o] || `❔`; 
+                } else { 
+                    b.className = (window.state.currentGame === 'mermaid' ? 'bubble-btn text-white' : 'p-6 bg-white/10 rounded-3xl text-2xl font-bold'); 
+                    b.innerText = window.toSentenceCase(o); 
+                }
                 b.onclick = () => {
                     if (window.state.isTransitioning) return;
                     window.state.isTransitioning = true;
