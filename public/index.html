@@ -371,7 +371,7 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Environment variables managed by Canvas
+        // Environment variables
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
             apiKey: "AIzaSyATNU3KcsoehUoWxzPasVQrxUGgdVvjbq4",
             authDomain: "jesses-spelling-game.firebaseapp.com",
@@ -390,7 +390,6 @@
         // State Management
         window.state = { pilotName: "", bank: 0, activeLevel: "", currentGame: null, words: [], currentRound: 0, lives: 3, currentWord: "", currentAnchor: null, guessed: [], history: [], statFilter: 'week', meteorTimers: [], echoAttempts: 0, completedToday: [], challengeLevel: 0, voidTimer: null, isTransitioning: false, sessionCredits: 0, customWords: [] };
 
-        // CONCRETE OBJECTS LIBRARY (Expanded for Unicorn game match and broad phonic anchors)
         const illusts = {
             cat: '🐱', dog: '🐶', sun: '☀️', cup: '☕', box: '📦', hat: '🎩',
             pig: '🐷', bed: '🛏️', tap: '🚰', fan: '🎐', map: '🗺️', pen: '🖊️',
@@ -430,6 +429,75 @@
         };
 
         const phonicsList = ["s", "a", "t", "p", "i", "n", "m", "d", "g", "o", "c", "k", "ck", "e", "u", "r", "h", "b", "f", "ff", "l", "ll", "ss", "qu", "ch", "sh", "th", "ng", "ai", "ee", "igh", "oa", "oo", "ar", "or", "ur", "ow", "oi", "ear", "air", "ure", "er", "ay", "ou", "oy", "wh", "ph"];
+
+        // DATABASE OF COMMON CURRICULUM MISSPELLINGS
+        const misspellingsDB = {
+            achieve: ["acheive", "acheeve", "achiv"],
+            address: ["adress", "addres"],
+            apparent: ["apparant"],
+            believe: ["beleive", "beleeve"],
+            bicycle: ["bycycle", "bisycle"],
+            breathe: ["breath", "breethe"],
+            calendar: ["calender"],
+            caught: ["cort", "cought"],
+            cemetery: ["cemetry", "cemetary"],
+            committee: ["comitee", "commitee"],
+            communicate: ["comunicate"],
+            community: ["comunity"],
+            competition: ["conpetition", "compitition"],
+            complete: ["compleet", "complet"],
+            consider: ["considder"],
+            accident: ["axident", "acident"],
+            actual: ["actuall", "actuel"],
+            appear: ["apear"],
+            arrive: ["arive"],
+            build: ["bild", "biuld"],
+            busy: ["bizzy", "bussey"],
+            centre: ["center", "sentre"],
+            century: ["sentury", "centuary"],
+            certain: ["sertain", "certin"],
+            circle: ["sercle", "curcle"],
+            accommodate: ["acommodate", "accommodat"],
+            according: ["acording"],
+            aggressive: ["agressive"],
+            amateur: ["amature"],
+            ancient: ["anchent", "ansient"],
+            appreciate: ["apreciate"],
+            attached: ["atached"],
+            available: ["avaliable"],
+            average: ["averidg"],
+            awkward: ["aukward"],
+            bargain: ["bargin"],
+            bruise: ["broose", "bruize"],
+            category: ["catagory"],
+            the: ["th", "teh"],
+            she: ["se", "shie"],
+            they: ["thay"],
+            said: ["sed", "siad"],
+            today: ["tuday", "tooday"],
+            love: ["luv"],
+            come: ["cum"],
+            some: ["sum"],
+            friend: ["freind"],
+            school: ["skool"],
+            house: ["howse"],
+            beautiful: ["beatiful", "butiful"],
+            because: ["becoz", "becuase"],
+            climb: ["clime"],
+            door: ["dor"],
+            floor: ["flor"],
+            find: ["fined"],
+            kind: ["kined"],
+            mind: ["mined"],
+            child: ["chiled"],
+            wild: ["wiled"],
+            even: ["eeven"],
+            great: ["grate"],
+            break: ["brake"],
+            steak: ["stake"],
+            pretty: ["pritty"],
+            every: ["evry"]
+        };
 
         const phonicAnchors = {
             s: [{ word: "sun", pos: "beginning" }, { word: "sit", pos: "beginning" }, { word: "hiss", pos: "end" }, { word: "bus", pos: "end" }],
@@ -487,6 +555,45 @@
             if (phonicsList.includes(lower)) return lower;
             return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
         };
+
+        // VISUAL CONFUSION ENGINE
+        function generateVisualDistractors(word, count) {
+            const distractors = new Set();
+            const vowels = "aeiou";
+            const consonants = "bcdfghjklmnpqrstvwxyz";
+            
+            // 1. Try manual misspellings first
+            if (misspellingsDB[word.toLowerCase()]) {
+                misspellingsDB[word.toLowerCase()].forEach(m => distractors.add(m));
+            }
+
+            // 2. Add visual neighbors (vowel swaps)
+            for(let i=0; i<word.length; i++) {
+                if (vowels.includes(word[i].toLowerCase())) {
+                    for(let v of vowels) {
+                        if (v !== word[i].toLowerCase()) {
+                            let alt = word.substring(0, i) + v + word.substring(i+1);
+                            distractors.add(alt);
+                        }
+                    }
+                }
+            }
+
+            // 3. Duplicate letters
+            for(let i=0; i<word.length; i++) {
+                distractors.add(word.substring(0, i+1) + word[i] + word.substring(i+1));
+            }
+
+            // 4. Remove one character
+            if (word.length > 3) {
+                for(let i=0; i<word.length; i++) {
+                    distractors.add(word.substring(0, i) + word.substring(i+1));
+                }
+            }
+
+            const result = Array.from(distractors).filter(d => d.toLowerCase() !== word.toLowerCase());
+            return result.sort(() => Math.random() - 0.5).slice(0, count);
+        }
 
         function hideAll() { 
             const screens = ['screen-auth', 'screen-home', 'screen-setup', 'screen-game', 'screen-prize', 'screen-withdraw', 'screen-stats'];
@@ -732,6 +839,10 @@
                     if(!opts.includes(r)) opts.push(r); 
                 }
             } else {
+                // VOID CHOICE: Use Visual Confusion
+                const visuals = generateVisualDistractors(target, 3);
+                opts = opts.concat(visuals);
+                // Fill if engine failed
                 while(opts.length < 4) { 
                     let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)]; 
                     if(!opts.includes(r)) opts.push(r); 
@@ -750,7 +861,7 @@
                 b.onclick = () => {
                     if (window.state.isTransitioning) return;
                     window.state.isTransitioning = true;
-                    if (o === target) { recordResult(true); nextRound(); }
+                    if (o.toLowerCase() === target.toLowerCase()) { recordResult(true); nextRound(); }
                     else { 
                         window.state.lives--; 
                         if (window.state.lives <= 0) { recordResult(false, o); triggerExplosion(nextRound); } 
@@ -763,8 +874,14 @@
 
         function renderMeteorBlast() {
             const field = document.getElementById('meteor-field'); if (!field) return; field.innerHTML = '';
-            let opts = [window.state.currentWord];
+            const target = window.state.currentWord;
+            let opts = [target];
+
+            // METEOR BLAST: Use Visual Confusion
+            const visuals = generateVisualDistractors(target, 3);
+            opts = opts.concat(visuals);
             while(opts.length < 4) { let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)]; if(!opts.includes(r)) opts.push(r); }
+
             opts.sort(() => Math.random() - 0.5).forEach((text, i) => {
                 const m = document.createElement('div'); m.className = 'meteor'; m.innerText = window.toSentenceCase(text);
                 let x = -150, y = 30 + (i * 75), speed = 1.0 + (Math.random() * 1.2);
@@ -775,7 +892,7 @@
                     x += speed; m.style.left = x + 'px';
                     if (x > field.offsetWidth + 100) {
                         processed = true;
-                        if (text === window.state.currentWord && !window.state.isTransitioning) {
+                        if (text.toLowerCase() === target.toLowerCase() && !window.state.isTransitioning) {
                             window.state.isTransitioning = true; window.state.lives--; recordResult(false, "Missed"); triggerExplosion(nextRound);
                         }
                     } else { const animId = requestAnimationFrame(move); window.state.meteorTimers.push(animId); }
@@ -784,7 +901,7 @@
                 m.onclick = () => {
                     if (processed || window.state.isTransitioning) return;
                     processed = true; m.style.opacity = '0'; window.state.isTransitioning = true;
-                    if (text === window.state.currentWord) { recordResult(true); nextRound(); }
+                    if (text.toLowerCase() === target.toLowerCase()) { recordResult(true); nextRound(); }
                     else { window.state.lives--; if (window.state.lives <= 0) { recordResult(false, text); triggerExplosion(nextRound); } else { triggerExplosion(() => { window.state.isTransitioning = false; }); } }
                 };
             });
