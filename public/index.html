@@ -1,7 +1,7 @@
 <!-- 
-🚀 MOONSHOT ACADEMY: FINAL BUILD (KEYBOARD & TIMER SUPPORTED)
+🚀 MOONSHOT ACADEMY: FINAL BUILD (V3 - INTELLIGENT DISTRACTORS)
 Updated: March 28, 2026
-Fixed: Infinite loading, Navigation, Physical Keyboard, and Void Choice Timer
+Fixed: Infinite loading, Navigation, Physical Keyboard, Void Choice Timer, and Smart Distractor Engine
 -->
 
 <!DOCTYPE html>
@@ -621,6 +621,53 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, and Void Choice Timer
             }, 100);
         }
 
+        // VISUAL CONFUSION ENGINE
+        function generateSmartDistractors(word) {
+            const wordLower = word.toLowerCase();
+            let variations = new Set();
+            
+            // 1. Check priority map
+            if (distractors[wordLower]) {
+                distractors[wordLower].forEach(v => variations.add(v.toLowerCase()));
+            }
+            
+            // 2. Phonic/Visual Mutations
+            const commonSwaps = [
+                ['ie', 'ei'], ['ei', 'ie'], ['ce', 'se'], ['se', 'ce'],
+                ['ance', 'ence'], ['ence', 'ance'], ['able', 'ible'], ['ible', 'able'],
+                ['ous', 'us'], ['tion', 'sion'], ['sion', 'tion'], ['ly', 'ley'],
+                ['y', 'i'], ['i', 'y'], ['sh', 'ch'], ['ch', 'sh']
+            ];
+            
+            commonSwaps.forEach(([from, to]) => {
+                if (wordLower.includes(from)) variations.add(wordLower.replace(new RegExp(from, 'g'), to));
+            });
+
+            // 3. Double/Single Letter Mutation
+            for (let i = 0; i < wordLower.length - 1; i++) {
+                if (wordLower[i] === wordLower[i+1]) {
+                    variations.add(wordLower.slice(0, i) + wordLower.slice(i+1)); // remove double
+                } else if (/[bcdfghjklmnpqrstvwxyz]/.test(wordLower[i])) {
+                    variations.add(wordLower.slice(0, i+1) + wordLower[i] + wordLower.slice(i+1)); // add double
+                }
+            }
+
+            // 4. Adjacent swap (Typo simulation)
+            if (wordLower.length > 3) {
+                for (let i = 1; i < wordLower.length - 2; i++) {
+                    let chars = wordLower.split('');
+                    [chars[i], chars[i+1]] = [chars[i+1], chars[i]];
+                    variations.add(chars.join(''));
+                }
+            }
+
+            // Filter out correct word and limit
+            let finalDistractors = Array.from(variations).filter(v => v !== wordLower);
+            
+            // Limit and return
+            return finalDistractors.sort(() => 0.5 - Math.random()).slice(0, 3);
+        }
+
         function updateUI() {
             document.getElementById('game-progress').innerText = `Round ${window.state.currentRound}/10`;
             const livesDiv = document.getElementById('game-lives'); livesDiv.innerHTML = '';
@@ -628,7 +675,7 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, and Void Choice Timer
             
             // Clean up screen for new mode
             ['hangman-area', 'keyboard', 'echo-input-container', 'meteor-field', 'multi-choice', 'void-timer-container'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            document.getElementById('game-word-display').innerHTML = ""; // Clear visual ghosts
+            document.getElementById('game-word-display').innerHTML = ""; // Global clear to prevent ghost blanks
             
             const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
             parts.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.add('hidden-part'); });
@@ -714,12 +761,15 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, and Void Choice Timer
         function renderChoices() {
             const container = document.getElementById('multi-choice'); container.innerHTML = "";
             let opts = [window.state.currentWord];
-            const visualDistractors = distractors[window.state.currentWord] || [];
-            opts = opts.concat(visualDistractors).slice(0, 4);
+            const smartDistractors = generateSmartDistractors(window.state.currentWord);
+            opts = opts.concat(smartDistractors);
+            
+            // If still less than 4, pull from random level DB as safety
             while(opts.length < 4) {
                 let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)];
                 if(!opts.includes(r)) opts.push(r);
             }
+            
             opts.sort(() => Math.random() - 0.5).forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = "p-6 bg-white/5 border border-white/10 rounded-3xl font-black uppercase tracking-widest hover:bg-white/10";
@@ -736,11 +786,13 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, and Void Choice Timer
 
         function renderMeteors() {
             const field = document.getElementById('meteor-field'); field.innerHTML = "";
-            [window.state.currentWord, "test", "demo"].forEach((word, index) => {
+            let opts = [window.state.currentWord].concat(generateSmartDistractors(window.state.currentWord));
+            
+            opts.forEach((word, index) => {
                 const m = document.createElement('div'); m.className = "meteor"; m.innerText = word;
-                m.style.top = (50 + index * 100) + "px"; field.appendChild(m);
-                let x = -100;
-                const animate = () => { if(window.state.currentGame !== 'meteor') return; x += 2; m.style.left = x + "px"; if(x < field.offsetWidth + 100) requestAnimationFrame(animate); };
+                m.style.top = (50 + index * 90) + "px"; field.appendChild(m);
+                let x = -150;
+                const animate = () => { if(window.state.currentGame !== 'meteor') return; x += 1.8; m.style.left = x + "px"; if(x < field.offsetWidth + 150) requestAnimationFrame(animate); };
                 animate();
                 m.onclick = () => { 
                     if (window.state.isTransitioning) return;
