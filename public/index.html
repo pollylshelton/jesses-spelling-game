@@ -1,7 +1,7 @@
 <!-- 
-🚀 MOONSHOT ACADEMY: FINAL BUILD
+🚀 MOONSHOT ACADEMY: FINAL BUILD (BUG FIX VERSION)
 Updated: March 28, 2026
-Fixed: showStats navigation error & Custom Word Payload
+Fixed: Infinite loading state & Navigation functions
 -->
 
 <!DOCTYPE html>
@@ -358,4 +358,384 @@ Fixed: showStats navigation error & Custom Word Payload
             <p id="withdraw-balance" class="text-8xl impact-font mb-12 text-white">0 stars</p>
             <div class="space-y-4">
                 <button onclick="window.initiateWithdrawal('gold')" class="w-full py-5 bg-yellow-500 text-black font-black rounded-3xl uppercase tracking-widest hover:brightness-110">Issue Golden Ticket</button>
-                <button onclick="window.initiateWithdrawal('mastery')" class="w-full py-5 bg-sky-600 text-white font-black rounded
+                <button onclick="window.initiateWithdrawal('mastery')" class="w-full py-5 bg-sky-600 text-white font-black rounded-3xl uppercase tracking-widest hover:bg-sky-500">Issue Mastery Cert</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyATNU3KcsoehUoWxzPasVQrxUGgdVvjbq4",
+            authDomain: "jesses-spelling-game.firebaseapp.com",
+            projectId: "jesses-spelling-game",
+            storageBucket: "jesses-spelling-game.firebasestorage.app",
+            messagingSenderId: "768883009643",
+            appId: "1:768883009643:web:591162cc7c9180b26be92e"
+        };
+        const appId = "jesses-spelling-game";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.state = {
+            pilotName: "", bank: 0, currentGame: null, words: [], currentRound: 0,
+            lives: 3, currentWord: "", guessed: [], history: [], isTransitioning: false,
+            sessionCredits: 0, customWords: []
+        };
+
+        const helmets = {
+            Jesse: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="j-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#j-grad)"/><rect x="25" y="32" width="50" height="22" rx="4" fill="#000"/></svg>`,
+            Ruben: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="r-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#10b981"/><stop offset="100%" style="stop-color:#064e3b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#r-grad)"/><rect x="25" y="32" width="50" height="25" rx="4" fill="#000"/></svg>`,
+            Elodie: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="e-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f472b6"/><stop offset="100%" style="stop-color:#831843"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#e-grad)"/><rect x="25" y="35" width="50" height="22" rx="10" fill="#000"/></svg>`,
+            Friend: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="f-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#94a3b8"/><stop offset="100%" style="stop-color:#475569"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#f-grad)"/><rect x="25" y="35" width="50" height="20" rx="2" fill="#000"/></svg>`
+        };
+
+        const wordsDB = {
+            recep: ["cat", "dog", "pig", "sun", "big", "yes", "can", "red", "run", "ten", "cup", "box", "hat", "pen", "leg", "top", "hop", "mud"],
+            y1: ["the", "said", "house", "school", "friend", "love", "push", "pull", "full", "here", "there", "where", "once", "some", "come", "your", "today", "says", "friend", "house"],
+            y2: ["beautiful", "because", "climb", "door", "floor", "find", "kind", "mind", "child", "every", "great", "break", "pretty", "after", "again", "both", "busy", "clothes", "father", "mother", "money", "only", "sugar", "water"],
+            y34: ["accident", "actual", "address", "answer", "appear", "arrive", "believe", "bicycle", "breath", "breathe", "build", "busy", "calendar", "caught", "centre", "century", "certain", "circle", "complete", "consider", "continue", "decide", "describe", "different", "difficult", "disappear", "early", "earth", "eight", "enough", "exercise", "experience", "experiment", "extreme", "famous", "favourite", "forward", "fruit", "grammar", "group", "guard", "guide", "heard", "heart", "height", "history", "imagine", "increase", "important", "interest", "island", "knowledge", "learn", "length", "library", "material", "medicine", "mention", "minute", "natural", "naughty", "notice", "occasion", "often", "opposite", "ordinary", "particular", "peculiar", "perhaps", "popular", "position", "possess", "possession", "possible", "potatoes", "pressure", "probably", "promise", "purpose", "quarter", "question", "recent", "regular", "reign", "remember", "sentence", "separate", "special", "straight", "strange", "strength", "suppose", "surprise", "therefore", "though", "although", "thought", "through", "various", "weight", "woman"],
+            y56: ["accommodate", "accompany", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediate", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht"]
+        };
+
+        const distractors = {
+            beautiful: ["beatiful", "beautifull"],
+            because: ["becoz", "becuase"],
+            friend: ["freind"],
+            school: ["skool"],
+            the: ["teh", "th"]
+        };
+
+        function hideAll() { document.querySelectorAll('[id^="screen-"]').forEach(s => s.classList.add('hidden')); document.body.className = ""; }
+        window.toSentenceCase = (str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        window.speakWord = () => { const msg = new SpeechSynthesisUtterance(window.state.currentWord); msg.rate = 0.8; window.speechSynthesis.speak(msg); };
+        window.showHome = () => { 
+            hideAll(); 
+            document.getElementById('screen-home').classList.remove('hidden'); 
+            document.getElementById('active-pilot-helmet').innerHTML = helmets[window.state.pilotName] || ""; 
+            document.getElementById('pilot-name-display').innerText = window.state.pilotName; 
+            document.getElementById('balance-display').innerText = window.state.bank + " stars"; 
+        };
+        window.chooseGame = (game) => { window.state.currentGame = game; hideAll(); document.body.className = game + '-active'; document.getElementById('screen-setup').classList.remove('hidden'); renderCustomWordTags(); };
+        window.closeConfirm = () => document.getElementById('confirm-dialog').classList.add('hidden');
+
+        // NAVIGATION & MODALS
+        window.showWithdraw = () => {
+            hideAll();
+            document.getElementById('screen-withdraw').classList.remove('hidden');
+            document.getElementById('withdraw-balance').innerText = window.state.bank + " stars";
+        };
+
+        window.initiateWithdrawal = (type) => {
+            const dialog = document.getElementById('confirm-dialog');
+            document.getElementById('confirm-message').innerText = "Processing this withdrawal will reset your Galactic Bank to zero. Ready to issue certificate?";
+            dialog.classList.remove('hidden');
+            document.getElementById('execute-reset-btn').onclick = async () => {
+                window.state.bank = 0;
+                await saveStateToCloud();
+                window.closeConfirm();
+                window.showHome();
+            };
+        };
+
+        window.triggerReset = (type) => {
+            const dialog = document.getElementById('confirm-dialog');
+            dialog.classList.remove('hidden');
+            document.getElementById('confirm-message').innerText = type === 'bank' ? "Reset star credits?" : "Clear all logs?";
+            document.getElementById('execute-reset-btn').onclick = async () => {
+                if (type === 'bank') window.state.bank = 0;
+                else window.state.history = [];
+                await saveStateToCloud();
+                window.closeConfirm();
+                if (type === 'history') window.showStats(); else window.showHome();
+            };
+        };
+
+        // DIAGNOSTIC DASHBOARD
+        window.showStats = () => {
+            hideAll();
+            document.getElementById('screen-stats').classList.remove('hidden');
+            const mList = document.getElementById('mastered-words-list');
+            const sList = document.getElementById('struggling-words-list');
+            const lList = document.getElementById('learning-words-list');
+            const tutor = document.getElementById('tutor-insight-text');
+            
+            mList.innerHTML = ""; sList.innerHTML = ""; lList.innerHTML = "";
+
+            if (window.state.history.length === 0) {
+                mList.innerHTML = '<p class="text-white/20 text-xs">No mission data recorded yet.</p>';
+                tutor.innerText = "Complete some missions to generate tutoring insights.";
+                return;
+            }
+
+            const stats = {};
+            window.state.history.forEach(h => {
+                if(!stats[h.word]) stats[h.word] = { pass: 0, fail: 0, mistakes: new Set() };
+                if(h.result) stats[h.word].pass++;
+                else {
+                    stats[h.word].fail++;
+                    if(h.mistake && !["Fail", "Missed"].includes(h.mistake)) stats[h.word].mistakes.add(h.mistake.toLowerCase());
+                }
+            });
+
+            let mistakesFound = false;
+            Object.keys(stats).forEach(w => {
+                const s = stats[w];
+                const total = s.pass + s.fail;
+                const rate = s.pass / total;
+                const mArr = Array.from(s.mistakes);
+                const mistakesHtml = mArr.length > 0 ? `<div class="mt-2 flex flex-wrap gap-1">${mArr.map(m => `<span class="mistake-tag">${m}</span>`).join('')}</div>` : '';
+                
+                const card = `<div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                                <div class="flex justify-between items-center"><span class="font-bold uppercase">${w}</span> <span class="text-[9px] opacity-30">${total} Tries</span></div>
+                                ${mistakesHtml}
+                              </div>`;
+
+                if (rate >= 0.8 && s.pass >= 2) {
+                    mList.innerHTML += `<span class="bg-green-500/10 text-green-400 border border-green-500/20 px-3 py-1 rounded-full text-xs font-black uppercase">${w}</span>`;
+                } else if (rate <= 0.4) {
+                    sList.innerHTML += card;
+                    mistakesFound = true;
+                } else {
+                    lList.innerHTML += card;
+                }
+            });
+
+            tutor.innerText = mistakesFound ? "Tutoring Insight: Focus on the 'Critical' words. The child may be confusing visual patterns." : "The pilot is doing well! Full speed ahead to higher levels.";
+        };
+
+        // CUSTOM WORD LIST MANAGER
+        window.addCustomWord = function() {
+            const input = document.getElementById('custom-word-input');
+            const word = input.value.trim().toLowerCase();
+            if (word && !window.state.customWords.includes(word) && window.state.customWords.length < 50) {
+                window.state.customWords.push(word);
+                input.value = '';
+                renderCustomWordTags();
+                saveStateToCloud();
+            }
+        };
+
+        window.removeCustomWord = function(word) {
+            window.state.customWords = window.state.customWords.filter(w => w !== word);
+            renderCustomWordTags();
+            saveStateToCloud();
+        };
+
+        function renderCustomWordTags() {
+            const container = document.getElementById('custom-word-list');
+            if (!container) return;
+            container.innerHTML = '';
+            window.state.customWords.forEach(w => {
+                container.innerHTML += `<div class="custom-word-tag">${w.toUpperCase()} <span onclick="window.removeCustomWord('${w}')">×</span></div>`;
+            });
+        }
+
+        // FIREBASE PERSISTENCE
+        async function saveStateToCloud() {
+            if (!window.state.pilotName) return;
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pilots', window.state.pilotName.toLowerCase());
+            await setDoc(docRef, { credits: window.state.bank, history: window.state.history, customWords: window.state.customWords }, { merge: true });
+        }
+
+        window.selectPilot = async (name) => {
+            window.state.pilotName = name;
+            const unlock = new SpeechSynthesisUtterance(""); window.speechSynthesis.speak(unlock);
+            const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'pilots', name.toLowerCase()));
+            if (snap.exists()) {
+                const data = snap.data();
+                window.state.bank = data.credits || 0;
+                window.state.history = data.history || [];
+                window.state.customWords = data.customWords || [];
+            } else {
+                window.state.bank = 0; window.state.history = []; window.state.customWords = [];
+            }
+            window.showHome();
+        };
+
+        // MISSION LOGIC
+        window.launchMission = () => {
+            let pool = [];
+            const useCustom = document.getElementById('check-use-custom').checked;
+            
+            if (useCustom && window.state.customWords.length > 0) {
+                pool = [...window.state.customWords];
+            } else {
+                if (document.getElementById('check-recep').checked) pool = pool.concat(wordsDB.recep);
+                if (document.getElementById('check-y1').checked) pool = pool.concat(wordsDB.y1);
+                if (document.getElementById('check-y2').checked) pool = pool.concat(wordsDB.y2);
+                if (document.getElementById('check-y34').checked) pool = pool.concat(wordsDB.y34);
+                if (document.getElementById('check-y56').checked) pool = pool.concat(wordsDB.y56);
+            }
+
+            if (pool.length === 0) pool = wordsDB.recep;
+
+            window.state.words = pool.sort(() => Math.random() - 0.5).slice(0, 10);
+            window.state.currentRound = 0;
+            window.state.lives = (window.state.currentGame === 'lunar') ? 6 : 3;
+            window.state.sessionCredits = 0;
+
+            hideAll();
+            document.getElementById('screen-game').classList.remove('hidden');
+            nextRound();
+        };
+
+        // GAME LOOP
+        function nextRound() {
+            if (window.state.currentRound >= 10 || (window.state.lives <= 0 && window.state.currentGame !== 'lunar')) { endGame(); return; }
+            window.state.currentWord = window.state.words[window.state.currentRound].toLowerCase();
+            window.state.guessed = []; window.state.currentRound++; window.state.isTransitioning = false;
+            updateUI(); window.speakWord();
+        }
+
+        function updateUI() {
+            document.getElementById('game-progress').innerText = `Round ${window.state.currentRound}/10`;
+            const livesDiv = document.getElementById('game-lives'); livesDiv.innerHTML = '';
+            for(let i=0; i<3; i++) { livesDiv.innerHTML += i < window.state.lives ? '❤️' : '🖤'; }
+            ['hangman-area', 'keyboard', 'echo-input-container', 'meteor-field', 'multi-choice'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
+            parts.forEach(p => document.getElementById(p).classList.add('hidden-part'));
+
+            if (window.state.currentGame === 'lunar') {
+                document.getElementById('hangman-area').classList.remove('hidden');
+                document.getElementById('keyboard').classList.remove('hidden');
+                renderBlanks(); renderKeyboard();
+            } else if (window.state.currentGame === 'death') {
+                document.getElementById('echo-input-container').classList.remove('hidden');
+                document.getElementById('echo-field').value = ""; document.getElementById('echo-field').focus();
+            } else if (window.state.currentGame === 'void') {
+                document.getElementById('multi-choice').classList.remove('hidden');
+                renderChoices();
+            } else if (window.state.currentGame === 'meteor') {
+                document.getElementById('meteor-field').classList.remove('hidden');
+                renderMeteors();
+            }
+        }
+
+        window.handleGuess = (char) => {
+            if (window.state.guessed.includes(char) || window.state.isTransitioning) return;
+            window.state.guessed.push(char);
+            if (window.state.currentWord.includes(char)) {
+                renderBlanks();
+                if (window.state.currentWord.split('').every(c => window.state.guessed.includes(c))) { recordResult(true); setTimeout(nextRound, 1000); }
+            } else {
+                window.state.lives--;
+                const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
+                const idx = 6 - window.state.lives - 1;
+                if(idx >= 0 && document.getElementById(parts[idx])) document.getElementById(parts[idx]).classList.remove('hidden-part');
+                if (window.state.lives <= 0) { recordResult(false); triggerExplosion(nextRound); }
+            }
+            renderKeyboard();
+        };
+
+        function renderBlanks() {
+            const container = document.getElementById('game-word-display');
+            container.innerHTML = "";
+            window.state.currentWord.split('').forEach(char => {
+                container.innerHTML += `<div class="blank">${window.state.guessed.includes(char) ? char.toUpperCase() : "_"}</div>`;
+            });
+        }
+
+        function renderKeyboard() {
+            const kb = document.getElementById('keyboard'); kb.innerHTML = "";
+            "abcdefghijklmnopqrstuvwxyz".split('').forEach(char => {
+                const used = window.state.guessed.includes(char);
+                const btn = document.createElement('button');
+                btn.className = `p-3 rounded-xl font-black uppercase text-sm ${used ? 'bg-white/5 text-white/20' : 'bg-white/10 hover:bg-white/20'}`;
+                btn.innerText = char; btn.onclick = () => window.handleGuess(char);
+                kb.appendChild(btn);
+            });
+        }
+
+        function recordResult(ok, mistake = null) {
+            const reward = ok ? 10 : 0;
+            window.state.bank += reward; window.state.sessionCredits += reward;
+            window.state.history.push({ word: window.state.currentWord, result: ok, mistake: mistake, game: window.state.currentGame, timestamp: Date.now() });
+        }
+
+        function triggerExplosion(callback) {
+            const overlay = document.getElementById('explosion-overlay');
+            const app = document.getElementById('app-container');
+            overlay.style.opacity = "0.8"; app.classList.add('shake');
+            setTimeout(() => { overlay.style.opacity = "0"; app.classList.remove('shake'); if(callback) callback(); }, 300);
+        }
+
+        async function endGame() {
+            hideAll(); document.getElementById('screen-prize').classList.remove('hidden');
+            document.getElementById('earned-amount').innerText = `+${window.state.sessionCredits} stars`;
+            await saveStateToCloud();
+        }
+
+        window.submitEcho = () => {
+            const input = document.getElementById('echo-field').value.trim().toLowerCase();
+            if (input === window.state.currentWord) { recordResult(true); nextRound(); }
+            else { window.state.lives--; recordResult(false, input); triggerExplosion(nextRound); }
+        };
+
+        function renderChoices() {
+            const container = document.getElementById('multi-choice'); container.innerHTML = "";
+            let opts = [window.state.currentWord];
+            const visualDistractors = distractors[window.state.currentWord] || [];
+            opts = opts.concat(visualDistractors).slice(0, 4);
+            while(opts.length < 4) {
+                let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)];
+                if(!opts.includes(r)) opts.push(r);
+            }
+            opts.sort(() => Math.random() - 0.5).forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "p-6 bg-white/5 border border-white/10 rounded-3xl font-black uppercase tracking-widest hover:bg-white/10";
+                btn.innerText = opt;
+                btn.onclick = () => { if(opt === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; recordResult(false, opt); triggerExplosion(nextRound); } };
+                container.appendChild(btn);
+            });
+        }
+
+        function renderMeteors() {
+            const field = document.getElementById('meteor-field'); field.innerHTML = "";
+            [window.state.currentWord, "test", "demo"].forEach((word, index) => {
+                const m = document.createElement('div'); m.className = "meteor"; m.innerText = word;
+                m.style.top = (50 + index * 100) + "px"; field.appendChild(m);
+                let x = -100;
+                const animate = () => { if(window.state.currentGame !== 'meteor') return; x += 2; m.style.left = x + "px"; if(x < field.offsetWidth + 100) requestAnimationFrame(animate); };
+                animate();
+                m.onclick = () => { if(word === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; recordResult(false, word); triggerExplosion(nextRound); } };
+            });
+        }
+
+        // INITIALIZATION
+        const initializeAppSession = async () => {
+            // Fail-safe timeout to clear overlay if auth hangs
+            const failSafeTimeout = setTimeout(() => {
+                removeOverlay();
+            }, 5000);
+
+            const removeOverlay = () => {
+                const o = document.getElementById('connection-overlay');
+                if (o) {
+                    o.classList.add('opacity-0');
+                    setTimeout(() => o.classList.add('hidden'), 500);
+                }
+            };
+
+            try {
+                // Wait for anonymous sign-in
+                await signInAnonymously(auth);
+            } catch (err) {
+                console.error("Firebase Initialization Error:", err);
+            } finally {
+                clearTimeout(failSafeTimeout);
+                removeOverlay();
+            }
+        };
+
+        initializeAppSession();
+
+        Object.keys(helmets).forEach(p => { const el = document.getElementById(`helmet-${p}`); if(el) el.innerHTML = helmets[p]; });
+    </script>
+</body>
+</html>
