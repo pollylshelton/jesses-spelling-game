@@ -1,7 +1,7 @@
 <!-- 
-🚀 MOONSHOT ACADEMY: FINAL BUILD (BUG FIX VERSION)
+🚀 MOONSHOT ACADEMY: FINAL BUILD (KEYBOARD SUPPORTED)
 Updated: March 28, 2026
-Fixed: Infinite loading state & Navigation functions
+Fixed: Infinite loading, Navigation, and Physical Keyboard Support
 -->
 
 <!DOCTYPE html>
@@ -599,7 +599,7 @@ Fixed: Infinite loading state & Navigation functions
             for(let i=0; i<3; i++) { livesDiv.innerHTML += i < window.state.lives ? '❤️' : '🖤'; }
             ['hangman-area', 'keyboard', 'echo-input-container', 'meteor-field', 'multi-choice'].forEach(id => document.getElementById(id).classList.add('hidden'));
             const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
-            parts.forEach(p => document.getElementById(p).classList.add('hidden-part'));
+            parts.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.add('hidden-part'); });
 
             if (window.state.currentGame === 'lunar') {
                 document.getElementById('hangman-area').classList.remove('hidden');
@@ -607,7 +607,7 @@ Fixed: Infinite loading state & Navigation functions
                 renderBlanks(); renderKeyboard();
             } else if (window.state.currentGame === 'death') {
                 document.getElementById('echo-input-container').classList.remove('hidden');
-                document.getElementById('echo-field').value = ""; document.getElementById('echo-field').focus();
+                const f = document.getElementById('echo-field'); f.value = ""; setTimeout(() => f.focus(), 100);
             } else if (window.state.currentGame === 'void') {
                 document.getElementById('multi-choice').classList.remove('hidden');
                 renderChoices();
@@ -707,30 +707,37 @@ Fixed: Infinite loading state & Navigation functions
             });
         }
 
+        // PHYSICAL KEYBOARD SUPPORT
+        window.addEventListener('keydown', (e) => {
+            if (window.state.isTransitioning) return;
+            const screenGame = document.getElementById('screen-game');
+            if (screenGame.classList.contains('hidden')) return;
+
+            if (window.state.currentGame === 'lunar') {
+                const key = e.key.toLowerCase();
+                if (key.length === 1 && key >= 'a' && key <= 'z') {
+                    window.handleGuess(key);
+                }
+            } else if (window.state.currentGame === 'death') {
+                if (e.key === 'Enter') {
+                    window.submitEcho();
+                } else {
+                    // Keep cursor in field if user starts typing but focus was lost
+                    const f = document.getElementById('echo-field');
+                    if (document.activeElement !== f) f.focus();
+                }
+            }
+        });
+
         // INITIALIZATION
         const initializeAppSession = async () => {
-            // Fail-safe timeout to clear overlay if auth hangs
-            const failSafeTimeout = setTimeout(() => {
-                removeOverlay();
-            }, 5000);
-
+            const failSafeTimeout = setTimeout(() => { removeOverlay(); }, 5000);
             const removeOverlay = () => {
                 const o = document.getElementById('connection-overlay');
-                if (o) {
-                    o.classList.add('opacity-0');
-                    setTimeout(() => o.classList.add('hidden'), 500);
-                }
+                if (o) { o.classList.add('opacity-0'); setTimeout(() => o.classList.add('hidden'), 500); }
             };
-
-            try {
-                // Wait for anonymous sign-in
-                await signInAnonymously(auth);
-            } catch (err) {
-                console.error("Firebase Initialization Error:", err);
-            } finally {
-                clearTimeout(failSafeTimeout);
-                removeOverlay();
-            }
+            try { await signInAnonymously(auth); } catch (err) { console.error("Firebase Initialization Error:", err); } 
+            finally { clearTimeout(failSafeTimeout); removeOverlay(); }
         };
 
         initializeAppSession();
