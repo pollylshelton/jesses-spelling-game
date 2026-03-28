@@ -1,7 +1,7 @@
 <!-- 
-🚀 MOONSHOT ACADEMY: FINAL BUILD (KEYBOARD SUPPORTED)
+🚀 MOONSHOT ACADEMY: FINAL BUILD (KEYBOARD & TIMER SUPPORTED)
 Updated: March 28, 2026
-Fixed: Infinite loading, Navigation, and Physical Keyboard Support
+Fixed: Infinite loading, Navigation, Physical Keyboard, and Void Choice Timer
 -->
 
 <!DOCTYPE html>
@@ -385,7 +385,7 @@ Fixed: Infinite loading, Navigation, and Physical Keyboard Support
         window.state = {
             pilotName: "", bank: 0, currentGame: null, words: [], currentRound: 0,
             lives: 3, currentWord: "", guessed: [], history: [], isTransitioning: false,
-            sessionCredits: 0, customWords: []
+            sessionCredits: 0, customWords: [], voidTimer: null
         };
 
         const helmets = {
@@ -416,6 +416,7 @@ Fixed: Infinite loading, Navigation, and Physical Keyboard Support
         window.speakWord = () => { const msg = new SpeechSynthesisUtterance(window.state.currentWord); msg.rate = 0.8; window.speechSynthesis.speak(msg); };
         window.showHome = () => { 
             hideAll(); 
+            clearAllTimers();
             document.getElementById('screen-home').classList.remove('hidden'); 
             document.getElementById('active-pilot-helmet').innerHTML = helmets[window.state.pilotName] || ""; 
             document.getElementById('pilot-name-display').innerText = window.state.pilotName; 
@@ -423,6 +424,13 @@ Fixed: Infinite loading, Navigation, and Physical Keyboard Support
         };
         window.chooseGame = (game) => { window.state.currentGame = game; hideAll(); document.body.className = game + '-active'; document.getElementById('screen-setup').classList.remove('hidden'); renderCustomWordTags(); };
         window.closeConfirm = () => document.getElementById('confirm-dialog').classList.add('hidden');
+
+        function clearAllTimers() {
+            if (window.state.voidTimer) {
+                clearInterval(window.state.voidTimer);
+                window.state.voidTimer = null;
+            }
+        }
 
         // NAVIGATION & MODALS
         window.showWithdraw = () => {
@@ -479,7 +487,7 @@ Fixed: Infinite loading, Navigation, and Physical Keyboard Support
                 if(h.result) stats[h.word].pass++;
                 else {
                     stats[h.word].fail++;
-                    if(h.mistake && !["Fail", "Missed"].includes(h.mistake)) stats[h.word].mistakes.add(h.mistake.toLowerCase());
+                    if(h.mistake && !["Fail", "Missed", "Timeout"].includes(h.mistake)) stats[h.word].mistakes.add(h.mistake.toLowerCase());
                 }
             });
 
@@ -587,17 +595,41 @@ Fixed: Infinite loading, Navigation, and Physical Keyboard Support
 
         // GAME LOOP
         function nextRound() {
+            clearAllTimers();
             if (window.state.currentRound >= 10 || (window.state.lives <= 0 && window.state.currentGame !== 'lunar')) { endGame(); return; }
             window.state.currentWord = window.state.words[window.state.currentRound].toLowerCase();
             window.state.guessed = []; window.state.currentRound++; window.state.isTransitioning = false;
             updateUI(); window.speakWord();
         }
 
+        function startVoidTimer() {
+            const bar = document.getElementById('void-timer-bar');
+            if (!bar) return;
+            let timeLeft = 5.0; 
+            bar.style.width = "100%";
+            
+            window.state.voidTimer = setInterval(() => {
+                if (window.state.isTransitioning) return;
+                timeLeft -= 0.1;
+                bar.style.width = (timeLeft / 5.0 * 100) + "%";
+                if (timeLeft <= 0) {
+                    clearInterval(window.state.voidTimer);
+                    window.state.lives--;
+                    recordResult(false, "Timeout");
+                    triggerExplosion(nextRound);
+                }
+            }, 100);
+        }
+
         function updateUI() {
             document.getElementById('game-progress').innerText = `Round ${window.state.currentRound}/10`;
             const livesDiv = document.getElementById('game-lives'); livesDiv.innerHTML = '';
             for(let i=0; i<3; i++) { livesDiv.innerHTML += i < window.state.lives ? '❤️' : '🖤'; }
-            ['hangman-area', 'keyboard', 'echo-input-container', 'meteor-field', 'multi-choice'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            
+            // Clean up screen for new mode
+            ['hangman-area', 'keyboard', 'echo-input-container', 'meteor-field', 'multi-choice', 'void-timer-container'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById('game-word-display').innerHTML = ""; // Clear visual ghosts
+            
             const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
             parts.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.add('hidden-part'); });
 
@@ -609,8 +641,10 @@ Fixed: Infinite loading, Navigation, and Physical Keyboard Support
                 document.getElementById('echo-input-container').classList.remove('hidden');
                 const f = document.getElementById('echo-field'); f.value = ""; setTimeout(() => f.focus(), 100);
             } else if (window.state.currentGame === 'void') {
+                document.getElementById('void-timer-container').classList.remove('hidden');
                 document.getElementById('multi-choice').classList.remove('hidden');
                 renderChoices();
+                startVoidTimer();
             } else if (window.state.currentGame === 'meteor') {
                 document.getElementById('meteor-field').classList.remove('hidden');
                 renderMeteors();
@@ -690,7 +724,12 @@ Fixed: Infinite loading, Navigation, and Physical Keyboard Support
                 const btn = document.createElement('button');
                 btn.className = "p-6 bg-white/5 border border-white/10 rounded-3xl font-black uppercase tracking-widest hover:bg-white/10";
                 btn.innerText = opt;
-                btn.onclick = () => { if(opt === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; recordResult(false, opt); triggerExplosion(nextRound); } };
+                btn.onclick = () => { 
+                    if (window.state.isTransitioning) return;
+                    window.state.isTransitioning = true;
+                    if(opt === window.state.currentWord) { recordResult(true); nextRound(); } 
+                    else { window.state.lives--; recordResult(false, opt); triggerExplosion(nextRound); } 
+                };
                 container.appendChild(btn);
             });
         }
@@ -703,7 +742,12 @@ Fixed: Infinite loading, Navigation, and Physical Keyboard Support
                 let x = -100;
                 const animate = () => { if(window.state.currentGame !== 'meteor') return; x += 2; m.style.left = x + "px"; if(x < field.offsetWidth + 100) requestAnimationFrame(animate); };
                 animate();
-                m.onclick = () => { if(word === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; recordResult(false, word); triggerExplosion(nextRound); } };
+                m.onclick = () => { 
+                    if (window.state.isTransitioning) return;
+                    window.state.isTransitioning = true;
+                    if(word === window.state.currentWord) { recordResult(true); nextRound(); } 
+                    else { window.state.lives--; recordResult(false, word); triggerExplosion(nextRound); } 
+                };
             });
         }
 
@@ -722,7 +766,6 @@ Fixed: Infinite loading, Navigation, and Physical Keyboard Support
                 if (e.key === 'Enter') {
                     window.submitEcho();
                 } else {
-                    // Keep cursor in field if user starts typing but focus was lost
                     const f = document.getElementById('echo-field');
                     if (document.activeElement !== f) f.focus();
                 }
