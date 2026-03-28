@@ -1,13 +1,20 @@
+<!-- 
+🚀 MOONSHOT ACADEMY: FINAL BUILD
+Updated: March 28, 2026
+Fixed: showStats navigation error & Custom Word Payload
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jesse's Moonshot Academy</title>
+    <title>Moonshot Academy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
     
     <style>
+        :root { --accent: #38bdf8; --danger: #f43f5e; --success: #4ade80; --warning: #fbbf24; }
         body {
             font-family: 'Outfit', sans-serif;
             background: #030508;
@@ -41,7 +48,6 @@
             z-index: 10;
         }
         
-        /* Background Dynamics */
         .bg-layer { position: fixed; inset: 0; z-index: -2; background: #030508; }
         .aurora { position: fixed; width: 100vw; height: 100vh; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.15; animation: drift 25s infinite alternate ease-in-out; pointer-events: none; }
         .aurora-1 { background: #ff0080; top: -30%; left: -20%; }
@@ -56,17 +62,10 @@
         #mermaid-bg { background: linear-gradient(180deg, #0c4a6e 0%, #082f49 100%); }
         #unicorn-bg { background: linear-gradient(135deg, #4c1d95 0%, #2e1065 100%); }
 
-        /* Custom Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
-
-        /* TILE DESIGN */
         .game-tile { 
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%); 
             border: 1px solid rgba(255, 255, 255, 0.1); 
-            cursor: pointer !important; 
+            cursor: pointer; 
             padding: 25px 15px; 
             border-radius: 35px; 
             text-align: center; 
@@ -78,911 +77,285 @@
             justify-content: center;
             height: 100%;
         }
-        @media (min-width: 768px) { .game-tile { padding: 35px 20px; } }
-        
-        .game-tile:hover { 
-            transform: translateY(-8px) scale(1.03); 
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.12) 0%, rgba(56, 189, 248, 0.02) 100%); 
-            border-color: rgba(56, 189, 248, 0.5); 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-        }
+        .game-tile:hover { transform: translateY(-8px) scale(1.03); border-color: rgba(56, 189, 248, 0.5); }
 
-        #explosion-overlay { position: fixed; inset: 0; z-index: 1000; pointer-events: none; background: radial-gradient(circle, #f43f5e 0%, transparent 70%); opacity: 0; display: flex; align-items: center; justify-content: center; }
-        .animate-explosion { animation: explode 0.8s ease-out forwards; }
-        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
-        
-        .helmet-frame { width: 110px; height: 110px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid rgba(255, 255, 255, 0.05); background: #000; transition: all 0.4s; box-shadow: 0 0 30px rgba(0,0,0,1); }
-        .blank { border-bottom: 4px solid #38bdf8; width: clamp(18px, 6vw, 45px); height: 50px; display: flex; align-items: center; justify-content: center; font-size: clamp(1.2rem, 4vw, 2.5rem); font-weight: 900; }
+        .blank { border-bottom: 4px solid #38bdf8; width: clamp(20px, 6vw, 50px); height: 55px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; }
         
         .timer-container { width: 100%; height: 12px; background: rgba(255,255,255,0.05); border-radius: 20px; margin-bottom: 25px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
-        #void-timer-bar { height: 100%; width: 100%; background: #fbbf24; box-shadow: 0 0 20px rgba(251,191,36,0.4); transition: width 0.1s linear; }
+        #void-timer-bar { height: 100%; width: 100%; background: #fbbf24; transition: width 0.1s linear; }
 
-        #hangman-visual { width: 100%; max-width: 280px; height: auto; margin: 0 auto; }
-        .hangman-part { transition: opacity 0.4s; stroke: #38bdf8; stroke-width: 5; fill: none; }
-        .hidden-part { opacity: 0 !important; }
-        
-        /* Dangling Animation */
-        @keyframes dangle {
-            0% { transform: rotate(-4deg); }
-            50% { transform: rotate(4deg); }
-            100% { transform: rotate(-4deg); }
-        }
-        .dangle-group {
-            transform-origin: 250px 50px;
-            animation: dangle 3.5s ease-in-out infinite;
-        }
+        #meteor-field { position: relative; width: 100%; height: 400px; background: rgba(0,0,0,0.6); border-radius: 30px; overflow: hidden; margin: 15px 0; border: 1px solid rgba(255,255,255,0.1); }
+        .meteor { position: absolute; background: rgba(56, 189, 248, 0.15); border: 2px solid #38bdf8; padding: 12px 20px; border-radius: 60px; font-size: 1.1rem; cursor: pointer; white-space: nowrap; font-weight: 900; box-shadow: 0 0 20px rgba(56,189,248,0.4); color: white; text-transform: uppercase; z-index: 50; }
 
-        #meteor-field { position: relative; width: 100%; height: 350px; background: rgba(0,0,0,0.6); border-radius: 30px; overflow: hidden; margin: 20px 0; border: 1px solid rgba(255,255,255,0.1); }
-        @media (min-width: 768px) { #meteor-field { height: 450px; border-radius: 40px; } }
-        
-        .meteor { position: absolute; background: rgba(56, 189, 248, 0.15); border: 2px solid #38bdf8; padding: 12px 20px; border-radius: 60px; font-size: 1rem; cursor: pointer; white-space: nowrap; font-weight: 900; box-shadow: 0 0 20px rgba(56,189,248,0.4); color: white; text-transform: uppercase; z-index: 50; }
-        @media (min-width: 768px) { .meteor { padding: 24px 40px; font-size: 1.25rem; } }
+        .mistake-tag { color: var(--danger); text-decoration: line-through; margin-right: 6px; font-style: italic; opacity: 0.8; font-size: 11px; }
 
-        .illustration-card { background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 25px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; width: 140px; height: 140px; }
-        @media (min-width: 768px) { .illustration-card { padding: 25px; border-radius: 35px; width: 180px; height: 180px; } }
-        .illustration-card svg, .illustration-card span { font-size: 4rem; pointer-events: none; }
-        @media (min-width: 768px) { .illustration-card span { font-size: 5rem; } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .shake { animation: shake 0.2s ease-in-out 0s 2; }
 
-        .bubble-btn { width: 100px; height: 100px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), rgba(56, 189, 248, 0.1)); border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; animation: float 4s infinite ease-in-out; }
-        @media (min-width: 768px) { .bubble-btn { width: 140px; height: 140px; font-size: 2.5rem; } }
-        
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        @keyframes explode { 0% { opacity: 0; transform: scale(0.8); } 20% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0; transform: scale(1.5); } }
-        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
-
-        .key-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); flex: 1; max-width: 45px; height: 45px; border-radius: 8px; font-weight: 900; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; color: white; display: flex; align-items: center; justify-content: center; }
-        @media (min-width: 768px) { .key-btn { max-width: 55px; height: 55px; border-radius: 12px; font-size: 1rem; } }
-        .key-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: transparent; }
-        
-        .back-btn { background: rgba(255,255,255,0.08); padding: 10px 20px; border-radius: 12px; font-size: 11px; cursor: pointer; font-weight: 900; border: 1px solid rgba(255,255,255,0.1); color: #38bdf8; transition: all 0.3s; text-transform: uppercase; }
-
-        .vault-dashboard { background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(56, 189, 248, 0.02)); border: 1px solid rgba(56, 189, 248, 0.3); border-left: 6px solid #38bdf8; padding: 25px; border-radius: 35px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; height: 100%; }
-        .pilot-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%); border: 1px solid rgba(255, 255, 255, 0.1); padding: 25px; border-radius: 35px; display: flex; align-items: center; gap: 24px; height: 100%; }
+        .hidden-part { opacity: 0.1; }
+        #hangman-visual { height: 200px; width: auto; margin: 0 auto; stroke: white; stroke-width: 4; fill: none; }
 
         @media print { .no-print { display: none !important; } .print-only { display: block !important; } body { background: white !important; } }
         .print-only { display: none; }
-        .mastery-list span { background: #f1f5f9; padding: 4px 12px; border-radius: 50px; margin: 4px; display: inline-block; border: 1px solid #cbd5e1; font-weight: 900; font-size: 12px; color: #000; }
-        .custom-word-tag { display: inline-block; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 4px 10px; border-radius: 8px; font-size: 12px; margin: 2px; }
-        .custom-word-delete { color: #f43f5e; cursor: pointer; font-weight: bold; margin-left: 6px; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
-        @media (max-width: 768px) { .glass-panel { padding: 20px !important; border-radius: 30px; } .pilot-card { flex-direction: column; text-align: center; } }
+        .helmet-frame { width: 120px; height: 120px; }
+        .pilot-card { display: flex; align-items: center; gap: 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 35px; }
+        .vault-dashboard { background: linear-gradient(135deg, #1e1b4b 0%, #030712 100%); padding: 25px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); }
 
-        /* Golden Ticket Print Styling */
-        .golden-ticket-wrap { 
-            width: 100%; 
-            max-width: 800px; 
-            margin: 50px auto; 
-            padding: 40px; 
-            border: 15px solid #d4af37; 
-            background: #fff; 
-            text-align: center; 
-            color: #451a03; 
-            font-family: 'Anton', sans-serif;
-            border-radius: 20px;
-        }
-        .wonka-header { font-size: 80px; text-transform: uppercase; margin: 0; }
-        .mastery-cert-wrap { padding: 40px; border: 10px solid #0369a1; border-radius: 30px; font-family: 'Outfit', sans-serif; color: #000; }
+        .custom-word-tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; display: inline-flex; align-items: center; gap: 8px; }
+        .custom-word-tag span { cursor: pointer; opacity: 0.5; }
+        .custom-word-tag span:hover { opacity: 1; }
     </style>
 </head>
-<body id="main-body">
+<body>
 
     <div class="bg-layer no-print"></div>
+    <div id="death-bg" class="mission-overlay no-print"></div>
+    <div id="meteor-bg" class="mission-overlay no-print"></div>
+    <div id="void-bg" class="mission-overlay no-print"></div>
     <div id="mermaid-bg" class="mission-overlay no-print"></div>
     <div id="unicorn-bg" class="mission-overlay no-print"></div>
     
-    <div id="ripple-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden no-print"></div>
-    <div id="explosion-overlay" class="no-print"></div>
+    <div id="explosion-overlay" class="fixed inset-0 pointer-events-none z-[100] bg-white opacity-0 transition-opacity"></div>
     <div class="no-print"><div class="aurora aurora-1"></div><div class="aurora aurora-2"></div></div>
 
     <div id="connection-overlay" class="fixed inset-0 z-[2000] bg-black flex items-center justify-center transition-opacity duration-500 no-print">
         <div class="text-white impact-font text-2xl animate-pulse tracking-widest text-center uppercase">Initializing Moonshot Academy...</div>
     </div>
 
-    <!-- Confirmation Dialog -->
+    <!-- Confirm Dialog -->
     <div id="confirm-dialog" class="fixed inset-0 z-[3000] bg-black/90 backdrop-blur hidden items-center justify-center p-4 no-print">
         <div class="glass-panel p-10 rounded-[40px] max-w-sm w-full text-center border-red-500/30">
-            <h3 class="text-3xl impact-font text-red-500 mb-4 tracking-tighter uppercase text-white">Security Check</h3>
+            <h3 class="text-3xl impact-font text-red-500 mb-4 uppercase text-white">Security Check</h3>
             <p id="confirm-message" class="text-white/60 mb-8 font-bold text-[10px] tracking-widest uppercase">Permanent action required</p>
             <div class="flex gap-4">
-                <button onclick="window.closeConfirm()" class="flex-1 p-4 bg-white/10 rounded-2xl uppercase font-bold text-xs hover:bg-white/20 transition">Cancel</button>
-                <button id="execute-reset-btn" class="flex-1 p-4 bg-red-600 rounded-2xl font-bold uppercase text-xs shadow-lg hover:bg-red-500 transition">Confirm</button>
+                <button onclick="window.closeConfirm()" class="flex-1 p-4 bg-white/10 rounded-2xl uppercase font-bold text-xs">Cancel</button>
+                <button id="execute-reset-btn" class="flex-1 p-4 bg-red-600 rounded-2xl font-bold uppercase text-xs shadow-lg">Confirm</button>
             </div>
         </div>
     </div>
 
-    <div id="app-container" class="w-full max-w-6xl p-2 md:p-4 no-print flex flex-col items-center justify-center min-h-screen relative z-10">
+    <div id="app-container" class="w-full max-w-6xl p-4 no-print flex flex-col items-center justify-center min-h-screen relative z-10">
         
         <!-- SCREEN: AUTH -->
-        <div id="screen-auth" class="text-center py-6 w-full animate-in fade-in duration-1000">
-            <h1 class="text-5xl md:text-8xl impact-font mb-12 md:mb-16 tracking-tighter leading-none uppercase text-white">Moonshot Academy</h1>
-            <div class="flex flex-wrap justify-center gap-6 md:gap-10 max-w-5xl mx-auto px-4">
+        <div id="screen-auth" class="text-center py-6 w-full">
+            <h1 class="text-6xl md:text-9xl impact-font mb-16 tracking-tighter leading-none uppercase text-white">Moonshot Academy</h1>
+            <div class="flex flex-wrap justify-center gap-10 max-w-5xl mx-auto px-4">
                 <div onclick="window.selectPilot('Jesse')" class="profile-btn group cursor-pointer transition-transform hover:scale-110">
-                    <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="j-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M30 15 L20 5 M70 15 L80 5" stroke="white" stroke-width="4"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#j-grad)"/><rect x="25" y="32" width="50" height="22" rx="4" fill="#000"/><circle cx="35" cy="43" r="3" fill="#38bdf8"/><circle cx="65" cy="43" r="3" fill="#38bdf8"/></svg></div>
-                    <div class="text-lg md:text-xl font-black text-sky-400 mt-3 md:mt-4">Jesse</div>
+                    <div class="helmet-frame" id="helmet-Jesse"></div>
+                    <div class="text-2xl font-black text-sky-400 mt-4">Jesse</div>
                 </div>
                 <div onclick="window.selectPilot('Ruben')" class="profile-btn group cursor-pointer transition-transform hover:scale-110">
-                    <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="r-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#10b981"/><stop offset="100%" style="stop-color:#064e3b"/></linearGradient></defs><path d="M50 5 L50 -5" stroke="#10b981" stroke-width="6" stroke-linecap="round"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#r-grad)"/><rect x="25" y="32" width="50" height="25" rx="4" fill="#000"/><line x1="30" y1="44" x2="70" y2="44" stroke="#10b981" stroke-width="1.5" stroke-dasharray="2,2"/></svg></div>
-                    <div class="text-lg md:text-xl font-black text-emerald-400 mt-3 md:mt-4">Ruben</div>
+                    <div class="helmet-frame" id="helmet-Ruben"></div>
+                    <div class="text-2xl font-black text-emerald-400 mt-4">Ruben</div>
                 </div>
                 <div onclick="window.selectPilot('Elodie')" class="profile-btn group cursor-pointer transition-transform hover:scale-110">
-                    <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="e-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f472b6"/><stop offset="100%" style="stop-color:#831843"/></linearGradient></defs><path d="M25 15 L15 5 M75 15 L85 5" stroke="#f472b6" stroke-width="8" stroke-linecap="round" /><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#e-grad)" /><rect x="25" y="35" width="50" height="22" rx="10" fill="#000" /><circle cx="38" cy="46" r="4" fill="#f472b6" opacity="0.8" /><circle cx="62" cy="46" r="4" fill="#f472b6" opacity="0.8" /></svg></div>
-                    <div class="text-lg md:text-xl font-black text-pink-400 mt-3 md:mt-4">Elodie</div>
+                    <div class="helmet-frame" id="helmet-Elodie"></div>
+                    <div class="text-2xl font-black text-pink-400 mt-4">Elodie</div>
                 </div>
                 <div onclick="window.selectPilot('Friend')" class="profile-btn group cursor-pointer transition-transform hover:scale-110">
-                    <div class="helmet-frame"><svg viewBox="0 0 100 100" class="w-full h-full p-2"><defs><linearGradient id="g-grad-h" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="100%" style="stop-color:#451a03"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#g-grad-h)"/><rect x="25" y="35" width="50" height="30" rx="4" fill="#000"/><circle cx="35" cy="50" r="2" fill="#f43f5e"/><circle cx="65" cy="50" r="2" fill="#f43f5e"/><path d="M45 58 Q50 62 55 58" stroke="#f43f5e" stroke-width="1.5" fill="none" /></svg></div>
-                    <div class="text-lg md:text-xl font-black text-amber-500 mt-3 md:mt-4">Friend</div>
+                    <div class="helmet-frame" id="helmet-Friend"></div>
+                    <div class="text-2xl font-black text-slate-400 mt-4">Friend</div>
                 </div>
             </div>
         </div>
 
-        <!-- SCREEN: HOME (MISSION CONTROL) -->
-        <div id="screen-home" class="hidden w-full py-4 animate-in fade-in">
-            <h1 class="text-4xl md:text-8xl impact-font mb-8 text-center bg-clip-text text-transparent bg-gradient-to-b from-white to-white/20 uppercase tracking-tight">Mission control</h1>
-            
-            <!-- HEADER SIDE-BY-SIDE -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12 items-stretch px-2 md:px-0">
+        <!-- SCREEN: HOME -->
+        <div id="screen-home" class="hidden w-full py-4">
+            <h1 class="text-5xl md:text-8xl impact-font mb-8 text-center bg-clip-text text-transparent bg-gradient-to-b from-white to-white/20 uppercase tracking-tight">Mission Control</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 items-stretch">
                 <div class="pilot-card">
-                    <div id="active-pilot-helmet" class="w-20 h-20 md:w-32 md:h-32 rounded-full bg-black border-4 border-sky-400 p-1 shadow-[0_0_40px_rgba(56,189,248,0.3)] flex-shrink-0"></div>
+                    <div id="active-pilot-helmet" class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-black border-4 border-sky-400 p-1"></div>
                     <div class="text-left">
-                        <p class="text-[9px] md:text-[10px] font-black text-sky-400 tracking-[0.3em] uppercase mb-1">Authenticated Pilot</p>
-                        <h2 id="pilot-name-display" class="text-3xl md:text-6xl impact-font uppercase text-white leading-none mb-3 md:mb-4">Pilot Name</h2>
-                        <button onclick="location.reload()" class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-xl text-white text-[8px] md:text-[9px] font-black uppercase tracking-widest transition border border-white/5 shadow-xl">Switch User</button>
+                        <p class="text-[10px] font-black text-sky-400 tracking-[0.3em] uppercase mb-1">Authenticated Pilot</p>
+                        <h2 id="pilot-name-display" class="text-4xl md:text-6xl impact-font uppercase leading-none mb-3">Pilot</h2>
+                        <button onclick="location.reload()" class="bg-white/10 px-3 py-1.5 rounded-xl text-white text-[8px] font-black uppercase tracking-widest">Switch User</button>
                     </div>
                 </div>
-
                 <div class="vault-dashboard">
-                    <div class="flex items-center gap-4 md:gap-6">
-                        <div id="badge-display" class="relative w-16 h-16 md:w-24 md:h-24 bg-amber-500/10 rounded-full border-4 border-amber-500/40 flex items-center justify-center shadow-[0_0_30px_rgba(251,191,36,0.3)] flex-shrink-0">
-                            <svg class="w-8 h-8 md:w-12 md:h-12" viewBox="0 0 24 24" fill="none" stroke="#facc15" stroke-width="2"><path d="M12 15l-2 5 2-1 2 1-2-5zM12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1 3-6z"/></svg>
-                            <div id="badge-level-text" class="absolute -bottom-1 bg-amber-500 text-black font-black text-[8px] md:text-[10px] px-2 py-0.5 md:px-3 md:py-1 rounded-full shadow-lg uppercase">Rank 0</div>
+                    <div class="flex items-center gap-4">
+                        <div class="relative w-24 h-24 bg-amber-500/10 rounded-full border-4 border-amber-500/40 flex items-center justify-center">
+                            <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="#facc15" stroke-width="2"><path d="M12 15l-2 5 2-1 2 1-2-5zM12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1 3-6z"/></svg>
                         </div>
                         <div class="text-left flex-1">
-                            <div class="text-[9px] md:text-[11px] text-white/40 font-black tracking-widest uppercase mb-0.5">Galactic Bank</div>
-                            <div id="balance-display" class="text-4xl md:text-7xl impact-font text-green-400 leading-none uppercase">0 stars</div>
+                            <div class="text-[11px] text-white/40 font-black tracking-widest uppercase mb-0.5">Galactic Bank</div>
+                            <div id="balance-display" class="text-5xl md:text-7xl impact-font text-green-400 leading-none">0 stars</div>
                         </div>
                     </div>
-                    <div class="flex gap-3 md:gap-4 mt-4 md:mt-6">
-                        <button onclick="window.showWithdraw()" class="flex-1 py-2.5 bg-white/10 rounded-2xl font-black uppercase text-[9px] tracking-widest border border-white/10 hover:bg-white/20 transition">Withdraw</button>
-                        <button onclick="window.showStats()" class="flex-1 py-2.5 bg-purple-600 rounded-2xl font-black uppercase text-[9px] tracking-widest shadow-xl hover:brightness-110 transition">Analytics</button>
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="window.showWithdraw()" class="flex-1 py-3 bg-white/10 rounded-2xl font-black uppercase text-[10px]">Withdraw</button>
+                        <button onclick="window.showStats()" class="flex-1 py-3 bg-purple-600 rounded-2xl font-black uppercase text-[10px] shadow-xl">Diagnostic</button>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 w-full px-2 md:px-0">
+            <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                 <div onclick="window.chooseGame('lunar')" class="game-tile">
-                    <div class="w-12 h-12 md:w-20 md:h-20 mb-3 flex items-center justify-center text-sky-400"><svg class="w-10 h-10 md:w-12 md:h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3m3.5 1.5L9 10m4.5 1.5L10 8"/><path d="m21.5 2.5-4.5 4-10.5 10.5 4.5 4.5L21.5 11l-4.5-4.5z"/></svg></div>
-                    <h3 class="text-lg md:text-2xl impact-font uppercase">Lunar Mission</h3>
+                    <div class="text-sky-400 mb-2"><svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3m3.5 1.5L9 10m4.5 1.5L10 8"/><path d="m21.5 2.5-4.5 4-10.5 10.5 4.5 4.5L21.5 11l-4.5-4.5z"/></svg></div>
+                    <h3 class="text-xl impact-font uppercase">Lunar Mission</h3>
                 </div>
                 <div onclick="window.chooseGame('death')" class="game-tile border-rose-500/20">
-                    <div class="w-12 h-12 md:w-20 md:h-20 mb-3 flex items-center justify-center text-rose-400"><svg class="w-10 h-10 md:w-12 md:h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v2M12 20v2 extinction-tagM4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41"/></svg></div>
-                    <h3 class="text-lg md:text-2xl impact-font uppercase">Sudden Death</h3>
+                    <div class="text-rose-400 mb-2"><svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41"/></svg></div>
+                    <h3 class="text-xl impact-font uppercase">Sudden Death</h3>
                 </div>
                 <div onclick="window.chooseGame('meteor')" class="game-tile">
-                    <div class="w-12 h-12 md:w-20 md:h-20 mb-3 flex items-center justify-center text-orange-400"><svg class="w-10 h-10 md:w-12 md:h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m16 8-8 8m0-8 8 8"/></svg></div>
-                    <h3 class="text-lg md:text-2xl impact-font uppercase">Meteor Blast</h3>
+                    <div class="text-orange-400 mb-2"><svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m16 8-8 8m0-8 8 8"/></svg></div>
+                    <h3 class="text-xl impact-font uppercase">Meteor Blast</h3>
                 </div>
                 <div onclick="window.chooseGame('void')" class="game-tile">
-                    <div class="w-12 h-12 md:w-20 md:h-20 mb-3 flex items-center justify-center text-indigo-400"><svg class="w-10 h-10 md:w-12 md:h-12 animate-spin" style="animation-duration:15s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20M2 12a10 10 0 0 1 20 0"/></svg></div>
-                    <h3 class="text-lg md:text-2xl impact-font uppercase">Void Choice</h3>
+                    <div class="text-indigo-400 mb-2"><svg class="w-12 h-12 animate-spin-slow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20M2 12a10 10 0 0 1 20 0"/></svg></div>
+                    <h3 class="text-xl impact-font uppercase">Void Choice</h3>
                 </div>
-                <div onclick="window.chooseGame('mermaid')" class="game-tile border-sky-400/30">
-                    <div class="w-12 h-12 md:w-20 md:h-20 mb-3 flex items-center justify-center text-sky-300"><svg viewBox="0 0 100 100" class="w-10 h-10 md:w-12 md:h-12"><path d="M50 20 C70 40 80 60 50 90 C20 60 30 40 50 20" fill="none" stroke="currentColor" stroke-width="4"/><circle cx="50" cy="45" r="15" fill="none" stroke="currentColor" stroke-width="3"/><path d="M35 70 Q50 95 65 70" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg></div>
-                    <h3 class="text-lg md:text-2xl impact-font uppercase">Mermaid Phonics</h3>
+                <div onclick="window.chooseGame('mermaid')" class="game-tile">
+                    <div class="text-sky-300 mb-2 text-3xl">🧜‍♀️</div>
+                    <h3 class="text-xl impact-font uppercase">Mermaid Phonics</h3>
                 </div>
-                <div onclick="window.chooseGame('unicorn')" class="game-tile border-pink-400/30">
-                    <div class="w-12 h-12 md:w-20 md:h-20 mb-3 flex items-center justify-center text-pink-300"><svg viewBox="0 0 100 100" class="w-10 h-10 md:w-12 md:h-12"><path d="M40 85 L50 15 L60 85 Z" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round"/><path d="M30 45 L15 30 M70 45 L85 30" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><circle cx="50" cy="85" r="5" fill="currentColor"/></svg></div>
-                    <h3 class="text-lg md:text-2xl impact-font uppercase">Unicorn Match</h3>
+                <div onclick="window.chooseGame('unicorn')" class="game-tile">
+                    <div class="text-pink-300 mb-2 text-3xl">🦄</div>
+                    <h3 class="text-xl impact-font uppercase">Unicorn Match</h3>
                 </div>
             </div>
         </div>
 
-        <!-- SCREENS: SETUP & GAME -->
-        <div id="screen-setup" class="hidden glass-panel p-6 md:p-8 rounded-[40px] text-center w-full max-w-lg animate-in fade-in h-[85vh] flex flex-col no-print">
-            <div class="text-left mb-4 md:mb-6"><button onclick="window.showHome()" class="back-btn uppercase font-black">Back</button></div>
-            <h2 class="text-3xl md:text-4xl impact-font mb-4 md:mb-6 uppercase text-white">Mission Loadout</h2>
-            <div id="setup-options" class="space-y-3 text-left overflow-y-auto custom-scrollbar flex-1 pr-2">
-                <label class="flex items-center gap-4 p-4 bg-white/5 rounded-3xl cursor-pointer hover:bg-white/10 uppercase"><input type="checkbox" id="check-recep" class="w-6 h-6 accent-pink-500"> <span class="font-bold text-[10px] md:text-xs">Reception</span></label>
-                <label class="flex items-center gap-4 p-4 bg-white/5 rounded-3xl cursor-pointer hover:bg-white/10 uppercase"><input type="checkbox" id="check-y1" class="w-6 h-6 accent-purple-500"> <span class="font-bold text-[10px] md:text-xs">Year 1 training</span></label>
-                <label class="flex items-center gap-4 p-4 bg-white/5 rounded-3xl cursor-pointer hover:bg-white/10 uppercase"><input type="checkbox" id="check-y2" class="w-6 h-6 accent-sky-500"> <span class="font-bold text-[10px] md:text-xs">Year 2 training</span></label>
-                <label class="flex items-center gap-4 p-4 bg-white/5 rounded-3xl cursor-pointer hover:bg-white/10 uppercase"><input type="checkbox" id="check-y34" class="w-6 h-6 accent-sky-500"> <span class="font-bold text-[10px] md:text-xs">Year 3 & 4 library</span></label>
-                <label class="flex items-center gap-4 p-4 bg-white/5 rounded-3xl cursor-pointer hover:bg-white/10 uppercase"><input type="checkbox" id="check-y56" class="w-6 h-6 accent-sky-500"> <span class="font-bold text-[10px] md:text-xs">Year 5 & 6 library</span></label>
-                <div class="mt-4 p-5 bg-white/5 rounded-3xl border border-white/10">
-                    <label class="flex items-center gap-4 mb-4 font-bold text-[10px] md:text-xs uppercase"><input type="checkbox" id="check-custom" class="w-6 h-6 accent-sky-500"> <span>Custom word bank</span></label>
-                    <div class="flex gap-2">
-                        <input type="text" id="custom-word-input" class="flex-1 bg-black/40 border border-white/10 p-3 rounded-xl text-sm" placeholder="New word...">
-                        <button onclick="window.addCustomWord()" class="bg-sky-500 text-black font-black px-4 rounded-xl text-xs uppercase hover:bg-sky-400 transition">Add</button>
-                    </div>
-                    <div id="custom-word-list" class="flex flex-wrap gap-2 mt-4"></div>
-                </div>
-            </div>
-            <button onclick="window.launchMission()" class="w-full py-4 md:py-5 bg-sky-500 text-black rounded-full text-lg md:text-xl impact-font shadow-2xl hover:scale-105 transition-all uppercase mt-6">Engage Mission</button>
-        </div>
-
-        <div id="screen-game" class="hidden glass-panel p-6 md:p-8 rounded-[40px] md:rounded-[50px] text-center w-full animate-in fade-in min-h-[500px] md:min-h-[600px] flex flex-col justify-center no-print">
-            <div class="text-left mb-auto"><button onclick="window.showHome()" class="back-btn uppercase font-black">Abort</button></div>
-            <div class="flex justify-between mb-4 font-black text-white/40 text-[10px] md:text-[11px] uppercase">
-                <div id="game-progress">Round 1 / 10</div><div id="game-lives" class="flex gap-2"></div>
-            </div>
-            <div id="void-timer-container" class="timer-container hidden"><div id="void-timer-bar"></div></div>
+        <!-- SCREEN: SETUP -->
+        <div id="screen-setup" class="hidden glass-panel p-8 md:p-10 rounded-[40px] text-center w-full max-w-2xl">
+            <div class="text-left mb-6"><button onclick="window.showHome()" class="text-white/40 hover:text-white uppercase font-black text-xs tracking-widest">← Back</button></div>
+            <h2 class="text-4xl impact-font mb-6 uppercase">Mission Loadout</h2>
             
-            <div id="hangman-area" class="hidden mb-4 md:mb-6">
-                <svg id="hangman-visual" viewBox="0 0 300 280">
-                    <path d="M50 260 L250 260 M100 260 L100 20 L250 20 L250 50" stroke="#1e293b" stroke-width="4" fill="none" />
-                    <g class="dangle-group">
-                        <line x1="250" y1="50" x2="250" y2="70" stroke="#f43f5e" stroke-width="2" />
-                        <circle id="part-head" class="hangman-part" cx="250" cy="100" r="30" />
-                        <path id="part-body" class="hangman-part" d="M250 130 L250 210" />
-                        <path id="part-arm-l" class="hangman-part" d="M250 140 L210 180" />
-                        <path id="part-arm-r" class="hangman-part" d="M250 140 L290 180" />
-                        <path id="part-leg-l" class="hangman-part" d="M250 210 L220 260" />
-                        <path id="part-leg-r" class="hangman-part" d="M250 210 L280 260" />
-                    </g>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="space-y-3">
+                    <h3 class="text-[10px] font-black uppercase text-sky-400 tracking-widest mb-4 text-left">Curriculum Levels</h3>
+                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition">
+                        <input type="checkbox" id="check-recep" class="w-6 h-6 accent-sky-500">
+                        <span class="font-bold text-sm uppercase">Reception</span>
+                    </label>
+                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition">
+                        <input type="checkbox" id="check-y1" class="w-6 h-6 accent-sky-500">
+                        <span class="font-bold text-sm uppercase">Year 1</span>
+                    </label>
+                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition">
+                        <input type="checkbox" id="check-y2" class="w-6 h-6 accent-sky-500">
+                        <span class="font-bold text-sm uppercase">Year 2</span>
+                    </label>
+                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition">
+                        <input type="checkbox" id="check-y34" class="w-6 h-6 accent-sky-500" checked>
+                        <span class="font-bold text-sm uppercase">Year 3/4</span>
+                    </label>
+                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition">
+                        <input type="checkbox" id="check-y56" class="w-6 h-6 accent-sky-500">
+                        <span class="font-bold text-sm uppercase">Year 5/6</span>
+                    </label>
+                </div>
+                
+                <div class="flex flex-col">
+                    <h3 class="text-[10px] font-black uppercase text-pink-400 tracking-widest mb-4 text-left">Custom Word Payload</h3>
+                    <div class="flex-1 bg-white/5 rounded-3xl p-5 border border-white/10 flex flex-col">
+                        <div class="flex gap-2 mb-4">
+                            <input type="text" id="custom-word-input" class="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs outline-none focus:border-sky-500" placeholder="Add word...">
+                            <button onclick="window.addCustomWord()" class="bg-sky-500 text-black px-4 py-2 rounded-xl font-black text-xs">+</button>
+                        </div>
+                        <div id="custom-word-list" class="flex-1 overflow-y-auto custom-scrollbar flex flex-wrap gap-2 content-start min-h-[100px] max-h-[150px]"></div>
+                        <label class="mt-4 flex items-center justify-center gap-3 p-3 bg-sky-500/10 border border-sky-500/30 rounded-2xl cursor-pointer">
+                            <input type="checkbox" id="check-use-custom" class="w-5 h-5 accent-sky-500">
+                            <span class="font-black text-[10px] uppercase text-sky-400">Prioritize Custom List</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="window.launchMission()" class="w-full py-5 bg-sky-500 text-black rounded-full text-2xl impact-font uppercase tracking-tighter hover:scale-105 transition shadow-2xl shadow-sky-500/20">Engage Mission</button>
+        </div>
+
+        <!-- SCREEN: GAME -->
+        <div id="screen-game" class="hidden glass-panel p-8 md:p-12 rounded-[40px] text-center w-full min-h-[600px] flex flex-col justify-center">
+            <div class="flex justify-between items-center mb-8">
+                <button onclick="window.showHome()" class="text-white/30 hover:text-white uppercase font-black text-[10px]">Abort</button>
+                <div id="game-progress" class="text-xs font-black text-white/40 uppercase">Round 1/10</div>
+                <div id="game-lives" class="flex gap-2 text-rose-500"></div>
+            </div>
+
+            <div id="hangman-area" class="hidden mb-8">
+                <svg id="hangman-visual" viewBox="0 0 200 200">
+                    <line x1="20" y1="180" x2="180" y2="180" stroke-width="4" stroke="currentColor"/>
+                    <line x1="50" y1="180" x2="50" y2="20" stroke-width="4" stroke="currentColor"/>
+                    <line x1="50" y1="20" x2="130" y2="20" stroke-width="4" stroke="currentColor"/>
+                    <line x1="130" y1="20" x2="130" y2="40" stroke-width="4" stroke="currentColor"/>
+                    <circle id="part-head" cx="130" cy="60" r="20" class="hidden-part" stroke-width="4" stroke="currentColor"/>
+                    <line id="part-body" x1="130" y1="80" x2="130" y2="130" class="hidden-part" stroke-width="4" stroke="currentColor"/>
+                    <line id="part-arm-l" x1="130" y1="95" x2="110" y2="115" class="hidden-part" stroke-width="4" stroke="currentColor"/>
+                    <line id="part-arm-r" x1="130" y1="95" x2="150" y2="115" class="hidden-part" stroke-width="4" stroke="currentColor"/>
+                    <line id="part-leg-l" x1="130" y1="130" x2="110" y2="160" class="hidden-part" stroke-width="4" stroke="currentColor"/>
+                    <line id="part-leg-r" x1="130" y1="130" x2="150" y2="160" class="hidden-part" stroke-width="4" stroke="currentColor"/>
                 </svg>
             </div>
 
-            <div id="standard-game-elements" class="flex flex-col items-center">
-                <div id="game-word-display" class="word-container mb-4 md:mb-6 min-h-[50px] md:min-h-[70px] flex flex-row items-center justify-center gap-1 md:gap-2 flex-wrap"></div>
-                <button onclick="window.speakWord()" id="speaker-btn" class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all mb-6 md:mb-8 shadow-xl"><svg class="w-8 h-8 md:w-10 md:h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>
+            <div id="void-timer-container" class="timer-container hidden"><div id="void-timer-bar"></div></div>
+
+            <div id="standard-game-elements">
+                <div id="game-word-display" class="mb-12 flex flex-row items-center justify-center gap-2 flex-wrap min-h-[60px]"></div>
+                <button onclick="window.speakWord()" id="speaker-btn" class="w-20 h-20 mx-auto rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-10 hover:bg-white/10 transition">
+                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                </button>
             </div>
-            
+
             <div id="meteor-field" class="hidden"></div>
-            <div id="keyboard" class="hidden px-1"></div>
-            <div id="multi-choice" class="hidden grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 max-w-4xl mx-auto w-full"></div>
-            <div id="echo-input-container" class="hidden max-w-sm mx-auto space-y-4 w-full relative">
-                <input type="text" id="echo-field" class="w-full p-4 md:p-6 bg-white/5 border border-white/10 rounded-3xl text-2xl md:text-3xl text-center outline-none focus:border-rose-500 text-white shadow-2xl transition-colors duration-300" placeholder="Type word..." autocomplete="off">
-                <div id="try-again-msg" class="hidden text-rose-500 font-bold uppercase tracking-widest text-[10px] md:text-sm animate-pulse h-4">Try again!</div>
-                <button onclick="window.submitEcho()" class="w-full py-3 md:py-4 bg-rose-500 text-white font-black rounded-3xl uppercase tracking-widest hover:bg-rose-400 transition text-xs md:text-base">Submit</button>
+            <div id="multi-choice" class="hidden grid grid-cols-2 gap-4 w-full"></div>
+            
+            <div id="echo-input-container" class="hidden max-w-sm mx-auto space-y-6 w-full">
+                <input type="text" id="echo-field" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-3xl text-center outline-none focus:border-sky-500 uppercase font-black" placeholder="..." autocomplete="off">
+                <button onclick="window.submitEcho()" class="w-full py-4 bg-sky-600 text-white font-black rounded-3xl uppercase tracking-widest text-sm">Submit Answer</button>
+            </div>
+
+            <div id="keyboard" class="hidden grid grid-cols-7 md:grid-cols-9 gap-2 mt-8"></div>
+        </div>
+
+        <!-- SCREEN: PRIZE -->
+        <div id="screen-prize" class="hidden glass-panel p-12 text-center w-full max-w-xl">
+            <div class="text-6xl mb-6">🏆</div>
+            <h2 class="text-6xl impact-font text-green-400 uppercase mb-4">Mission Complete</h2>
+            <div class="bg-green-500/5 p-10 rounded-[40px] border border-green-500/20 mb-10">
+                <div id="earned-amount" class="text-7xl impact-font text-green-400">+100 stars</div>
+            </div>
+            <button onclick="window.showHome()" class="w-full py-5 bg-white text-black rounded-full impact-font text-2xl uppercase">Return to Base</button>
+        </div>
+
+        <!-- SCREEN: STATS (DIAGNOSTIC) -->
+        <div id="screen-stats" class="hidden glass-panel p-10 rounded-[40px] flex flex-col w-full h-[85vh]">
+            <div class="flex justify-between items-start mb-10">
+                <div>
+                    <button onclick="window.showHome()" class="mb-4 text-white/40 hover:text-white uppercase font-black text-xs">← Back</button>
+                    <h2 class="text-4xl impact-font uppercase">Parent Diagnostic</h2>
+                </div>
+                <div id="tutor-insight-box" class="max-w-[350px] p-5 bg-sky-500/10 border border-sky-500/30 rounded-3xl text-left">
+                    <p class="text-[9px] font-black uppercase text-sky-400 mb-2">Academy Tutor Insight</p>
+                    <p id="tutor-insight-text" class="text-[12px] leading-relaxed italic text-white/80">Collecting data...</p>
+                </div>
+            </div>
+            
+            <div class="overflow-y-auto flex-1 custom-scrollbar pr-4 space-y-10">
+                <section>
+                    <h3 class="text-[10px] font-black uppercase text-rose-500 mb-6 tracking-widest flex items-center gap-2"><span class="w-2.5 h-2.5 bg-rose-500 rounded-full animate-pulse"></span> Critical Focus</h3>
+                    <div id="struggling-words-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </section>
+                <section>
+                    <h3 class="text-[10px] font-black uppercase text-amber-500 mb-6 tracking-widest">In Progress</h3>
+                    <div id="learning-words-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </section>
+                <section>
+                    <h3 class="text-[10px] font-black uppercase text-green-500 mb-6 tracking-widest">Mastered Words</h3>
+                    <div id="mastered-words-list" class="flex flex-wrap gap-3"></div>
+                </section>
             </div>
         </div>
 
-        <!-- POST-GAME SCREENS -->
-        <div id="screen-prize" class="hidden glass-panel p-8 md:p-10 rounded-[40px] md:rounded-[60px] text-center w-full max-w-xl space-y-8 md:space-y-10 animate-in fade-in no-print">
-            <h2 class="text-5xl md:text-7xl impact-font text-green-400 leading-none uppercase">Success</h2>
-            <div class="bg-green-500/5 p-8 md:p-10 rounded-[30px] md:rounded-[40px] border border-green-500/20 shadow-[0_0_50px_rgba(34,197,94,0.2)]">
-                <div id="earned-amount" class="text-6xl md:text-9xl impact-font text-green-400 uppercase tracking-tighter">+100 stars</div>
-            </div>
-            <button onclick="window.showHome()" class="w-full py-4 md:py-6 bg-white text-black rounded-full impact-font text-xl md:text-2xl uppercase shadow-2xl hover:bg-sky-400 transition-all">Return to control</button>
-        </div>
-
-        <div id="screen-withdraw" class="hidden glass-panel p-8 md:p-12 rounded-[40px] md:rounded-[50px] text-center w-full max-w-lg animate-in fade-in no-print">
-            <div class="text-left mb-6 md:mb-8"><button onclick="window.showHome()" class="back-btn uppercase font-black">Back</button></div>
-            <h2 class="text-4xl md:text-5xl impact-font text-green-400 mb-2 uppercase tracking-tighter text-center w-full">Bank vault</h2>
-            <div id="withdraw-balance" class="text-6xl md:text-8xl impact-font mb-10 md:mb-12 text-white text-center w-full">0 stars</div>
+        <!-- SCREEN: WITHDRAW -->
+        <div id="screen-withdraw" class="hidden glass-panel p-12 rounded-[50px] text-center w-full max-w-lg">
+            <div class="text-left mb-8"><button onclick="window.showHome()" class="text-white/40 uppercase font-black text-xs tracking-widest">← Back</button></div>
+            <h2 class="text-5xl impact-font text-green-400 mb-2 uppercase">Bank Vault</h2>
+            <p id="withdraw-balance" class="text-8xl impact-font mb-12 text-white">0 stars</p>
             <div class="space-y-4">
-                <button onclick="window.initiateWithdrawal('gold')" class="w-full py-4 md:py-5 bg-yellow-500 text-black font-black rounded-3xl uppercase tracking-widest hover:brightness-110">Issue Golden Ticket</button>
-                <button onclick="window.initiateWithdrawal('mastery')" class="w-full py-4 md:py-5 bg-sky-600 text-white font-black rounded-3xl uppercase tracking-widest hover:bg-sky-500">Issue Mastery cert</button>
-            </div>
-        </div>
-
-        <div id="screen-stats" class="hidden glass-panel p-6 md:p-10 rounded-[40px] flex flex-col w-full animate-in fade-in h-[90vh] no-print">
-            <div class="mb-6"><button onclick="window.showHome()" class="back-btn uppercase font-black">Back</button></div>
-            <h2 class="text-3xl md:text-4xl impact-font uppercase mb-6 md:mb-8">Mission logs</h2>
-            <div class="overflow-y-auto flex-1 custom-scrollbar">
-                <table class="w-full text-left"><thead><tr class="text-white/30 text-[9px] md:text-[10px] border-b border-white/10 uppercase"><th class="p-3 md:p-4">Word</th><th class="p-3 md:p-4 text-center">Mastery</th><th class="p-3 md:p-4 text-center">Encounters</th></tr></thead><tbody id="stats-body" class="text-[10px] md:text-xs font-bold"></tbody></table>
-            </div>
-            <div class="mt-6 pt-6 border-t border-white/10 flex gap-6 md:gap-10 justify-center"><button onclick="window.triggerReset('bank')" class="text-[8px] md:text-[9px] text-rose-500 hover:text-white transition uppercase font-black underline">Reset bank</button><button onclick="window.triggerReset('history')" class="text-[8px] md:text-[9px] text-rose-500 hover:text-white transition uppercase font-black underline">Clear all logs</button></div>
-        </div>
-    </div>
-
-    <div id="certificate-print" class="print-only"><div id="cert-target"></div></div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Environment variables
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyATNU3KcsoehUoWxzPasVQrxUGgdVvjbq4",
-            authDomain: "jesses-spelling-game.firebaseapp.com",
-            projectId: "jesses-spelling-game",
-            storageBucket: "jesses-spelling-game.firebasestorage.app",
-            messagingSenderId: "768883009643",
-            appId: "1:768883009643:web:591162cc7c9180b26be92e",
-            measurementId: "G-FB6FCMJMB9"
-        };
-        const appId = typeof __app_id !== 'undefined' ? __app_id : firebaseConfig.projectId;
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // State Management
-        window.state = { pilotName: "", bank: 0, activeLevel: "", currentGame: null, words: [], currentRound: 0, lives: 3, currentWord: "", currentAnchor: null, guessed: [], history: [], statFilter: 'week', meteorTimers: [], echoAttempts: 0, completedToday: [], challengeLevel: 0, voidTimer: null, isTransitioning: false, sessionCredits: 0, customWords: [] };
-
-        const illusts = {
-            cat: '🐱', dog: '🐶', sun: '☀️', cup: '☕', box: '📦', hat: '🎩',
-            pig: '🐷', bed: '🛏️', tap: '🚰', fan: '🎐', map: '🗺️', pen: '🖊️',
-            net: '🥅', dad: '👨', mum: '👩', hot: '🔥', pot: '🍲', ten: '🔟',
-            pin: '📍', pan: '🍳', sit: '🪑', sat: '🪑', 
-            ant: '🐜', apple: '🍎', bag: '🎒', ball: '⚽', banana: '🍌',
-            bat: '🏏', bee: '🐝', bell: '🔔', bike: '🚲', bird: '🐦', 
-            boat: '⛵', book: '📖', bus: '🚌', cake: '🍰', car: '🚗',
-            carrot: '🥕', chair: '🪑', cloud: '☁️', corn: '🌽', cow: '🐮',
-            door: '🚪', duck: '🦆', egg: '🥚', fish: '🐟',
-            flower: '🌸', fox: '🦊', frog: '🐸', ham: '🍖', leaf: '🍃',
-            milk: '🥛', moon: '🌙', mug: '☕', nut: '🥜', owl: '🦉',
-            pea: '🫛', pear: '🍐', rain: '🌧️', ring: '💍', river: '🏞️',
-            road: '🛣️', rug: '🧶', school: '🏫', shell: '🐚', ship: '🚢',
-            shoe: '👟', sock: '🧦', star: '⭐', tree: '🌳', train: '🚂',
-            hen: '🐔', jet: '✈️', kit: '🧰', lid: '🥣', log: '🪵', mud: '💩',
-            rat: '🐀', rod: '🎣', tub: '🛁', van: '🚐', wig: '💇', ant: '🐜',
-            bin: '🗑️', cap: '🧢', gum: '🍬', peg: '👗', brick: '🧱', brush: '🖌️',
-            clock: '⏰', crab: '🦀', desk: '🖥️', drink: '🥤', drum: '🥁', flag: '🚩',
-            hand: '✋', king: '👑', lamp: '💡', nest: '🪹', plant: '🌱', plum: '🫐',
-            pond: '🏞️', shop: '🛒', sled: '🛷', slug: '🐌', tent: '⛺', truck: '🚚'
-        };
-
-        const helmets = {
-            Jesse: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="j-grad-h" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M30 15 L20 5 M70 15 L80 5" stroke="white" stroke-width="4"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#j-grad-h)"/><rect x="25" y="32" width="50" height="22" rx="4" fill="#000"/><circle cx="35" cy="43" r="3" fill="#38bdf8"/><circle cx="65" cy="43" r="3" fill="#38bdf8"/></svg>`,
-            Ruben: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="r-grad-h" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#10b981"/><stop offset="100%" style="stop-color:#064e3b"/></linearGradient></defs><path d="M50 5 L50 -5" stroke="#10b981" stroke-width="6" stroke-linecap="round"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#r-grad-h)"/><rect x="25" y="32" width="50" height="25" rx="4" fill="#000"/><line x1="30" y1="44" x2="70" y2="44" stroke="#10b981" stroke-width="1.5" stroke-dasharray="2,2"/></svg>`,
-            Elodie: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="e-grad-h" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f472b6"/><stop offset="100%" style="stop-color:#831843"/></linearGradient></defs><path d="M25 15 L15 5 M75 15 L85 5" stroke="#f472b6" stroke-width="8" stroke-linecap="round" /><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#e-grad-h)" /><rect x="25" y="35" width="50" height="22" rx="10" fill="#000" /><circle cx="38" cy="46" r="4" fill="#f472b6" opacity="0.8" /><circle cx="62" cy="46" r="4" fill="#f472b6" opacity="0.8" /></svg>`,
-            Friend: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="g-grad-h" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="100%" style="stop-color:#451a03"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#g-grad-h)"/><rect x="25" y="35" width="50" height="30" rx="4" fill="#000"/><circle cx="35" cy="50" r="2" fill="#f43f5e"/><circle cx="65" cy="50" r="2" fill="#f43f5e"/><path d="M45 58 Q50 62 55 58" stroke="#f43f5e" stroke-width="1.5" fill="none" /></svg>`
-        };
-
-        const wordsDB = {
-            recep: ["i", "the", "to", "no", "go", "into", "he", "she", "we", "me", "be", "was", "my", "you", "her", "they", "all", "are", "is", "it", "in", "at", "and", "up", "am", "on", "can", "off", "big", "yes", "get", "back", "if", "but", "cat", "dog", "dad", "mum", "hot", "sun", "pot", "ten", "pin", "net", "tap", "pan", "sit", "sat", "ant", "bag", "bin", "box", "bug", "bus", "cap", "cup", "fan", "fox", "gum", "ham", "hat", "hen", "jet", "kit", "leg", "lid", "lip", "log", "map", "mat", "mud", "mug", "nut", "peg", "pen", "pig", "rat", "red", "rug", "run", "top", "tub", "van", "wig"],
-            y1: ["a", "do", "today", "of", "said", "says", "your", "so", "by", "here", "there", "where", "love", "come", "some", "one", "once", "ask", "friend", "school", "put", "push", "pull", "full", "house", "our", "black", "blue", "brick", "brush", "clock", "crab", "desk", "drink", "drum", "duck", "flag", "frog", "glad", "glass", "grass", "hand", "jump", "king", "lamp", "milk", "nest", "pink", "plant", "plum", "pond", "ship", "shop", "skin", "skip", "sled", "slug", "snip", "spot", "step", "stop", "swim", "tent", "trap", "tree", "truck", "wind"],
-            y2: ["beautiful", "because", "climb", "door", "floor", "find", "kind", "mind", "child", "children", "wild", "only", "both", "even", "great", "break", "steak", "pretty", "after", "every"],
-            y34: ["accident", "actual", "address", "answer", "appear", "arrive", "believe", "bicycle", "breath", "breathe", "build", "busy", "calendar", "caught", "centre", "century", "certain", "circle", "complete", "consider"],
-            y56: ["accommodate", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition"]
-        };
-
-        const phonicsList = ["s", "a", "t", "p", "i", "n", "m", "d", "g", "o", "c", "k", "ck", "e", "u", "r", "h", "b", "f", "ff", "l", "ll", "ss", "qu", "ch", "sh", "th", "ng", "ai", "ee", "igh", "oa", "oo", "ar", "or", "ur", "ow", "oi", "ear", "air", "ure", "er", "ay", "ou", "oy", "wh", "ph"];
-
-        // DATABASE OF COMMON CURRICULUM MISSPELLINGS
-        const misspellingsDB = {
-            achieve: ["acheive", "acheeve", "achiv"],
-            address: ["adress", "addres"],
-            apparent: ["apparant"],
-            believe: ["beleive", "beleeve"],
-            bicycle: ["bycycle", "bisycle"],
-            breathe: ["breath", "breethe"],
-            calendar: ["calender"],
-            caught: ["cort", "cought"],
-            cemetery: ["cemetry", "cemetary"],
-            committee: ["comitee", "commitee"],
-            communicate: ["comunicate"],
-            community: ["comunity"],
-            competition: ["conpetition", "compitition"],
-            complete: ["compleet", "complet"],
-            consider: ["considder"],
-            accident: ["axident", "acident"],
-            actual: ["actuall", "actuel"],
-            appear: ["apear"],
-            arrive: ["arive"],
-            build: ["bild", "biuld"],
-            busy: ["bizzy", "bussey"],
-            centre: ["center", "sentre"],
-            century: ["sentury", "centuary"],
-            certain: ["sertain", "certin"],
-            circle: ["sercle", "curcle"],
-            accommodate: ["acommodate", "accommodat"],
-            according: ["acording"],
-            aggressive: ["agressive"],
-            amateur: ["amature"],
-            ancient: ["anchent", "ansient"],
-            appreciate: ["apreciate"],
-            attached: ["atached"],
-            available: ["avaliable"],
-            average: ["averidg"],
-            awkward: ["aukward"],
-            bargain: ["bargin"],
-            bruise: ["broose", "bruize"],
-            category: ["catagory"],
-            the: ["th", "teh"],
-            she: ["se", "shie"],
-            they: ["thay"],
-            said: ["sed", "siad"],
-            today: ["tuday", "tooday"],
-            love: ["luv"],
-            come: ["cum"],
-            some: ["sum"],
-            friend: ["freind"],
-            school: ["skool"],
-            house: ["howse"],
-            beautiful: ["beatiful", "butiful"],
-            because: ["becoz", "becuase"],
-            climb: ["clime"],
-            door: ["dor"],
-            floor: ["flor"],
-            find: ["fined"],
-            kind: ["kined"],
-            mind: ["mined"],
-            child: ["chiled"],
-            wild: ["wiled"],
-            even: ["eeven"],
-            great: ["grate"],
-            break: ["brake"],
-            steak: ["stake"],
-            pretty: ["pritty"],
-            every: ["evry"]
-        };
-
-        const phonicAnchors = {
-            s: [{ word: "sun", pos: "beginning" }, { word: "sit", pos: "beginning" }, { word: "hiss", pos: "end" }, { word: "bus", pos: "end" }],
-            a: [{ word: "apple", pos: "beginning" }, { word: "tap", pos: "middle" }, { word: "cat", pos: "middle" }, { word: "dad", pos: "middle" }],
-            t: [{ word: "tap", pos: "beginning" }, { word: "top", pos: "beginning" }, { word: "ten", pos: "beginning" }, { word: "net", pos: "end" }, { word: "hat", pos: "end" }],
-            p: [{ word: "pan", pos: "beginning" }, { word: "pig", pos: "beginning" }, { word: "pot", pos: "beginning" }, { word: "tap", pos: "end" }, { word: "cup", pos: "end" }],
-            i: [{ word: "it", pos: "beginning" }, { word: "ink", pos: "beginning" }, { word: "sit", pos: "middle" }, { word: "bin", pos: "middle" }],
-            n: [{ word: "night", pos: "beginning" }, { word: "net", pos: "beginning" }, { word: "sun", pos: "end" }, { word: "ten", pos: "end" }],
-            m: [{ word: "man", pos: "beginning" }, { word: "map", pos: "beginning" }, { word: "mum", pos: "beginning" }, { word: "ham", pos: "end" }],
-            d: [{ word: "dog", pos: "beginning" }, { word: "dad", pos: "beginning" }, { word: "dig", pos: "beginning" }, { word: "red", pos: "end" }],
-            g: [{ word: "go", pos: "beginning" }, { word: "get", pos: "beginning" }, { word: "dog", pos: "end" }, { word: "big", pos: "end" }],
-            o: [{ word: "orange", pos: "beginning" }, { word: "hot", pos: "middle" }, { word: "pot", pos: "middle" }, { word: "dog", pos: "middle" }],
-            c: [{ word: "cat", pos: "beginning" }, { word: "can", pos: "beginning" }, { word: "cup", pos: "beginning" }, { word: "cot", pos: "beginning" }],
-            k: [{ word: "kit", pos: "beginning" }, { word: "kid", pos: "beginning" }, { word: "king", pos: "beginning" }],
-            ck: [{ word: "back", pos: "end" }, { word: "duck", pos: "end" }, { word: "sock", pos: "end" }, { word: "neck", pos: "end" }],
-            e: [{ word: "egg", pos: "beginning" }, { word: "elbow", pos: "beginning" }, { word: "net", pos: "middle" }, { word: "red", pos: "middle" }],
-            u: [{ word: "up", pos: "beginning" }, { word: "us", pos: "beginning" }, { word: "sun", pos: "middle" }, { word: "cup", pos: "middle" }],
-            r: [{ word: "run", pos: "beginning" }, { word: "red", pos: "beginning" }, { word: "rat", pos: "beginning" }, { word: "rug", pos: "beginning" }],
-            h: [{ word: "hat", pos: "beginning" }, { word: "hot", pos: "beginning" }, { word: "hen", pos: "beginning" }, { word: "hug", pos: "beginning" }],
-            b: [{ word: "bat", pos: "beginning" }, { word: "big", pos: "beginning" }, { word: "box", pos: "beginning" }, { word: "bed", pos: "beginning" }],
-            f: [{ word: "fish", pos: "beginning" }, { word: "fan", pos: "beginning" }, { word: "fox", pos: "beginning" }],
-            ff: [{ word: "off", pos: "end" }, { word: "puff", pos: "end" }, { word: "cliff", pos: "end" }],
-            l: [{ word: "leg", pos: "beginning" }, { word: "leaf", pos: "beginning" }, { word: "log", pos: "beginning" }, { word: "lip", pos: "beginning" }],
-            ll: [{ word: "bell", pos: "end" }, { word: "doll", pos: "end" }, { word: "pill", pos: "end" }, { word: "shell", pos: "end" }],
-            ss: [{ word: "hiss", pos: "end" }, { word: "mess", pos: "end" }, { word: "kiss", pos: "end" }],
-            qu: [{ word: "quack", pos: "beginning" }, { word: "queen", pos: "beginning" }, { word: "quick", pos: "beginning" }],
-            ch: [{ word: "chip", pos: "beginning" }, { word: "chop", pos: "beginning" }, { word: "rich", pos: "end" }, { word: "such", pos: "end" }],
-            sh: [{ word: "shop", pos: "beginning" }, { word: "ship", pos: "beginning" }, { word: "fish", pos: "end" }, { word: "dash", pos: "end" }],
-            th: [{ word: "thin", pos: "beginning" }, { word: "thick", pos: "beginning" }, { word: "bath", pos: "end" }, { word: "moth", pos: "end" }],
-            ng: [{ word: "ring", pos: "end" }, { word: "song", pos: "end" }, { word: "king", pos: "end" }, { word: "long", pos: "end" }],
-            ai: [{ word: "rain", pos: "middle" }, { word: "sail", pos: "middle" }, { word: "wait", pos: "middle" }],
-            ee: [{ word: "feet", pos: "middle" }, { word: "tree", pos: "end" }, { word: "bee", pos: "end" }, { word: "seed", pos: "middle" }],
-            igh: [{ word: "night", pos: "middle" }, { word: "light", pos: "middle" }, { word: "high", pos: "end" }, { word: "sigh", pos: "end" }],
-            oa: [{ word: "boat", pos: "middle" }, { word: "coat", pos: "middle" }, { word: "road", pos: "middle" }, { word: "soap", pos: "middle" }],
-            oo: [{ word: "moon", pos: "middle" }, { word: "wood", pos: "middle" }, { word: "book", pos: "middle" }, { word: "food", pos: "middle" }],
-            ar: [{ word: "park", pos: "middle" }, { word: "farm", pos: "middle" }, { word: "car", pos: "end" }, { word: "star", pos: "end" }],
-            or: [{ word: "fork", pos: "middle" }, { word: "born", pos: "middle" }, { word: "horn", pos: "middle" }, { word: "sort", pos: "middle" }],
-            ur: [{ word: "burn", pos: "middle" }, { word: "curl", pos: "middle" }, { word: "surf", pos: "beginning" }],
-            ow: [{ word: "town", pos: "middle" }, { word: "cow", pos: "end" }, { word: "how", pos: "end" }, { word: "down", pos: "middle" }],
-            oi: [{ word: "coin", pos: "middle" }, { word: "soil", pos: "middle" }, { word: "join", pos: "middle" }, { word: "oil", pos: "beginning" }],
-            ear: [{ word: "near", pos: "end" }, { word: "fear", pos: "end" }, { word: "hear", pos: "end" }, { word: "gear", pos: "end" }],
-            air: [{ word: "stair", pos: "end" }, { word: "hair", pos: "end" }, { word: "fair", pos: "end" }, { word: "chair", pos: "end" }],
-            ure: [{ word: "pure", pos: "end" }, { word: "cure", pos: "end" }, { word: "lure", pos: "end" }],
-            er: [{ word: "butter", pos: "end" }, { word: "river", pos: "end" }, { word: "winter", pos: "end" }, { word: "faster", pos: "end" }],
-            ay: [{ word: "play", pos: "end" }, { word: "stay", pos: "end" }, { word: "day", pos: "end" }, { word: "clay", pos: "end" }],
-            ou: [{ word: "cloud", pos: "middle" }, { word: "out", pos: "beginning" }, { word: "mouth", pos: "middle" }, { word: "shout", pos: "middle" }],
-            oy: [{ word: "boy", pos: "end" }, { word: "toy", pos: "end" }, { word: "joy", pos: "end" }, { word: "enjoy", pos: "end" }],
-            wh: [{ word: "wheel", pos: "beginning" }, { word: "whale", pos: "beginning" }, { word: "whip", pos: "beginning" }, { word: "white", pos: "beginning" }],
-            ph: [{ word: "photo", pos: "beginning" }, { word: "graph", pos: "end" }, { word: "phone", pos: "beginning" }, { word: "dolphin", pos: "middle" }]
-        };
-
-        window.toSentenceCase = (str) => {
-            if (!str) return '';
-            const lower = str.toLowerCase();
-            if (phonicsList.includes(lower)) return lower;
-            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-        };
-
-        // VISUAL CONFUSION ENGINE
-        function generateVisualDistractors(word, count) {
-            const distractors = new Set();
-            const vowels = "aeiou";
-            const consonants = "bcdfghjklmnpqrstvwxyz";
-            
-            // 1. Try manual misspellings first
-            if (misspellingsDB[word.toLowerCase()]) {
-                misspellingsDB[word.toLowerCase()].forEach(m => distractors.add(m));
-            }
-
-            // 2. Add visual neighbors (vowel swaps)
-            for(let i=0; i<word.length; i++) {
-                if (vowels.includes(word[i].toLowerCase())) {
-                    for(let v of vowels) {
-                        if (v !== word[i].toLowerCase()) {
-                            let alt = word.substring(0, i) + v + word.substring(i+1);
-                            distractors.add(alt);
-                        }
-                    }
-                }
-            }
-
-            // 3. Duplicate letters
-            for(let i=0; i<word.length; i++) {
-                distractors.add(word.substring(0, i+1) + word[i] + word.substring(i+1));
-            }
-
-            // 4. Remove one character
-            if (word.length > 3) {
-                for(let i=0; i<word.length; i++) {
-                    distractors.add(word.substring(0, i) + word.substring(i+1));
-                }
-            }
-
-            const result = Array.from(distractors).filter(d => d.toLowerCase() !== word.toLowerCase());
-            return result.sort(() => Math.random() - 0.5).slice(0, count);
-        }
-
-        function hideAll() { 
-            const screens = ['screen-auth', 'screen-home', 'screen-setup', 'screen-game', 'screen-prize', 'screen-withdraw', 'screen-stats'];
-            screens.forEach(s => { const el = document.getElementById(s); if (el) el.classList.add('hidden'); }); 
-        }
-
-        function clearAllTimers() { 
-            window.state.meteorTimers.forEach(t => cancelAnimationFrame(t)); window.state.meteorTimers = []; 
-            if (window.state.voidTimer) { clearInterval(window.state.voidTimer); window.state.voidTimer = null; } 
-        }
-
-        function updateVaultUI() {
-            const bal = document.getElementById('balance-display');
-            if (bal) bal.innerText = window.state.bank + " stars";
-            const badge = document.getElementById('badge-level-text');
-            if (badge) badge.innerText = "Rank " + window.state.challengeLevel;
-        }
-
-        function renderCustomWordTags() {
-            const list = document.getElementById('custom-word-list');
-            if (!list) return; list.innerHTML = '';
-            window.state.customWords.forEach(w => {
-                const displayWord = window.toSentenceCase(w);
-                list.innerHTML += `<div class="custom-word-tag">${displayWord} <span class="custom-word-delete" onclick="window.removeCustomWord('${w}')">×</span></div>`;
-            });
-        }
-
-        function recordResult(ok, mistake = null) {
-            const gameRef = window.state.currentGame === 'death' ? 'echo' : window.state.currentGame;
-            window.state.history.push({ word: window.state.currentWord, result: ok, timestamp: Date.now(), mistake: mistake, game: gameRef });
-            let baseReward = 10;
-            if (window.state.currentGame === 'death') baseReward = 20;
-            else if (window.state.currentGame === 'lunar') baseReward = Math.max(0, window.state.lives * 2); 
-            if (ok) { window.state.bank += baseReward; window.state.sessionCredits += baseReward; }
-        }
-
-        function showHome() { 
-            document.body.classList.remove('death-active', 'meteor-active', 'void-active', 'mermaid-active', 'unicorn-active');
-            window.state.isTransitioning = false; clearAllTimers(); hideAll(); 
-            const screen = document.getElementById('screen-home'); 
-            if (screen) screen.classList.remove('hidden');
-            const helmetCont = document.getElementById('active-pilot-helmet'); 
-            if (helmetCont) helmetCont.innerHTML = helmets[window.state.pilotName] || '';
-            const display = document.getElementById('pilot-name-display'); 
-            if (display) display.innerText = window.state.pilotName; 
-            updateVaultUI(); 
-        }
-        window.showHome = showHome;
-
-        async function saveStateToCloud() {
-            if (auth.currentUser && window.state.pilotName) {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pilots', window.state.pilotName.toLowerCase());
-                await setDoc(docRef, { credits: window.state.bank, history: window.state.history, customWords: window.state.customWords, challengeLevel: window.state.challengeLevel }, { merge: true });
-            }
-        }
-
-        function updateUI() {
-            const prog = document.getElementById('game-progress'); if (prog) prog.innerText = `Round ${window.state.currentRound} / 10`;
-            const speakerBtn = document.getElementById('speaker-btn');
-            if (speakerBtn) {
-                if (window.state.currentGame === 'unicorn') speakerBtn.classList.add('hidden');
-                else speakerBtn.classList.remove('hidden');
-            }
-            const echoField = document.getElementById('echo-field');
-            if (echoField) { echoField.value = ''; echoField.classList.remove('border-rose-500', 'border-green-500'); }
-            const livesDiv = document.getElementById('game-lives');
-            if (livesDiv) {
-                livesDiv.innerHTML = '';
-                if (window.state.currentGame !== 'lunar') {
-                    for(let i=0; i<3; i++) {
-                        if (i < window.state.lives) livesDiv.innerHTML += `<svg class="w-5 h-5 text-green-400 drop-shadow-[0_0_6px_rgba(74,222,128,0.8)]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
-                        else livesDiv.innerHTML += `<svg class="w-5 h-5 text-white/10" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
-                    }
-                }
-            }
-            const maxLivesMistakes = window.state.currentGame === 'lunar' ? 6 : 3;
-            const mistakes = maxLivesMistakes - window.state.lives;
-            const parts = ['part-leg-r', 'part-leg-l', 'part-arm-r', 'part-arm-l', 'part-body', 'part-head'];
-            parts.forEach(id => document.getElementById(id)?.classList.remove('hidden-part'));
-            if (window.state.currentGame === 'lunar' && mistakes > 0) {
-                for(let i=0; i < mistakes; i++) document.getElementById(parts[i])?.classList.add('hidden-part');
-            }
-            ['keyboard', 'multi-choice', 'echo-input-container', 'meteor-field', 'standard-game-elements', 'hangman-area', 'void-timer-container'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
-            if (window.state.currentGame === 'lunar') {
-                document.getElementById('standard-game-elements')?.classList.remove('hidden');
-                document.getElementById('keyboard')?.classList.remove('hidden');
-                document.getElementById('hangman-area')?.classList.remove('hidden');
-                renderBlanks(); renderKeyboard();
-            } else if (window.state.currentGame === 'death') {
-                document.getElementById('standard-game-elements')?.classList.remove('hidden');
-                document.getElementById('echo-input-container')?.classList.remove('hidden');
-                const pict = illusts[window.state.currentWord];
-                const display = document.getElementById('game-word-display');
-                if (display) display.innerHTML = pict ? `<div class="w-16 h-16 md:w-24 md:h-24 mb-4 flex items-center justify-center text-4xl md:text-6xl drop-shadow-xl">${pict}</div>` : '';
-            } else if (window.state.currentGame === 'meteor') {
-                document.getElementById('meteor-field')?.classList.remove('hidden'); renderMeteorBlast();
-            } else if (window.state.currentGame === 'void' || window.state.currentGame === 'mermaid' || window.state.currentGame === 'unicorn') {
-                if (window.state.currentGame === 'void') { document.getElementById('void-timer-container')?.classList.remove('hidden'); startVoidTimer(); }
-                document.getElementById('standard-game-elements')?.classList.remove('hidden');
-                document.getElementById('multi-choice')?.classList.remove('hidden');
-                renderChoices();
-                const display = document.getElementById('game-word-display');
-                if (display) {
-                    if (window.state.currentGame === 'unicorn') display.innerHTML = `<div class="text-3xl md:text-4xl font-black text-pink-300 tracking-tighter">${window.toSentenceCase(window.state.currentWord)}</div>`;
-                    else if (window.state.currentGame === 'mermaid') display.innerHTML = `<div class="text-4xl md:text-6xl">🫧</div>`;
-                    else display.innerHTML = '';
-                }
-            }
-        }
-
-        window.selectPilot = async (name) => {
-            const unlockMsg = new SpeechSynthesisUtterance("");
-            window.speechSynthesis.speak(unlockMsg);
-
-            window.state.pilotName = name;
-            showHome();
-            if (!auth.currentUser) return;
-            try {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pilots', name.toLowerCase());
-                const snap = await getDoc(docRef);
-                if (snap.exists()) {
-                    const data = snap.data();
-                    window.state.bank = data.credits || 0;
-                    window.state.history = data.history || [];
-                    window.state.challengeLevel = data.challengeLevel || 0;
-                    window.state.customWords = data.customWords || [];
-                    updateVaultUI(); renderCustomWordTags();
-                }
-            } catch (e) { console.error("Sync error.", e); }
-        };
-
-        window.chooseGame = (game) => { 
-            window.state.currentGame = game; hideAll(); 
-            document.body.classList.remove('death-active', 'meteor-active', 'void-active', 'mermaid-active', 'unicorn-active');
-            if (game === 'death') document.body.classList.add('death-active'); 
-            if (game === 'meteor') document.body.classList.add('meteor-active');
-            if (game === 'void') document.body.classList.add('void-active');
-            if (game === 'mermaid') document.body.classList.add('mermaid-active');
-            if (game === 'unicorn') document.body.classList.add('unicorn-active');
-            document.getElementById('screen-setup')?.classList.remove('hidden'); 
-        };
-
-        window.launchMission = () => {
-            let list = [];
-            if (window.state.currentGame === 'unicorn') {
-                list = Object.keys(illusts);
-            } else {
-                if (document.getElementById('check-recep').checked) list = list.concat(wordsDB.recep);
-                if (document.getElementById('check-y1').checked) list = list.concat(wordsDB.y1);
-                if (document.getElementById('check-y2').checked) list = list.concat(wordsDB.y2);
-                if (document.getElementById('check-y34').checked) list = list.concat(wordsDB.y34);
-                if (document.getElementById('check-y56').checked) list = list.concat(wordsDB.y56);
-                if (document.getElementById('check-custom').checked) list = list.concat(window.state.customWords);
-            }
-
-            if (list.length === 0 && window.state.currentGame !== 'mermaid') return;
-
-            if (window.state.currentGame === 'mermaid') {
-                window.state.words = phonicsList.sort(() => Math.random() - 0.5).slice(0, 10);
-            } else {
-                window.state.words = list.sort(() => Math.random() - 0.5).slice(0, 10);
-            }
-
-            window.state.currentRound = 0; window.state.lives = window.state.currentGame === 'lunar' ? 6 : 3; window.state.sessionCredits = 0;
-            hideAll(); document.getElementById('screen-game')?.classList.remove('hidden'); nextRound();
-        };
-
-        function nextRound() {
-            clearAllTimers();
-            if (window.state.currentRound >= 10 || window.state.lives <= 0) { endGame(); return; }
-            window.state.currentWord = window.state.words[window.state.currentRound].toLowerCase();
-            
-            if (window.state.currentGame === 'mermaid') {
-                const anchors = phonicAnchors[window.state.currentWord] || [{ word: window.state.currentWord, pos: "beginning" }];
-                window.state.currentAnchor = anchors[Math.floor(Math.random() * anchors.length)];
-            } else {
-                window.state.currentAnchor = null;
-            }
-
-            window.state.guessed = []; window.state.echoAttempts = 0; window.state.currentRound++;
-            updateUI(); 
-
-            if (window.state.currentGame === 'death') {
-                const echoField = document.getElementById('echo-field');
-                if (echoField) {
-                    echoField.value = '';
-                    setTimeout(() => echoField.focus(), 10);
-                }
-            }
-
-            if(window.state.currentGame !== 'unicorn') window.speakWord();
-            setTimeout(() => { window.state.isTransitioning = false; }, 200);
-        }
-
-        function startVoidTimer() {
-            let tl = 5; let bar = document.getElementById('void-timer-bar');
-            if (!bar) return; bar.style.width = '100%';
-            window.state.voidTimer = setInterval(() => {
-                if(window.state.isTransitioning) return;
-                tl -= 0.1; bar.style.width = (tl * 20) + '%';
-                if (tl <= 0) { clearInterval(window.state.voidTimer); window.state.isTransitioning = true; window.state.lives--; recordResult(false, "Timeout"); triggerExplosion(nextRound); }
-            }, 100);
-        }
-
-        function renderBlanks() {
-            const display = document.getElementById('game-word-display'); if (!display) return; display.innerHTML = '';
-            const isPhonic = phonicsList.includes(window.state.currentWord.toLowerCase()) || window.state.currentGame === 'mermaid';
-            
-            window.state.currentWord.split('').forEach((c, index) => {
-                let charToShow = window.state.guessed.includes(c) ? (index === 0 && !isPhonic ? c.toUpperCase() : c.toLowerCase()) : '';
-                display.innerHTML += `<div class="blank text-white">${charToShow}</div>`;
-            });
-        }
-
-        function renderKeyboard() {
-            const kb = document.getElementById('keyboard'); if (!kb) return; kb.innerHTML = '';
-            ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'].forEach(rowChars => {
-                const rowDiv = document.createElement('div'); rowDiv.className = 'flex justify-center gap-1 mb-1';
-                rowChars.split('').forEach(l => {
-                    const b = document.createElement('button'); b.innerText = l.toLowerCase(); b.className = 'key-btn text-white';
-                    b.disabled = window.state.guessed.includes(l);
-                    b.onclick = (e) => { e.preventDefault(); window.handleOnScreenKey(l); }; rowDiv.appendChild(b);
-                }); kb.appendChild(rowDiv);
-            });
-        }
-
-        function renderChoices() {
-            const container = document.getElementById('multi-choice'); if (!container) return; container.innerHTML = '';
-            const target = window.state.currentWord;
-            let opts = [target];
-            
-            if (window.state.currentGame === 'mermaid') {
-                const anchorWord = window.state.currentAnchor ? window.state.currentAnchor.word.toLowerCase() : "";
-                const distractors = phonicsList.filter(p => !anchorWord.includes(p) && p !== target);
-                while(opts.length < 4) {
-                    let r = distractors[Math.floor(Math.random()*distractors.length)];
-                    if(!opts.includes(r)) opts.push(r);
-                }
-            } else if (window.state.currentGame === 'unicorn') {
-                const pool = Object.keys(illusts);
-                while(opts.length < 4) { 
-                    let r = pool[Math.floor(Math.random()*pool.length)]; 
-                    if(!opts.includes(r)) opts.push(r); 
-                }
-            } else {
-                // VOID CHOICE: Use Visual Confusion
-                const visuals = generateVisualDistractors(target, 3);
-                opts = opts.concat(visuals);
-                // Fill if engine failed
-                while(opts.length < 4) { 
-                    let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)]; 
-                    if(!opts.includes(r)) opts.push(r); 
-                }
-            }
-
-            opts.sort(() => Math.random() - 0.5).forEach(o => {
-                const b = document.createElement('button');
-                if (window.state.currentGame === 'unicorn') { 
-                    b.className = 'illustration-card'; 
-                    b.innerHTML = `<span class="drop-shadow-xl">${illusts[o] || '❔'}</span>`; 
-                } else { 
-                    b.className = (window.state.currentGame === 'mermaid' ? 'bubble-btn text-white mx-auto' : 'p-4 md:p-6 bg-white/10 rounded-2xl md:rounded-3xl text-lg md:text-2xl font-bold'); 
-                    b.innerText = window.toSentenceCase(o); 
-                }
-                b.onclick = () => {
-                    if (window.state.isTransitioning) return;
-                    window.state.isTransitioning = true;
-                    if (o.toLowerCase() === target.toLowerCase()) { recordResult(true); nextRound(); }
-                    else { 
-                        window.state.lives--; 
-                        if (window.state.lives <= 0) { recordResult(false, o); triggerExplosion(nextRound); } 
-                        else { triggerExplosion(() => { window.state.isTransitioning = false; }); } 
-                    }
-                };
-                container.appendChild(b);
-            });
-        }
-
-        function renderMeteorBlast() {
-            const field = document.getElementById('meteor-field'); if (!field) return; field.innerHTML = '';
-            const target = window.state.currentWord;
-            let opts = [target];
-
-            // METEOR BLAST: Use Visual Confusion
-            const visuals = generateVisualDistractors(target, 3);
-            opts = opts.concat(visuals);
-            while(opts.length < 4) { let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)]; if(!opts.includes(r)) opts.push(r); }
-
-            opts.sort(() => Math.random() - 0.5).forEach((text, i) => {
-                const m = document.createElement('div'); m.className = 'meteor'; m.innerText = window.toSentenceCase(text);
-                let x = -150, y = 30 + (i * 75), speed = 1.0 + (Math.random() * 1.2);
-                m.style.top = y + 'px'; field.appendChild(m);
-                let processed = false;
-                const move = () => {
-                    if (processed || !document.body.classList.contains('meteor-active')) return;
-                    x += speed; m.style.left = x + 'px';
-                    if (x > field.offsetWidth + 100) {
-                        processed = true;
-                        if (text.toLowerCase() === target.toLowerCase() && !window.state.isTransitioning) {
-                            window.state.isTransitioning = true; window.state.lives--; recordResult(false, "Missed"); triggerExplosion(nextRound);
-                        }
-                    } else { const animId = requestAnimationFrame(move); window.state.meteorTimers.push(animId); }
-                };
-                requestAnimationFrame(move);
-                m.onclick = () => {
-                    if (processed || window.state.isTransitioning) return;
-                    processed = true; m.style.opacity = '0'; window.state.isTransitioning = true;
-                    if (text.toLowerCase() === target.toLowerCase()) { recordResult(true); nextRound(); }
-                    else { window.state.lives--; if (window.state.lives <= 0) { recordResult(false, text); triggerExplosion(nextRound); } else { triggerExplosion(() => { window.state.isTransitioning = false; }); } }
-                };
-            });
-        }
-
-        async function endGame() { window.state.isTransitioning = false; clearAllTimers(); hideAll(); document.getElementById('screen-prize')?.classList.remove('hidden'); const earned = document.getElementById('earned-amount'); if (earned) earned.innerText = "+" + (window.state.sessionCredits) + " stars"; await saveStateToCloud(); }
-
-        function triggerExplosion(callback) {
-            const exp = document.getElementById('explosion-overlay'), panel = document.getElementById('app-container');
-            if (panel) panel.classList.add('shake');
-            if (exp) exp.classList.add('animate-explosion');
-            setTimeout(() => { if (panel) panel.classList.remove('shake'); if (exp) exp.classList.remove('animate-explosion'); if (callback) callback(); }, 800);
-        }
-
-        window.speakWord = () => {
-            let txt = window.state.currentWord;
-            if (window.state.currentGame === 'mermaid') {
-                const anchor = window.state.currentAnchor;
-                if (anchor) txt = `Find the ${anchor.pos} sound in ${anchor.word}`;
-            }
-            const msg = new SpeechSynthesisUtterance(txt);
-            msg.rate = 0.85; msg.pitch = 1.0;
-            const voices = window.speechSynthesis.getVoices();
-            const v = voices.find(v => v.lang.startsWith('en-GB') && (v.name.includes('Male') || v.name.includes('David')));
-            if (v) msg.voice = v;
-            window.speechSynthesis.speak(msg);
-        };
-
-        window.showWithdraw = () => { hideAll(); document.getElementById('screen-withdraw')?.classList.remove('hidden'); const bal = document.getElementById('withdraw-balance'); if (bal) bal.innerText = window.state.bank + " stars"; };
-
-        window.printCert = (type) => {
-            const masteredWords = [...new Set(window.state.history.filter(e => e.result).map(e => window.toSentenceCase(e.word)))].sort();
-            const wordsHtml = masteredWords.length > 0 ? masteredWords.map(w => `<span>${w}</span>`).join("") : "No words logged";
-            const target = document.getElementById('cert-target');
-            if (type === 'gold') target.innerHTML = `<div class="golden-ticket-wrap"><h1 class="wonka-header">Golden ticket</h1><p style="font-size: 20px; font-weight: 900; margin: 20px 0;">Moonshot Academy edition</p><div style="margin: 30px 0; border-top: 2px dashed #451a03; border-bottom: 2px dashed #451a03; padding: 20px 0;"><p style="font-size: 20px; font-weight: 900;">Authorized for pilot</p><h2 style="font-size: 45px; text-transform: uppercase; font-family: Anton;">${window.state.pilotName}</h2></div><h3 style="font-size: 55px; font-family: Anton;">${window.state.bank} stars</h3></div>`;
-            else target.innerHTML = `<div class="mastery-cert-wrap"><h1 style="font-size: 50px; color: #0369a1; font-family: Anton;">Mastery certificate</h1><hr style="border: 2px solid #0369a1; margin: 30px 0;"><p>This certifies that the distinguished pilot</p><h2 style="font-size: 55px; text-transform: uppercase; font-family: Anton;">${window.state.pilotName}</h2><p>Has successfully achieved Academy Level ${window.state.challengeLevel}</p><div style="margin-top: 30px; padding: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px;"><h3 style="font-size: 12px; font-weight: 900;">Mastered words gallery</h3><div class="mastery-list">${wordsHtml}</div></div><p style="margin-top: 40px; font-weight: 900;">Total earnings: ${window.state.bank} stars</p></div>`;
-            window.print();
-        };
-
-        window.initiateWithdrawal = (type) => {
-            const dialog = document.getElementById('confirm-dialog');
-            const msg = document.getElementById('confirm-message');
-            msg.innerText = "Processing this withdrawal will reset your Galactic Bank to zero. Ready to issue certificate?";
-            dialog.classList.remove('hidden');
-            document.getElementById('execute-reset-btn').onclick = async () => {
-                window.printCert(type);
-                window.state.bank = 0;
-                await saveStateToCloud();
-                updateVaultUI();
-                window.closeConfirm();
-                showHome();
-            };
-        };
-
-        window.closeConfirm = () => { 
-            const dialog = document.getElementById('confirm-dialog');
-            if (dialog) dialog.classList.add('hidden');
-        };
-
-        window.addCustomWord = function() { const input = document.getElementById('custom-word-input'); if (!input) return; const word = input.value.trim().toLowerCase(); if (word && !window.state.customWords.includes(word)) { window.state.customWords.push(word); input.value = ''; renderCustomWordTags(); saveStateToCloud(); } };
-        window.removeCustomWord = function(word) { window.state.customWords = window.state.customWords.filter(w => w !== word); renderCustomWordTags(); saveStateToCloud(); };
-
-        window.submitEcho = () => {
-            if(window.state.isTransitioning) return;
-            const field = document.getElementById('echo-field'); if (!field) return;
-            const val = field.value.trim().toLowerCase(); if(!val) return;
-            window.state.isTransitioning = true;
-            if (val === window.state.currentWord) { field.classList.add('border-green-500'); recordResult(true); setTimeout(() => { field.value = ''; nextRound(); }, 300); } 
-            else { window.state.echoAttempts++; if (window.state.echoAttempts === 1) { document.getElementById('try-again-msg')?.classList.remove('hidden'); field.classList.add('border-rose-500'); const panel = document.getElementById('echo-input-container'); if (panel) panel.classList.add('shake'); setTimeout(() => { if (panel) panel.classList.remove('shake'); field.value = ''; field.focus(); window.state.isTransitioning = false; }, 500); } else { window.state.lives--; field.value = ''; recordResult(false, val); triggerExplosion(nextRound); } }
-        };
-
-        window.handleOnScreenKey = (l) => { if (window.state.guessed.includes(l) || window.state.isTransitioning) return; window.state.guessed.push(l); if (!window.state.currentWord.includes(l)) window.state.lives--; renderBlanks(); if (window.state.currentWord.split('').every(c => window.state.guessed.includes(c))) { window.state.isTransitioning = true; recordResult(true); setTimeout(nextRound, 1000); } else if (window.state.lives <= 0) { window.state.isTransitioning = true; recordResult(false, "Fail"); triggerExplosion(nextRound); } else updateUI(); };
-
-        window.showStats = () => { hideAll(); const body = document.getElementById('stats-body'); if (!body) return; body.innerHTML = ''; if(window.state.history.length > 0) window.state.history.forEach(entry => { body.innerHTML += `<tr class="border-b border-white/5"><td class="p-3 md:p-4 font-bold text-[10px] md:text-xs">${window.toSentenceCase(entry.word)}</td><td class="p-3 md:p-4 ${entry.result ? 'text-green-400' : 'text-red-400'} impact-font text-sm md:text-lg text-center">${entry.result ? 'PASS' : 'FAIL'}</td><td class="p-3 md:p-4 text-center text-white/40">1</td></tr>`; }); else body.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-white/40">No mission logs yet.</td></tr>'; document.getElementById('screen-stats')?.classList.remove('hidden'); };
-
-        window.triggerReset = (type) => { const dialog = document.getElementById('confirm-dialog'); dialog?.classList.remove('hidden'); document.getElementById('confirm-message').innerText = type === 'bank' ? "Reset star credits?" : "Clear all logs?"; document.getElementById('execute-reset-btn').onclick = async () => { if (type === 'bank') window.state.bank = 0; else window.state.history = []; await saveStateToCloud(); window.closeConfirm(); if (type === 'history') window.showStats(); else showHome(); }; };
-
-        const initAuth = async () => { try { if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token); else await signInAnonymously(auth); } catch (e) { console.error("Auth init error:", e); } };
-        initAuth();
-        onAuthStateChanged(auth, () => { const o = document.getElementById('connection-overlay'); if (o) { o.classList.add('opacity-0'); setTimeout(() => o.classList.add('hidden'), 500); } });
-        window.addEventListener('keydown', (e) => { const l = e.key.toLowerCase(); if (l.length === 1 && l >= 'a' && l <= 'z') { const kb = document.getElementById('keyboard'); if (window.state.currentGame === 'lunar' && kb && !kb.classList.contains('hidden')) if (!window.state.guessed.includes(l)) window.handleOnScreenKey(l); } if (e.key === 'Enter' && (window.state.currentGame === 'death' || !document.getElementById('echo-input-container').classList.contains('hidden'))) window.submitEcho(); });
-    </script>
-</body>
-</html>
+                <button onclick="window.initiateWithdrawal('gold')" class="w-full py-5 bg-yellow-500 text-black font-black rounded-3xl uppercase tracking-widest hover:brightness-110">Issue Golden Ticket</button>
+                <button onclick="window.initiateWithdrawal('mastery')" class="w-full py-5 bg-sky-600 text-white font-black rounded
