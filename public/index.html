@@ -1,7 +1,7 @@
 <!-- 
-🚀 MOONSHOT ACADEMY: FINAL BUILD (V3 - INTELLIGENT DISTRACTORS)
-Updated: March 28, 2026
-Fixed: Infinite loading, Navigation, Physical Keyboard, Void Choice Timer, and Smart Distractor Engine
+🚀 MOONSHOT ACADEMY: FINAL BUILD (V4 - UK ENGLISH & LUNAR FIX)
+Updated: March 30, 2026
+Fixed: Lunar Mission loop hang, UK English Spelling Library, and Input race conditions
 -->
 
 <!DOCTYPE html>
@@ -297,7 +297,7 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, Void Choice Timer, and S
             <div id="standard-game-elements">
                 <div id="game-word-display" class="mb-12 flex flex-row items-center justify-center gap-2 flex-wrap min-h-[60px]"></div>
                 <button onclick="window.speakWord()" id="speaker-btn" class="w-20 h-20 mx-auto rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-10 hover:bg-white/10 transition">
-                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
                 </button>
             </div>
 
@@ -398,9 +398,9 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, Void Choice Timer, and S
         const wordsDB = {
             recep: ["cat", "dog", "pig", "sun", "big", "yes", "can", "red", "run", "ten", "cup", "box", "hat", "pen", "leg", "top", "hop", "mud"],
             y1: ["the", "said", "house", "school", "friend", "love", "push", "pull", "full", "here", "there", "where", "once", "some", "come", "your", "today", "says", "friend", "house"],
-            y2: ["beautiful", "because", "climb", "door", "floor", "find", "kind", "mind", "child", "every", "great", "break", "pretty", "after", "again", "both", "busy", "clothes", "father", "mother", "money", "only", "sugar", "water"],
+            y2: ["beautiful", "because", "climb", "door", "floor", "find", "kind", "mind", "child", "every", "great", "break", "pretty", "after", "again", "both", "busy", "clothes", "father", "mother", "money", "only", "sugar", "water", "colour", "favourite"],
             y34: ["accident", "actual", "address", "answer", "appear", "arrive", "believe", "bicycle", "breath", "breathe", "build", "busy", "calendar", "caught", "centre", "century", "certain", "circle", "complete", "consider", "continue", "decide", "describe", "different", "difficult", "disappear", "early", "earth", "eight", "enough", "exercise", "experience", "experiment", "extreme", "famous", "favourite", "forward", "fruit", "grammar", "group", "guard", "guide", "heard", "heart", "height", "history", "imagine", "increase", "important", "interest", "island", "knowledge", "learn", "length", "library", "material", "medicine", "mention", "minute", "natural", "naughty", "notice", "occasion", "often", "opposite", "ordinary", "particular", "peculiar", "perhaps", "popular", "position", "possess", "possession", "possible", "potatoes", "pressure", "probably", "promise", "purpose", "quarter", "question", "recent", "regular", "reign", "remember", "sentence", "separate", "special", "straight", "strange", "strength", "suppose", "surprise", "therefore", "though", "although", "thought", "through", "various", "weight", "woman"],
-            y56: ["accommodate", "accompany", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediate", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht"]
+            y56: ["accommodate", "accompany", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediate", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht", "organise", "realise", "humour"]
         };
 
         const distractors = {
@@ -408,7 +408,11 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, Void Choice Timer, and S
             because: ["becoz", "becuase"],
             friend: ["freind"],
             school: ["skool"],
-            the: ["teh", "th"]
+            the: ["teh", "th"],
+            favourite: ["favorite", "favourit"],
+            recognise: ["recognize", "recognis"],
+            programme: ["program", "programe"],
+            neighbour: ["neighbor", "neighber"]
         };
 
         function hideAll() { document.querySelectorAll('[id^="screen-"]').forEach(s => s.classList.add('hidden')); document.body.className = ""; }
@@ -448,19 +452,6 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, Void Choice Timer, and S
                 await saveStateToCloud();
                 window.closeConfirm();
                 window.showHome();
-            };
-        };
-
-        window.triggerReset = (type) => {
-            const dialog = document.getElementById('confirm-dialog');
-            dialog.classList.remove('hidden');
-            document.getElementById('confirm-message').innerText = type === 'bank' ? "Reset star credits?" : "Clear all logs?";
-            document.getElementById('execute-reset-btn').onclick = async () => {
-                if (type === 'bank') window.state.bank = 0;
-                else window.state.history = [];
-                await saveStateToCloud();
-                window.closeConfirm();
-                if (type === 'history') window.showStats(); else window.showHome();
             };
         };
 
@@ -596,10 +587,20 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, Void Choice Timer, and S
         // GAME LOOP
         function nextRound() {
             clearAllTimers();
-            if (window.state.currentRound >= 10 || (window.state.lives <= 0 && window.state.currentGame !== 'lunar')) { endGame(); return; }
+            window.state.isTransitioning = false; 
+            
+            // Check if game is over
+            if (window.state.currentRound >= 10 || window.state.lives <= 0) { 
+                endGame(); 
+                return; 
+            }
+            
             window.state.currentWord = window.state.words[window.state.currentRound].toLowerCase();
-            window.state.guessed = []; window.state.currentRound++; window.state.isTransitioning = false;
-            updateUI(); window.speakWord();
+            window.state.guessed = []; 
+            window.state.currentRound++; 
+            
+            updateUI(); 
+            window.speakWord();
         }
 
         function startVoidTimer() {
@@ -614,6 +615,7 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, Void Choice Timer, and S
                 bar.style.width = (timeLeft / 5.0 * 100) + "%";
                 if (timeLeft <= 0) {
                     clearInterval(window.state.voidTimer);
+                    window.state.isTransitioning = true;
                     window.state.lives--;
                     recordResult(false, "Timeout");
                     triggerExplosion(nextRound);
@@ -626,45 +628,30 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, Void Choice Timer, and S
             const wordLower = word.toLowerCase();
             let variations = new Set();
             
-            // 1. Check priority map
             if (distractors[wordLower]) {
                 distractors[wordLower].forEach(v => variations.add(v.toLowerCase()));
             }
             
-            // 2. Phonic/Visual Mutations
             const commonSwaps = [
                 ['ie', 'ei'], ['ei', 'ie'], ['ce', 'se'], ['se', 'ce'],
                 ['ance', 'ence'], ['ence', 'ance'], ['able', 'ible'], ['ible', 'able'],
                 ['ous', 'us'], ['tion', 'sion'], ['sion', 'tion'], ['ly', 'ley'],
-                ['y', 'i'], ['i', 'y'], ['sh', 'ch'], ['ch', 'sh']
+                ['y', 'i'], ['i', 'y'], ['sh', 'ch'], ['ch', 'sh'], ['our', 'or'], ['or', 'our']
             ];
             
             commonSwaps.forEach(([from, to]) => {
                 if (wordLower.includes(from)) variations.add(wordLower.replace(new RegExp(from, 'g'), to));
             });
 
-            // 3. Double/Single Letter Mutation
             for (let i = 0; i < wordLower.length - 1; i++) {
                 if (wordLower[i] === wordLower[i+1]) {
-                    variations.add(wordLower.slice(0, i) + wordLower.slice(i+1)); // remove double
+                    variations.add(wordLower.slice(0, i) + wordLower.slice(i+1)); 
                 } else if (/[bcdfghjklmnpqrstvwxyz]/.test(wordLower[i])) {
-                    variations.add(wordLower.slice(0, i+1) + wordLower[i] + wordLower.slice(i+1)); // add double
+                    variations.add(wordLower.slice(0, i+1) + wordLower[i] + wordLower.slice(i+1)); 
                 }
             }
 
-            // 4. Adjacent swap (Typo simulation)
-            if (wordLower.length > 3) {
-                for (let i = 1; i < wordLower.length - 2; i++) {
-                    let chars = wordLower.split('');
-                    [chars[i], chars[i+1]] = [chars[i+1], chars[i]];
-                    variations.add(chars.join(''));
-                }
-            }
-
-            // Filter out correct word and limit
             let finalDistractors = Array.from(variations).filter(v => v !== wordLower);
-            
-            // Limit and return
             return finalDistractors.sort(() => 0.5 - Math.random()).slice(0, 3);
         }
 
@@ -673,9 +660,8 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, Void Choice Timer, and S
             const livesDiv = document.getElementById('game-lives'); livesDiv.innerHTML = '';
             for(let i=0; i<3; i++) { livesDiv.innerHTML += i < window.state.lives ? '❤️' : '🖤'; }
             
-            // Clean up screen for new mode
             ['hangman-area', 'keyboard', 'echo-input-container', 'meteor-field', 'multi-choice', 'void-timer-container'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            document.getElementById('game-word-display').innerHTML = ""; // Global clear to prevent ghost blanks
+            document.getElementById('game-word-display').innerHTML = ""; 
             
             const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
             parts.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.add('hidden-part'); });
@@ -699,17 +685,29 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, Void Choice Timer, and S
         }
 
         window.handleGuess = (char) => {
-            if (window.state.guessed.includes(char) || window.state.isTransitioning) return;
+            if (window.state.isTransitioning) return;
+            if (window.state.guessed.includes(char)) return;
+            
             window.state.guessed.push(char);
+            
             if (window.state.currentWord.includes(char)) {
                 renderBlanks();
-                if (window.state.currentWord.split('').every(c => window.state.guessed.includes(c))) { recordResult(true); setTimeout(nextRound, 1000); }
+                if (window.state.currentWord.split('').every(c => window.state.guessed.includes(c))) { 
+                    window.state.isTransitioning = true;
+                    recordResult(true); 
+                    setTimeout(nextRound, 1000); 
+                }
             } else {
                 window.state.lives--;
                 const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
                 const idx = 6 - window.state.lives - 1;
                 if(idx >= 0 && document.getElementById(parts[idx])) document.getElementById(parts[idx]).classList.remove('hidden-part');
-                if (window.state.lives <= 0) { recordResult(false); triggerExplosion(nextRound); }
+                
+                if (window.state.lives <= 0) { 
+                    window.state.isTransitioning = true;
+                    recordResult(false, "Fail"); 
+                    triggerExplosion(nextRound); 
+                }
             }
             renderKeyboard();
         };
@@ -747,29 +745,27 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, Void Choice Timer, and S
         }
 
         async function endGame() {
+            window.state.isTransitioning = false;
             hideAll(); document.getElementById('screen-prize').classList.remove('hidden');
             document.getElementById('earned-amount').innerText = `+${window.state.sessionCredits} stars`;
             await saveStateToCloud();
         }
 
         window.submitEcho = () => {
+            if (window.state.isTransitioning) return;
             const input = document.getElementById('echo-field').value.trim().toLowerCase();
+            window.state.isTransitioning = true;
             if (input === window.state.currentWord) { recordResult(true); nextRound(); }
             else { window.state.lives--; recordResult(false, input); triggerExplosion(nextRound); }
         };
 
         function renderChoices() {
             const container = document.getElementById('multi-choice'); container.innerHTML = "";
-            let opts = [window.state.currentWord];
-            const smartDistractors = generateSmartDistractors(window.state.currentWord);
-            opts = opts.concat(smartDistractors);
-            
-            // If still less than 4, pull from random level DB as safety
+            let opts = [window.state.currentWord].concat(generateSmartDistractors(window.state.currentWord));
             while(opts.length < 4) {
                 let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)];
                 if(!opts.includes(r)) opts.push(r);
             }
-            
             opts.sort(() => Math.random() - 0.5).forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = "p-6 bg-white/5 border border-white/10 rounded-3xl font-black uppercase tracking-widest hover:bg-white/10";
@@ -787,7 +783,6 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, Void Choice Timer, and S
         function renderMeteors() {
             const field = document.getElementById('meteor-field'); field.innerHTML = "";
             let opts = [window.state.currentWord].concat(generateSmartDistractors(window.state.currentWord));
-            
             opts.forEach((word, index) => {
                 const m = document.createElement('div'); m.className = "meteor"; m.innerText = word;
                 m.style.top = (50 + index * 90) + "px"; field.appendChild(m);
@@ -811,16 +806,10 @@ Fixed: Infinite loading, Navigation, Physical Keyboard, Void Choice Timer, and S
 
             if (window.state.currentGame === 'lunar') {
                 const key = e.key.toLowerCase();
-                if (key.length === 1 && key >= 'a' && key <= 'z') {
-                    window.handleGuess(key);
-                }
+                if (key.length === 1 && key >= 'a' && key <= 'z') window.handleGuess(key);
             } else if (window.state.currentGame === 'death') {
-                if (e.key === 'Enter') {
-                    window.submitEcho();
-                } else {
-                    const f = document.getElementById('echo-field');
-                    if (document.activeElement !== f) f.focus();
-                }
+                if (e.key === 'Enter') window.submitEcho();
+                else { const f = document.getElementById('echo-field'); if (document.activeElement !== f) f.focus(); }
             }
         });
 
