@@ -1,7 +1,7 @@
 <!-- 
-🚀 MOONSHOT ACADEMY: FINAL BUILD (V5 - HIGH-DEF PILOT HELMETS)
+🚀 MOONSHOT ACADEMY: FINAL BUILD (V6 - FULL RECOVERY)
 Updated: March 30, 2026
-Fixed: Detailed SVG Avatars, UK English Voice, and Lunar Logic
+Fixed: Void Choice & Meteor Blast logic, UK English Library, and Detailed SVG Avatars
 -->
 
 <!DOCTYPE html>
@@ -101,17 +101,17 @@ Fixed: Detailed SVG Avatars, UK English Voice, and Lunar Logic
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
-        .helmet-frame { width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; }
+        .helmet-frame { width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; position: relative; }
         .pilot-card { display: flex; align-items: center; gap: 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 35px; }
         .vault-dashboard { background: linear-gradient(135deg, #1e1b4b 0%, #030712 100%); padding: 25px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); }
 
         .custom-word-tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; display: inline-flex; align-items: center; gap: 8px; }
-        .custom-word-tag span { cursor: pointer; opacity: 0.5; }
-        .custom-word-tag span:hover { opacity: 1; }
+        .custom-word-tag span { cursor: pointer; opacity: 0.5; font-size: 14px; }
+        .custom-word-tag span:hover { opacity: 1; color: var(--danger); }
 
         /* Animation for glowing elements */
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        .glow-blink { animation: blink 1.5s infinite ease-in-out; }
+        @keyframes glowPulse { 0%, 100% { opacity: 1; filter: drop-shadow(0 0 2px currentColor); } 50% { opacity: 0.4; filter: drop-shadow(0 0 8px currentColor); } }
+        .glow-fx { animation: glowPulse 2s infinite ease-in-out; }
     </style>
 </head>
 <body>
@@ -297,7 +297,7 @@ Fixed: Detailed SVG Avatars, UK English Voice, and Lunar Logic
                 <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
             </button>
             <div id="meteor-field" class="hidden"></div>
-            <div id="multi-choice" class="hidden grid grid-cols-2 gap-4 w-full"></div>
+            <div id="multi-choice" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 w-full"></div>
             <div id="echo-input-container" class="hidden max-w-sm mx-auto space-y-6 w-full">
                 <input type="text" id="echo-field" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-3xl text-center outline-none focus:border-sky-500 uppercase font-black" placeholder="..." autocomplete="off">
                 <button onclick="window.submitEcho()" class="w-full py-4 bg-sky-600 text-white font-black rounded-3xl uppercase tracking-widest text-sm">Submit Answer</button>
@@ -315,6 +315,44 @@ Fixed: Detailed SVG Avatars, UK English Voice, and Lunar Logic
             <button onclick="window.showHome()" class="w-full py-5 bg-white text-black rounded-full impact-font text-2xl uppercase">Return to Base</button>
         </div>
 
+        <!-- DIAGNOSTIC SCREEN -->
+        <div id="screen-stats" class="hidden glass-panel p-10 rounded-[40px] flex flex-col w-full h-[85vh]">
+            <div class="flex justify-between items-start mb-10">
+                <div>
+                    <button onclick="window.showHome()" class="mb-4 text-white/40 hover:text-white uppercase font-black text-xs">← Back</button>
+                    <h2 class="text-4xl impact-font uppercase">Parent Diagnostic</h2>
+                </div>
+                <div id="tutor-insight-box" class="max-w-[350px] p-5 bg-sky-500/10 border border-sky-500/30 rounded-3xl text-left">
+                    <p class="text-[9px] font-black uppercase text-sky-400 mb-2">Academy Tutor Insight</p>
+                    <p id="tutor-insight-text" class="text-[12px] leading-relaxed italic text-white/80">Collecting data...</p>
+                </div>
+            </div>
+            
+            <div class="overflow-y-auto flex-1 custom-scrollbar pr-4 space-y-10">
+                <section>
+                    <h3 class="text-[10px] font-black uppercase text-rose-500 mb-6 tracking-widest">Critical Focus</h3>
+                    <div id="struggling-words-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </section>
+                <section>
+                    <h3 class="text-[10px] font-black uppercase text-amber-500 mb-6 tracking-widest">In Progress</h3>
+                    <div id="learning-words-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </section>
+                <section>
+                    <h3 class="text-[10px] font-black uppercase text-green-500 mb-6 tracking-widest">Mastered</h3>
+                    <div id="mastered-words-list" class="flex flex-wrap gap-3"></div>
+                </section>
+            </div>
+        </div>
+
+        <!-- WITHDRAW SCREEN -->
+        <div id="screen-withdraw" class="hidden glass-panel p-12 rounded-[50px] text-center w-full max-w-lg">
+            <div class="text-left mb-8"><button onclick="window.showHome()" class="text-white/40 uppercase font-black text-xs tracking-widest">← Back</button></div>
+            <h2 class="text-5xl impact-font text-green-400 mb-2 uppercase">Bank Vault</h2>
+            <p id="withdraw-balance" class="text-8xl impact-font mb-12 text-white">0 stars</p>
+            <div class="space-y-4">
+                <button onclick="window.initiateWithdrawal('gold')" class="w-full py-5 bg-yellow-500 text-black font-black rounded-3xl uppercase tracking-widest hover:brightness-110">Issue Golden Ticket</button>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -343,10 +381,10 @@ Fixed: Detailed SVG Avatars, UK English Voice, and Lunar Logic
         };
 
         const helmets = {
-            Jesse: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="j-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#j-grad)"/><rect x="25" y="32" width="50" height="22" rx="4" fill="#000"/><circle cx="35" cy="43" r="2" fill="#38bdf8" class="glow-blink"/><circle cx="65" cy="43" r="2" fill="#38bdf8" class="glow-blink"/><path d="M15 30 L85 30" stroke="#38bdf8" stroke-width="1" opacity="0.4" class="glow-blink"/></svg>`,
-            Ruben: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="r-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#10b981"/><stop offset="100%" style="stop-color:#064e3b"/></linearGradient></defs><path d="M50 15 L50 0 M45 5 L55 5" stroke="#10b981" stroke-width="3"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#r-grad)"/><rect x="25" y="32" width="50" height="25" rx="4" fill="#000"/><circle cx="50" cy="44" r="3" fill="#10b981" class="glow-blink"/></svg>`,
-            Elodie: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="e-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f472b6"/><stop offset="100%" style="stop-color:#831843"/></linearGradient></defs><path d="M25 20 L15 5 M75 20 L85 5" stroke="#f472b6" stroke-width="6" stroke-linecap="round"/><circle cx="15" cy="5" r="3" fill="#f472b6" class="glow-blink"/><circle cx="85" cy="5" r="3" fill="#f472b6" class="glow-blink"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#e-grad)"/><rect x="25" y="35" width="50" height="22" rx="10" fill="#000"/><circle cx="38" cy="46" r="3" fill="#f472b6" class="glow-blink"/><circle cx="62" cy="46" r="3" fill="#f472b6" class="glow-blink"/></svg>`,
-            Friend: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="f-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="100%" style="stop-color:#92400e"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#f-grad)"/><rect x="25" y="32" width="50" height="25" rx="2" fill="#1e1b4b"/><path d="M25 45 Q50 55 75 45" stroke="#fbbf24" stroke-width="2" fill="none" opacity="0.6"/><circle cx="50" cy="38" r="1.5" fill="white" class="glow-blink"/></svg>`
+            Jesse: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="j-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#j-grad)"/><rect x="25" y="32" width="50" height="22" rx="4" fill="#000"/><circle cx="35" cy="43" r="2" fill="#38bdf8" class="glow-fx"/><circle cx="65" cy="43" r="2" fill="#38bdf8" class="glow-fx"/><path d="M15 30 L85 30" stroke="#38bdf8" stroke-width="1" opacity="0.4" class="glow-fx"/></svg>`,
+            Ruben: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="r-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#10b981"/><stop offset="100%" style="stop-color:#064e3b"/></linearGradient></defs><path d="M50 15 L50 0 M45 5 L55 5" stroke="#10b981" stroke-width="3"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#r-grad)"/><rect x="25" y="32" width="50" height="25" rx="4" fill="#000"/><circle cx="50" cy="44" r="3" fill="#10b981" class="glow-fx"/></svg>`,
+            Elodie: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="e-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f472b6"/><stop offset="100%" style="stop-color:#831843"/></linearGradient></defs><path d="M25 20 L15 5 M75 20 L85 5" stroke="#f472b6" stroke-width="6" stroke-linecap="round"/><circle cx="15" cy="5" r="3" fill="#f472b6" class="glow-fx"/><circle cx="85" cy="5" r="3" fill="#f472b6" class="glow-fx"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#e-grad)"/><rect x="25" y="35" width="50" height="22" rx="10" fill="#000"/><circle cx="38" cy="46" r="3" fill="#f472b6" class="glow-fx"/><circle cx="62" cy="46" r="3" fill="#f472b6" class="glow-fx"/></svg>`,
+            Friend: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="f-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="100%" style="stop-color:#92400e"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#f-grad)"/><rect x="25" y="32" width="50" height="25" rx="2" fill="#1e1b4b"/><path d="M25 45 Q50 55 75 45" stroke="#fbbf24" stroke-width="2" fill="none" opacity="0.6"/><circle cx="50" cy="38" r="1.5" fill="white" class="glow-fx"/></svg>`
         };
 
         const wordsDB = {
@@ -357,7 +395,19 @@ Fixed: Detailed SVG Avatars, UK English Voice, and Lunar Logic
             y56: ["accommodate", "accompany", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediate", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht", "organise", "realise", "humour"]
         };
 
-        // UI CORE
+        const distractorsMap = {
+            beautiful: ["beatiful", "beautifull"],
+            because: ["becoz", "becuase"],
+            friend: ["freind"],
+            school: ["skool"],
+            the: ["teh", "th"],
+            favourite: ["favorite", "favourit"],
+            recognise: ["recognize", "recognis"],
+            programme: ["program", "programe"],
+            neighbour: ["neighbor", "neighber"]
+        };
+
+        // UI HELPERS
         function hideAll() { document.querySelectorAll('[id^="screen-"]').forEach(s => s.classList.add('hidden')); document.body.className = ""; }
         window.toSentenceCase = (str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
         
@@ -385,35 +435,26 @@ Fixed: Detailed SVG Avatars, UK English Voice, and Lunar Logic
 
         function clearAllTimers() { if (window.state.voidTimer) { clearInterval(window.state.voidTimer); window.state.voidTimer = null; } }
 
-        // AUTH & PILOTS
-        window.selectPilot = async (name) => {
-            window.state.pilotName = name;
-            const unlock = new SpeechSynthesisUtterance(""); window.speechSynthesis.speak(unlock);
-            const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'pilots', name.toLowerCase()));
-            if (snap.exists()) {
-                const data = snap.data();
-                window.state.bank = data.credits || 0;
-                window.state.history = data.history || [];
-                window.state.customWords = data.customWords || [];
-            } else {
-                window.state.bank = 0; window.state.history = []; window.state.customWords = [];
+        // CORE GAME LOGIC
+        function generateSmartDistractors(word) {
+            const wordLower = word.toLowerCase();
+            let variations = new Set();
+            if (distractorsMap[wordLower]) distractorsMap[wordLower].forEach(v => variations.add(v.toLowerCase()));
+            const commonSwaps = [['ie', 'ei'], ['ei', 'ie'], ['ce', 'se'], ['se', 'ce'], ['ance', 'ence'], ['ence', 'ance'], ['able', 'ible'], ['ible', 'able'], ['ous', 'us'], ['tion', 'sion'], ['sion', 'tion'], ['ly', 'ley'], ['y', 'i'], ['i', 'y'], ['sh', 'ch'], ['ch', 'sh'], ['our', 'or'], ['or', 'our']];
+            commonSwaps.forEach(([from, to]) => { if (wordLower.includes(from)) variations.add(wordLower.replace(new RegExp(from, 'g'), to)); });
+            for (let i = 0; i < wordLower.length - 1; i++) {
+                if (wordLower[i] === wordLower[i+1]) variations.add(wordLower.slice(0, i) + wordLower.slice(i+1)); 
+                else if (/[bcdfghjklmnpqrstvwxyz]/.test(wordLower[i])) variations.add(wordLower.slice(0, i+1) + wordLower[i] + wordLower.slice(i+1)); 
             }
-            window.showHome();
-        };
-
-        async function saveStateToCloud() {
-            if (!window.state.pilotName) return;
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pilots', window.state.pilotName.toLowerCase());
-            await setDoc(docRef, { credits: window.state.bank, history: window.state.history, customWords: window.state.customWords }, { merge: true });
+            let finalDistractors = Array.from(variations).filter(v => v !== wordLower);
+            return finalDistractors.sort(() => 0.5 - Math.random()).slice(0, 3);
         }
 
-        // MISSION LOGIC
         window.launchMission = () => {
             let pool = [];
             const useCustom = document.getElementById('check-use-custom').checked;
-            if (useCustom && window.state.customWords.length > 0) {
-                pool = [...window.state.customWords];
-            } else {
+            if (useCustom && window.state.customWords.length > 0) { pool = [...window.state.customWords]; } 
+            else {
                 if (document.getElementById('check-recep').checked) pool = pool.concat(wordsDB.recep);
                 if (document.getElementById('check-y1').checked) pool = pool.concat(wordsDB.y1);
                 if (document.getElementById('check-y2').checked) pool = pool.concat(wordsDB.y2);
@@ -446,13 +487,10 @@ Fixed: Detailed SVG Avatars, UK English Voice, and Lunar Logic
             const livesDiv = document.getElementById('game-lives'); 
             livesDiv.innerHTML = '';
             for(let i=0; i<3; i++) { livesDiv.innerHTML += i < window.state.lives ? '❤️' : '🖤'; }
-            
             ['hangman-area', 'keyboard', 'echo-input-container', 'meteor-field', 'multi-choice', 'void-timer-container'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById('game-word-display').innerHTML = ""; 
-            
             const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
             parts.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.add('hidden-part'); });
-
             if (window.state.currentGame === 'lunar') {
                 document.getElementById('hangman-area').classList.remove('hidden');
                 document.getElementById('keyboard').classList.remove('hidden');
@@ -471,10 +509,9 @@ Fixed: Detailed SVG Avatars, UK English Voice, and Lunar Logic
             }
         }
 
-        // LUNAR LOGIC
+        // LUNAR
         window.handleGuess = (char) => {
-            if (window.state.isTransitioning) return;
-            if (window.state.guessed.includes(char)) return;
+            if (window.state.isTransitioning || window.state.guessed.includes(char)) return;
             window.state.guessed.push(char);
             if (window.state.currentWord.includes(char)) {
                 renderBlanks();
@@ -514,7 +551,28 @@ Fixed: Detailed SVG Avatars, UK English Voice, and Lunar Logic
             });
         }
 
-        // VOID TIMER
+        // VOID & METEOR
+        function renderChoices() {
+            const container = document.getElementById('multi-choice'); container.innerHTML = "";
+            let opts = [window.state.currentWord].concat(generateSmartDistractors(window.state.currentWord));
+            while(opts.length < 4) {
+                let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)];
+                if(!opts.includes(r)) opts.push(r);
+            }
+            opts.sort(() => Math.random() - 0.5).forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "p-6 bg-white/5 border border-white/10 rounded-3xl font-black uppercase tracking-widest hover:bg-white/10";
+                btn.innerText = opt;
+                btn.onclick = () => { 
+                    if (window.state.isTransitioning) return;
+                    window.state.isTransitioning = true;
+                    if(opt === window.state.currentWord) { recordResult(true); nextRound(); } 
+                    else { window.state.lives--; recordResult(false, opt); triggerExplosion(nextRound); } 
+                };
+                container.appendChild(btn);
+            });
+        }
+
         function startVoidTimer() {
             const bar = document.getElementById('void-timer-bar');
             if (!bar) return;
@@ -531,6 +589,73 @@ Fixed: Detailed SVG Avatars, UK English Voice, and Lunar Logic
                     triggerExplosion(nextRound);
                 }
             }, 100);
+        }
+
+        function renderMeteors() {
+            const field = document.getElementById('meteor-field'); field.innerHTML = "";
+            let opts = [window.state.currentWord].concat(generateSmartDistractors(window.state.currentWord));
+            opts.forEach((word, index) => {
+                const m = document.createElement('div'); m.className = "meteor"; m.innerText = word;
+                m.style.top = (50 + index * 90) + "px"; field.appendChild(m);
+                let x = -150;
+                const animate = () => { if(window.state.currentGame !== 'meteor') return; x += 1.8; m.style.left = x + "px"; if(x < field.offsetWidth + 150) requestAnimationFrame(animate); };
+                animate();
+                m.onclick = () => { 
+                    if (window.state.isTransitioning) return;
+                    window.state.isTransitioning = true;
+                    if(word === window.state.currentWord) { recordResult(true); nextRound(); } 
+                    else { window.state.lives--; recordResult(false, word); triggerExplosion(nextRound); } 
+                };
+            });
+        }
+
+        // CUSTOM WORDS
+        window.addCustomWord = function() {
+            const input = document.getElementById('custom-word-input');
+            const word = input.value.trim().toLowerCase();
+            if (word && !window.state.customWords.includes(word) && window.state.customWords.length < 50) {
+                window.state.customWords.push(word);
+                input.value = '';
+                renderCustomWordTags();
+                saveStateToCloud();
+            }
+        };
+
+        window.removeCustomWord = function(word) {
+            window.state.customWords = window.state.customWords.filter(w => w !== word);
+            renderCustomWordTags();
+            saveStateToCloud();
+        };
+
+        function renderCustomWordTags() {
+            const container = document.getElementById('custom-word-list');
+            if (!container) return;
+            container.innerHTML = '';
+            window.state.customWords.forEach(w => {
+                container.innerHTML += `<div class="custom-word-tag">${w.toUpperCase()} <span onclick="window.removeCustomWord('${w}')">×</span></div>`;
+            });
+        }
+
+        // DATABASE & AUTH
+        window.selectPilot = async (name) => {
+            window.state.pilotName = name;
+            const unlock = new SpeechSynthesisUtterance(""); window.speechSynthesis.speak(unlock);
+            const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'pilots', name.toLowerCase()));
+            if (snap.exists()) {
+                const data = snap.data();
+                window.state.bank = data.credits || 0;
+                window.state.history = data.history || [];
+                window.state.customWords = data.customWords || [];
+            } else {
+                window.state.bank = 0; window.state.history = []; window.state.customWords = [];
+            }
+            window.showHome();
+        };
+
+        async function saveStateToCloud() {
+            if (!window.state.pilotName) return;
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pilots', window.state.pilotName.toLowerCase());
+            await setDoc(docRef, { credits: window.state.bank, history: window.state.history, customWords: window.state.customWords }, { merge: true });
         }
 
         function recordResult(ok, mistake = null) {
@@ -553,28 +678,59 @@ Fixed: Detailed SVG Avatars, UK English Voice, and Lunar Logic
             await saveStateToCloud();
         }
 
-        // CUSTOM WORDS
-        window.addCustomWord = function() {
-            const input = document.getElementById('custom-word-input');
-            const word = input.value.trim().toLowerCase();
-            if (word && !window.state.customWords.includes(word) && window.state.customWords.length < 50) {
-                window.state.customWords.push(word);
-                input.value = '';
-                renderCustomWordTags();
-                saveStateToCloud();
-            }
+        window.submitEcho = () => {
+            if (window.state.isTransitioning) return;
+            const input = document.getElementById('echo-field').value.trim().toLowerCase();
+            window.state.isTransitioning = true;
+            if (input === window.state.currentWord) { recordResult(true); nextRound(); }
+            else { window.state.lives--; recordResult(false, input); triggerExplosion(nextRound); }
         };
 
-        function renderCustomWordTags() {
-            const container = document.getElementById('custom-word-list');
-            if (!container) return;
-            container.innerHTML = '';
-            window.state.customWords.forEach(w => {
-                container.innerHTML += `<div class="custom-word-tag">${w.toUpperCase()}</div>`;
+        // NAV
+        window.showStats = () => {
+            hideAll();
+            document.getElementById('screen-stats').classList.remove('hidden');
+            const mList = document.getElementById('mastered-words-list'), sList = document.getElementById('struggling-words-list'), lList = document.getElementById('learning-words-list'), tutor = document.getElementById('tutor-insight-text');
+            mList.innerHTML = ""; sList.innerHTML = ""; lList.innerHTML = "";
+            if (window.state.history.length === 0) {
+                mList.innerHTML = '<p class="text-white/20 text-xs">No mission data recorded yet.</p>';
+                tutor.innerText = "Complete some missions to generate tutoring insights.";
+                return;
+            }
+            const stats = {};
+            window.state.history.forEach(h => {
+                if(!stats[h.word]) stats[h.word] = { pass: 0, fail: 0, mistakes: new Set() };
+                if(h.result) stats[h.word].pass++;
+                else { stats[h.word].fail++; if(h.mistake && !["Fail", "Missed", "Timeout"].includes(h.mistake)) stats[h.word].mistakes.add(h.mistake.toLowerCase()); }
             });
-        }
+            let mistakesFound = false;
+            Object.keys(stats).forEach(w => {
+                const s = stats[w], total = s.pass + s.fail, rate = s.pass / total, mArr = Array.from(s.mistakes), card = `<div class="bg-white/5 p-4 rounded-2xl border border-white/10"><div class="flex justify-between items-center"><span class="font-bold uppercase">${w}</span> <span class="text-[9px] opacity-30">${total} Tries</span></div>${mArr.length > 0 ? `<div class="mt-2 flex flex-wrap gap-1">${mArr.map(m => `<span class="mistake-tag">${m}</span>`).join('')}</div>` : ''}</div>`;
+                if (rate >= 0.8 && s.pass >= 2) mList.innerHTML += `<span class="bg-green-500/10 text-green-400 border border-green-500/20 px-3 py-1 rounded-full text-xs font-black uppercase">${w}</span>`;
+                else if (rate <= 0.4) { sList.innerHTML += card; mistakesFound = true; } else lList.innerHTML += card;
+            });
+            tutor.innerText = mistakesFound ? "Tutoring Insight: Focus on the 'Critical' words. The child may be confusing visual patterns." : "The pilot is doing well! Full speed ahead to higher levels.";
+        };
 
-        // PHYSICAL KEYBOARD
+        window.showWithdraw = () => {
+            hideAll();
+            document.getElementById('screen-withdraw').classList.remove('hidden');
+            document.getElementById('withdraw-balance').innerText = window.state.bank + " stars";
+        };
+
+        window.initiateWithdrawal = (type) => {
+            const dialog = document.getElementById('confirm-dialog');
+            document.getElementById('confirm-message').innerText = "Processing this withdrawal will reset your Galactic Bank to zero. Ready to issue certificate?";
+            dialog.classList.remove('hidden');
+            document.getElementById('execute-reset-btn').onclick = async () => {
+                window.state.bank = 0;
+                await saveStateToCloud();
+                window.closeConfirm();
+                window.showHome();
+            };
+        };
+
+        // KEYBOARD
         window.addEventListener('keydown', (e) => {
             if (window.state.isTransitioning) return;
             const screenGame = document.getElementById('screen-game');
@@ -591,12 +747,8 @@ Fixed: Detailed SVG Avatars, UK English Voice, and Lunar Logic
         // INIT
         const initializeAppSession = async () => {
             const failSafeTimeout = setTimeout(() => { removeOverlay(); }, 5000);
-            const removeOverlay = () => {
-                const o = document.getElementById('connection-overlay');
-                if (o) { o.classList.add('opacity-0'); setTimeout(() => o.classList.add('hidden'), 500); }
-            };
-            try { await signInAnonymously(auth); } catch (err) { console.error("Auth Error:", err); } 
-            finally { clearTimeout(failSafeTimeout); removeOverlay(); }
+            const removeOverlay = () => { const o = document.getElementById('connection-overlay'); if (o) { o.classList.add('opacity-0'); setTimeout(() => o.classList.add('hidden'), 500); } };
+            try { await signInAnonymously(auth); } catch (err) { console.error("Auth Error:", err); } finally { clearTimeout(failSafeTimeout); removeOverlay(); }
         };
         initializeAppSession();
         Object.keys(helmets).forEach(p => { const el = document.getElementById(`helmet-${p}`); if(el) el.innerHTML = helmets[p]; });
