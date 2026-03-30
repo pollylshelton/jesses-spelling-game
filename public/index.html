@@ -1,7 +1,7 @@
 <!-- 
 🚀 MOONSHOT ACADEMY: FINAL BUILD (V6 - FULL RECOVERY)
 Updated: March 30, 2026
-Fixed: Void Choice & Meteor Blast logic, UK English Library, and Detailed SVG Avatars
+Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatars, and Bulk Word Add
 -->
 
 <!DOCTYPE html>
@@ -162,7 +162,7 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, and Detailed SVG Av
                 </div>
                 <div onclick="window.selectPilot('Friend')" class="profile-btn group cursor-pointer transition-transform hover:scale-110">
                     <div class="helmet-frame" id="helmet-Friend"></div>
-                    <div class="text-2xl font-black text-amber-500 mt-4">Friend</div>
+                    <div class="text-2xl font-black text-slate-400 mt-4">Friend</div>
                 </div>
             </div>
         </div>
@@ -256,7 +256,7 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, and Detailed SVG Av
                     <h3 class="text-[10px] font-black uppercase text-pink-400 tracking-widest mb-4 text-left">Custom Word Payload</h3>
                     <div class="flex-1 bg-white/5 rounded-3xl p-5 border border-white/10 flex flex-col">
                         <div class="flex gap-2 mb-4">
-                            <input type="text" id="custom-word-input" class="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs outline-none focus:border-sky-500" placeholder="Add word...">
+                            <input type="text" id="custom-word-input" class="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs outline-none focus:border-sky-500" placeholder="Paste words here...">
                             <button onclick="window.addCustomWord()" class="bg-sky-500 text-black px-4 py-2 rounded-xl font-black text-xs">+</button>
                         </div>
                         <div id="custom-word-list" class="flex-1 overflow-y-auto custom-scrollbar flex flex-wrap gap-2 content-start min-h-[100px] max-h-[150px]"></div>
@@ -392,7 +392,7 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, and Detailed SVG Av
             y1: ["the", "said", "house", "school", "friend", "love", "push", "pull", "full", "here", "there", "where", "once", "some", "come", "your", "today", "says"],
             y2: ["beautiful", "because", "climb", "door", "floor", "find", "kind", "mind", "child", "every", "great", "break", "pretty", "after", "again", "colour", "favourite"],
             y34: ["accident", "actual", "address", "answer", "appear", "arrive", "believe", "bicycle", "breath", "breathe", "build", "busy", "calendar", "caught", "centre", "century", "certain", "circle", "complete", "consider", "continue", "decide", "describe", "different", "difficult", "disappear", "early", "earth", "eight", "enough", "exercise", "experience", "experiment", "extreme", "famous", "favourite", "forward", "fruit", "grammar", "group", "guard", "guide", "heard", "heart", "height", "history", "imagine", "increase", "important", "interest", "island", "knowledge", "learn", "length", "library", "material", "medicine", "mention", "minute", "natural", "naughty", "notice", "occasion", "often", "opposite", "ordinary", "particular", "peculiar", "perhaps", "popular", "position", "possess", "possession", "possible", "potatoes", "pressure", "probably", "promise", "purpose", "quarter", "question", "recent", "regular", "reign", "remember", "sentence", "separate", "special", "straight", "strange", "strength", "suppose", "surprise", "therefore", "though", "although", "thought", "through", "various", "weight", "woman"],
-            y56: ["accommodate", "accompany", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediate", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht", "organise", "realise", "humour"]
+            y56: ["accommodate", "accompany", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediate", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recognize", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht", "organise", "realise", "humour"]
         };
 
         const distractorsMap = {
@@ -609,12 +609,24 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, and Detailed SVG Av
             });
         }
 
-        // CUSTOM WORDS
+        // CUSTOM WORDS (BULK ADD SUPPORTED)
         window.addCustomWord = function() {
             const input = document.getElementById('custom-word-input');
-            const word = input.value.trim().toLowerCase();
-            if (word && !window.state.customWords.includes(word) && window.state.customWords.length < 50) {
-                window.state.customWords.push(word);
+            const rawValue = input.value.trim().toLowerCase();
+            if (!rawValue) return;
+
+            // Split by commas, semicolons, or whitespace
+            const wordsToAdd = rawValue.split(/[ ,;]+/).filter(w => w.length > 0);
+
+            let added = false;
+            wordsToAdd.forEach(word => {
+                if (!window.state.customWords.includes(word) && window.state.customWords.length < 50) {
+                    window.state.customWords.push(word);
+                    added = true;
+                }
+            });
+
+            if (added) {
                 input.value = '';
                 renderCustomWordTags();
                 saveStateToCloud();
