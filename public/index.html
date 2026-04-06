@@ -1,7 +1,7 @@
 <!-- 
-🚀 MOONSHOT ACADEMY: FINAL BUILD (V6 - FULL RECOVERY)
-Updated: March 30, 2026
-Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatars, and Bulk Word Add
+🚀 MOONSHOT ACADEMY: FINAL BUILD (V7 - MERMAID/UNICORN & KEYBOARD FIX)
+Updated: April 6, 2026
+Fixed: Mermaid Phonics, Unicorn Match, lower case default keyboard, and Case Toggling
 -->
 
 <!DOCTYPE html>
@@ -87,6 +87,12 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
         #meteor-field { position: relative; width: 100%; height: 400px; background: rgba(0,0,0,0.6); border-radius: 30px; overflow: hidden; margin: 15px 0; border: 1px solid rgba(255,255,255,0.1); }
         .meteor { position: absolute; background: rgba(56, 189, 248, 0.15); border: 2px solid #38bdf8; padding: 12px 20px; border-radius: 60px; font-size: 1.1rem; cursor: pointer; white-space: nowrap; font-weight: 900; box-shadow: 0 0 20px rgba(56,189,248,0.4); color: white; text-transform: uppercase; z-index: 50; }
 
+        .bubble-btn { width: 80px; height: 80px; background: rgba(56, 189, 248, 0.1); border: 2px solid rgba(56, 189, 248, 0.4); border-radius: 50%; font-size: 2.5rem; font-weight: 900; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); transition: all 0.2s; }
+        .bubble-btn:active { transform: scale(0.9); background: var(--accent); }
+
+        .unicorn-card { font-size: 5rem; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 30px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .unicorn-card:hover { border-color: #f472b6; transform: translateY(-5px); }
+
         .mistake-tag { color: var(--danger); text-decoration: line-through; margin-right: 6px; font-style: italic; opacity: 0.8; font-size: 11px; }
 
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
@@ -109,7 +115,6 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
         .custom-word-tag span { cursor: pointer; opacity: 0.5; font-size: 14px; }
         .custom-word-tag span:hover { opacity: 1; color: var(--danger); }
 
-        /* Animation for glowing elements */
         @keyframes glowPulse { 0%, 100% { opacity: 1; filter: drop-shadow(0 0 2px currentColor); } 50% { opacity: 0.4; filter: drop-shadow(0 0 8px currentColor); } }
         .glow-fx { animation: glowPulse 2s infinite ease-in-out; }
     </style>
@@ -162,7 +167,7 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
                 </div>
                 <div onclick="window.selectPilot('Friend')" class="profile-btn group cursor-pointer transition-transform hover:scale-110">
                     <div class="helmet-frame" id="helmet-Friend"></div>
-                    <div class="text-2xl font-black text-slate-400 mt-4">Friend</div>
+                    <div class="text-2xl font-black text-amber-500 mt-4">Friend</div>
                 </div>
             </div>
         </div>
@@ -256,7 +261,7 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
                     <h3 class="text-[10px] font-black uppercase text-pink-400 tracking-widest mb-4 text-left">Custom Word Payload</h3>
                     <div class="flex-1 bg-white/5 rounded-3xl p-5 border border-white/10 flex flex-col">
                         <div class="flex gap-2 mb-4">
-                            <input type="text" id="custom-word-input" class="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs outline-none focus:border-sky-500" placeholder="Paste words here...">
+                            <input type="text" id="custom-word-input" class="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs outline-none focus:border-sky-500" placeholder="Paste list...">
                             <button onclick="window.addCustomWord()" class="bg-sky-500 text-black px-4 py-2 rounded-xl font-black text-xs">+</button>
                         </div>
                         <div id="custom-word-list" class="flex-1 overflow-y-auto custom-scrollbar flex flex-wrap gap-2 content-start min-h-[100px] max-h-[150px]"></div>
@@ -297,12 +302,18 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
                 <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
             </button>
             <div id="meteor-field" class="hidden"></div>
-            <div id="multi-choice" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 w-full"></div>
+            <div id="multi-choice" class="hidden grid grid-cols-2 gap-4 w-full justify-items-center"></div>
             <div id="echo-input-container" class="hidden max-w-sm mx-auto space-y-6 w-full">
-                <input type="text" id="echo-field" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-3xl text-center outline-none focus:border-sky-500 uppercase font-black" placeholder="..." autocomplete="off">
+                <input type="text" id="echo-field" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-3xl text-center outline-none focus:border-sky-500 font-black" placeholder="..." autocomplete="off">
                 <button onclick="window.submitEcho()" class="w-full py-4 bg-sky-600 text-white font-black rounded-3xl uppercase tracking-widest text-sm">Submit Answer</button>
             </div>
-            <div id="keyboard" class="hidden grid grid-cols-7 md:grid-cols-9 gap-2 mt-8"></div>
+            
+            <div id="keyboard-wrapper" class="hidden mt-8">
+                <div id="keyboard" class="grid grid-cols-7 md:grid-cols-9 gap-2"></div>
+                <div class="flex justify-center mt-4">
+                    <button onclick="window.toggleCase()" class="bg-white/10 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white/20">Case: <span id="case-display">lower</span></button>
+                </div>
+            </div>
         </div>
 
         <!-- PRIZE SCREEN -->
@@ -327,30 +338,10 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
                     <p id="tutor-insight-text" class="text-[12px] leading-relaxed italic text-white/80">Collecting data...</p>
                 </div>
             </div>
-            
             <div class="overflow-y-auto flex-1 custom-scrollbar pr-4 space-y-10">
-                <section>
-                    <h3 class="text-[10px] font-black uppercase text-rose-500 mb-6 tracking-widest">Critical Focus</h3>
-                    <div id="struggling-words-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                </section>
-                <section>
-                    <h3 class="text-[10px] font-black uppercase text-amber-500 mb-6 tracking-widest">In Progress</h3>
-                    <div id="learning-words-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                </section>
-                <section>
-                    <h3 class="text-[10px] font-black uppercase text-green-500 mb-6 tracking-widest">Mastered</h3>
-                    <div id="mastered-words-list" class="flex flex-wrap gap-3"></div>
-                </section>
-            </div>
-        </div>
-
-        <!-- WITHDRAW SCREEN -->
-        <div id="screen-withdraw" class="hidden glass-panel p-12 rounded-[50px] text-center w-full max-w-lg">
-            <div class="text-left mb-8"><button onclick="window.showHome()" class="text-white/40 uppercase font-black text-xs tracking-widest">← Back</button></div>
-            <h2 class="text-5xl impact-font text-green-400 mb-2 uppercase">Bank Vault</h2>
-            <p id="withdraw-balance" class="text-8xl impact-font mb-12 text-white">0 stars</p>
-            <div class="space-y-4">
-                <button onclick="window.initiateWithdrawal('gold')" class="w-full py-5 bg-yellow-500 text-black font-black rounded-3xl uppercase tracking-widest hover:brightness-110">Issue Golden Ticket</button>
+                <section><h3 class="text-[10px] font-black uppercase text-rose-500 mb-6 tracking-widest">Critical Focus</h3><div id="struggling-words-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div></section>
+                <section><h3 class="text-[10px] font-black uppercase text-amber-500 mb-6 tracking-widest">In Progress</h3><div id="learning-words-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div></section>
+                <section><h3 class="text-[10px] font-black uppercase text-green-500 mb-6 tracking-widest">Mastered</h3><div id="mastered-words-list" class="flex flex-wrap gap-3"></div></section>
             </div>
         </div>
     </div>
@@ -376,8 +367,9 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
 
         window.state = {
             pilotName: "", bank: 0, currentGame: null, words: [], currentRound: 0,
-            lives: 3, currentWord: "", guessed: [], history: [], isTransitioning: false,
-            sessionCredits: 0, customWords: [], voidTimer: null
+            lives: 3, currentWord: "", currentAnchor: null, guessed: [], history: [], 
+            isTransitioning: false, sessionCredits: 0, customWords: [], voidTimer: null,
+            keyboardUpper: false
         };
 
         const helmets = {
@@ -395,16 +387,31 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
             y56: ["accommodate", "accompany", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediate", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recognize", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht", "organise", "realise", "humour"]
         };
 
+        const illusts = {
+            cat: '🐱', dog: '🐶', sun: '☀️', cup: '🥤', box: '📦', hat: '🎩', pig: '🐷', bed: '🛏️', tap: '🚰', fan: '🎐', map: '🗺️', pen: '🖊️',
+            net: '🥅', dad: '👨', mum: '👩', hot: '🔥', pot: '🍲', ten: '🔟', pin: '📍', pan: '🍳', ant: '🐜', apple: '🍎', bag: '🎒', ball: '⚽',
+            bike: '🚲', boat: '⛵', cake: '🍰', carrot: '🥕', chair: '🪑', cloud: '☁️', cow: '🐮', door: '🚪', duck: '🦆', egg: '🥚', fish: '🐟'
+        };
+
+        const phonicAnchors = {
+            s: [{ word: "Sun", pos: "beginning" }, { word: "Bus", pos: "end" }],
+            a: [{ word: "Apple", pos: "beginning" }, { word: "Cat", pos: "middle" }],
+            t: [{ word: "Tap", pos: "beginning" }, { word: "Hat", pos: "end" }],
+            p: [{ word: "Pan", pos: "beginning" }, { word: "Cup", pos: "end" }],
+            i: [{ word: "Ink", pos: "beginning" }, { word: "Pig", pos: "middle" }],
+            n: [{ word: "Net", pos: "beginning" }, { word: "Sun", pos: "end" }],
+            m: [{ word: "Map", pos: "beginning" }, { word: "Ham", pos: "end" }],
+            d: [{ word: "Dog", pos: "beginning" }, { word: "Bed", pos: "end" }],
+            g: [{ word: "Go", pos: "beginning" }, { word: "Pig", pos: "end" }],
+            o: [{ word: "Hot", pos: "middle" }, { word: "Dog", pos: "middle" }]
+        };
+
         const distractorsMap = {
             beautiful: ["beatiful", "beautifull"],
             because: ["becoz", "becuase"],
-            friend: ["freind"],
-            school: ["skool"],
             the: ["teh", "th"],
             favourite: ["favorite", "favourit"],
-            recognise: ["recognize", "recognis"],
-            programme: ["program", "programe"],
-            neighbour: ["neighbor", "neighber"]
+            recognise: ["recognize", "recognis"]
         };
 
         // UI HELPERS
@@ -412,7 +419,11 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
         window.toSentenceCase = (str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
         
         window.speakWord = () => { 
-            const msg = new SpeechSynthesisUtterance(window.state.currentWord);
+            let text = window.state.currentWord;
+            if (window.state.currentGame === 'mermaid' && window.state.currentAnchor) {
+                text = `Find the ${window.state.currentAnchor.pos} sound in ${window.state.currentAnchor.word}`;
+            }
+            const msg = new SpeechSynthesisUtterance(text);
             msg.lang = 'en-GB';
             msg.rate = 0.8;
             const voices = window.speechSynthesis.getVoices();
@@ -430,37 +441,48 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
             document.getElementById('balance-display').innerText = window.state.bank + " stars"; 
         };
 
-        window.chooseGame = (game) => { window.state.currentGame = game; hideAll(); document.body.className = game + '-active'; document.getElementById('screen-setup').classList.remove('hidden'); renderCustomWordTags(); };
-        window.closeConfirm = () => document.getElementById('confirm-dialog').classList.add('hidden');
+        window.chooseGame = (game) => { 
+            window.state.currentGame = game; 
+            hideAll(); 
+            document.body.className = game + '-active'; 
+            document.getElementById('screen-setup').classList.remove('hidden'); 
+            renderCustomWordTags(); 
+        };
 
+        window.closeConfirm = () => document.getElementById('confirm-dialog').classList.add('hidden');
         function clearAllTimers() { if (window.state.voidTimer) { clearInterval(window.state.voidTimer); window.state.voidTimer = null; } }
 
-        // CORE GAME LOGIC
-        function generateSmartDistractors(word) {
-            const wordLower = word.toLowerCase();
-            let variations = new Set();
-            if (distractorsMap[wordLower]) distractorsMap[wordLower].forEach(v => variations.add(v.toLowerCase()));
-            const commonSwaps = [['ie', 'ei'], ['ei', 'ie'], ['ce', 'se'], ['se', 'ce'], ['ance', 'ence'], ['ence', 'ance'], ['able', 'ible'], ['ible', 'able'], ['ous', 'us'], ['tion', 'sion'], ['sion', 'tion'], ['ly', 'ley'], ['y', 'i'], ['i', 'y'], ['sh', 'ch'], ['ch', 'sh'], ['our', 'or'], ['or', 'our']];
-            commonSwaps.forEach(([from, to]) => { if (wordLower.includes(from)) variations.add(wordLower.replace(new RegExp(from, 'g'), to)); });
-            for (let i = 0; i < wordLower.length - 1; i++) {
-                if (wordLower[i] === wordLower[i+1]) variations.add(wordLower.slice(0, i) + wordLower.slice(i+1)); 
-                else if (/[bcdfghjklmnpqrstvwxyz]/.test(wordLower[i])) variations.add(wordLower.slice(0, i+1) + wordLower[i] + wordLower.slice(i+1)); 
+        // CASE TOGGLE
+        window.toggleCase = () => {
+            window.state.keyboardUpper = !window.state.keyboardUpper;
+            document.getElementById('case-display').innerText = window.state.keyboardUpper ? "UPPER" : "lower";
+            if (window.state.currentGame === 'lunar') {
+                renderBlanks();
+                renderKeyboard();
+            } else if (window.state.currentGame === 'mermaid' || window.state.currentGame === 'void') {
+                renderChoices();
             }
-            let finalDistractors = Array.from(variations).filter(v => v !== wordLower);
-            return finalDistractors.sort(() => 0.5 - Math.random()).slice(0, 3);
-        }
+        };
 
+        // GAME LOGIC
         window.launchMission = () => {
             let pool = [];
             const useCustom = document.getElementById('check-use-custom').checked;
-            if (useCustom && window.state.customWords.length > 0) { pool = [...window.state.customWords]; } 
-            else {
+            
+            if (window.state.currentGame === 'mermaid') {
+                pool = Object.keys(phonicAnchors);
+            } else if (window.state.currentGame === 'unicorn') {
+                pool = Object.keys(illusts);
+            } else if (useCustom && window.state.customWords.length > 0) {
+                pool = [...window.state.customWords];
+            } else {
                 if (document.getElementById('check-recep').checked) pool = pool.concat(wordsDB.recep);
                 if (document.getElementById('check-y1').checked) pool = pool.concat(wordsDB.y1);
                 if (document.getElementById('check-y2').checked) pool = pool.concat(wordsDB.y2);
                 if (document.getElementById('check-y34').checked) pool = pool.concat(wordsDB.y34);
                 if (document.getElementById('check-y56').checked) pool = pool.concat(wordsDB.y56);
             }
+
             if (pool.length === 0) pool = wordsDB.recep;
             window.state.words = pool.sort(() => Math.random() - 0.5).slice(0, 10);
             window.state.currentRound = 0;
@@ -475,9 +497,16 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
             clearAllTimers();
             window.state.isTransitioning = false; 
             if (window.state.currentRound >= 10 || window.state.lives <= 0) { endGame(); return; }
+            
             window.state.currentWord = window.state.words[window.state.currentRound].toLowerCase();
             window.state.guessed = []; 
             window.state.currentRound++;
+
+            if (window.state.currentGame === 'mermaid') {
+                const anchors = phonicAnchors[window.state.currentWord];
+                window.state.currentAnchor = anchors[Math.floor(Math.random() * anchors.length)];
+            }
+            
             updateUI(); 
             window.speakWord();
         }
@@ -487,56 +516,43 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
             const livesDiv = document.getElementById('game-lives'); 
             livesDiv.innerHTML = '';
             for(let i=0; i<3; i++) { livesDiv.innerHTML += i < window.state.lives ? '❤️' : '🖤'; }
-            ['hangman-area', 'keyboard', 'echo-input-container', 'meteor-field', 'multi-choice', 'void-timer-container'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            
+            ['hangman-area', 'keyboard-wrapper', 'echo-input-container', 'meteor-field', 'multi-choice', 'void-timer-container'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById('game-word-display').innerHTML = ""; 
+            
             const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
             parts.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.add('hidden-part'); });
+
             if (window.state.currentGame === 'lunar') {
                 document.getElementById('hangman-area').classList.remove('hidden');
-                document.getElementById('keyboard').classList.remove('hidden');
+                document.getElementById('keyboard-wrapper').classList.remove('hidden');
                 renderBlanks(); renderKeyboard();
             } else if (window.state.currentGame === 'death') {
                 document.getElementById('echo-input-container').classList.remove('hidden');
                 const f = document.getElementById('echo-field'); f.value = ""; setTimeout(() => f.focus(), 100);
-            } else if (window.state.currentGame === 'void') {
-                document.getElementById('void-timer-container').classList.remove('hidden');
+                const emoji = illusts[window.state.currentWord] || '🚀';
+                document.getElementById('game-word-display').innerHTML = `<div class="text-7xl">${emoji}</div>`;
+            } else if (window.state.currentGame === 'void' || window.state.currentGame === 'mermaid') {
+                if (window.state.currentGame === 'void') document.getElementById('void-timer-container').classList.remove('hidden'), startVoidTimer();
                 document.getElementById('multi-choice').classList.remove('hidden');
                 renderChoices();
-                startVoidTimer();
             } else if (window.state.currentGame === 'meteor') {
                 document.getElementById('meteor-field').classList.remove('hidden');
                 renderMeteors();
+            } else if (window.state.currentGame === 'unicorn') {
+                document.getElementById('multi-choice').classList.remove('hidden');
+                document.getElementById('game-word-display').innerHTML = `<div class="text-5xl impact-font uppercase text-pink-400">${window.state.currentWord}</div>`;
+                renderChoices();
             }
         }
-
-        // LUNAR
-        window.handleGuess = (char) => {
-            if (window.state.isTransitioning || window.state.guessed.includes(char)) return;
-            window.state.guessed.push(char);
-            if (window.state.currentWord.includes(char)) {
-                renderBlanks();
-                if (window.state.currentWord.split('').every(c => window.state.guessed.includes(c))) { 
-                    window.state.isTransitioning = true;
-                    recordResult(true); setTimeout(nextRound, 1000); 
-                }
-            } else {
-                window.state.lives--;
-                const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
-                const idx = 6 - window.state.lives - 1;
-                if(idx >= 0 && document.getElementById(parts[idx])) document.getElementById(parts[idx]).classList.remove('hidden-part');
-                if (window.state.lives <= 0) { 
-                    window.state.isTransitioning = true;
-                    recordResult(false, "Fail"); triggerExplosion(nextRound); 
-                }
-            }
-            renderKeyboard();
-        };
 
         function renderBlanks() {
             const container = document.getElementById('game-word-display');
             container.innerHTML = "";
             window.state.currentWord.split('').forEach(char => {
-                container.innerHTML += `<div class="blank">${window.state.guessed.includes(char) ? char.toUpperCase() : "_"}</div>`;
+                let display = window.state.guessed.includes(char) ? char : "_";
+                display = window.state.keyboardUpper ? display.toUpperCase() : display.toLowerCase();
+                container.innerHTML += `<div class="blank">${display}</div>`;
             });
         }
 
@@ -546,23 +562,45 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
                 const used = window.state.guessed.includes(char);
                 const btn = document.createElement('button');
                 btn.className = `p-3 rounded-xl font-black uppercase text-sm ${used ? 'bg-white/5 text-white/20' : 'bg-white/10 hover:bg-white/20'}`;
-                btn.innerText = char; btn.onclick = () => window.handleGuess(char);
+                btn.innerText = window.state.keyboardUpper ? char.toUpperCase() : char.toLowerCase();
+                btn.onclick = () => window.handleGuess(char);
                 kb.appendChild(btn);
             });
         }
 
-        // VOID & METEOR
         function renderChoices() {
             const container = document.getElementById('multi-choice'); container.innerHTML = "";
-            let opts = [window.state.currentWord].concat(generateSmartDistractors(window.state.currentWord));
-            while(opts.length < 4) {
-                let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)];
-                if(!opts.includes(r)) opts.push(r);
+            let opts = [];
+            
+            if (window.state.currentGame === 'unicorn') {
+                opts = [window.state.currentWord];
+                const pool = Object.keys(illusts).filter(k => k !== window.state.currentWord);
+                opts = opts.concat(pool.sort(() => 0.5 - Math.random()).slice(0, 3));
+            } else if (window.state.currentGame === 'mermaid') {
+                opts = [window.state.currentWord];
+                const pool = Object.keys(phonicAnchors).filter(k => k !== window.state.currentWord);
+                opts = opts.concat(pool.sort(() => 0.5 - Math.random()).slice(0, 3));
+            } else {
+                opts = [window.state.currentWord].concat(generateSmartDistractors(window.state.currentWord));
+                while(opts.length < 4) {
+                    let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)];
+                    if(!opts.includes(r)) opts.push(r);
+                }
             }
+
             opts.sort(() => Math.random() - 0.5).forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = "p-6 bg-white/5 border border-white/10 rounded-3xl font-black uppercase tracking-widest hover:bg-white/10";
-                btn.innerText = opt;
+                if (window.state.currentGame === 'unicorn') {
+                    btn.className = "unicorn-card";
+                    btn.innerHTML = illusts[opt] || '❓';
+                } else if (window.state.currentGame === 'mermaid') {
+                    btn.className = "bubble-btn";
+                    btn.innerText = window.state.keyboardUpper ? opt.toUpperCase() : opt.toLowerCase();
+                } else {
+                    btn.className = "p-6 bg-white/5 border border-white/10 rounded-3xl font-black uppercase tracking-widest hover:bg-white/10";
+                    btn.innerText = window.state.keyboardUpper ? opt.toUpperCase() : opt.toLowerCase();
+                }
+                
                 btn.onclick = () => { 
                     if (window.state.isTransitioning) return;
                     window.state.isTransitioning = true;
@@ -595,7 +633,8 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
             const field = document.getElementById('meteor-field'); field.innerHTML = "";
             let opts = [window.state.currentWord].concat(generateSmartDistractors(window.state.currentWord));
             opts.forEach((word, index) => {
-                const m = document.createElement('div'); m.className = "meteor"; m.innerText = word;
+                const m = document.createElement('div'); m.className = "meteor"; 
+                m.innerText = window.state.keyboardUpper ? word.toUpperCase() : word.toLowerCase();
                 m.style.top = (50 + index * 90) + "px"; field.appendChild(m);
                 let x = -150;
                 const animate = () => { if(window.state.currentGame !== 'meteor') return; x += 1.8; m.style.left = x + "px"; if(x < field.offsetWidth + 150) requestAnimationFrame(animate); };
@@ -609,34 +648,41 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
             });
         }
 
-        // CUSTOM WORDS (BULK ADD SUPPORTED)
+        // LUNAR INPUT
+        window.handleGuess = (char) => {
+            if (window.state.isTransitioning || window.state.guessed.includes(char)) return;
+            window.state.guessed.push(char);
+            if (window.state.currentWord.includes(char)) {
+                renderBlanks();
+                if (window.state.currentWord.split('').every(c => window.state.guessed.includes(c))) { 
+                    window.state.isTransitioning = true;
+                    recordResult(true); setTimeout(nextRound, 1000); 
+                }
+            } else {
+                window.state.lives--;
+                const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
+                const idx = 6 - window.state.lives - 1;
+                if(idx >= 0 && document.getElementById(parts[idx])) document.getElementById(parts[idx]).classList.remove('hidden-part');
+                if (window.state.lives <= 0) { window.state.isTransitioning = true; recordResult(false, "Fail"); triggerExplosion(nextRound); }
+            }
+            renderKeyboard();
+        };
+
+        // CUSTOM WORDS (BULK)
         window.addCustomWord = function() {
             const input = document.getElementById('custom-word-input');
             const rawValue = input.value.trim().toLowerCase();
             if (!rawValue) return;
-
-            // Split by commas, semicolons, or whitespace
             const wordsToAdd = rawValue.split(/[ ,;]+/).filter(w => w.length > 0);
-
-            let added = false;
             wordsToAdd.forEach(word => {
-                if (!window.state.customWords.includes(word) && window.state.customWords.length < 50) {
-                    window.state.customWords.push(word);
-                    added = true;
-                }
+                if (!window.state.customWords.includes(word) && window.state.customWords.length < 50) window.state.customWords.push(word);
             });
-
-            if (added) {
-                input.value = '';
-                renderCustomWordTags();
-                saveStateToCloud();
-            }
+            input.value = ''; renderCustomWordTags(); saveStateToCloud();
         };
 
         window.removeCustomWord = function(word) {
             window.state.customWords = window.state.customWords.filter(w => w !== word);
-            renderCustomWordTags();
-            saveStateToCloud();
+            renderCustomWordTags(); saveStateToCloud();
         };
 
         function renderCustomWordTags() {
@@ -648,7 +694,7 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
             });
         }
 
-        // DATABASE & AUTH
+        // PERSISTENCE
         window.selectPilot = async (name) => {
             window.state.pilotName = name;
             const unlock = new SpeechSynthesisUtterance(""); window.speechSynthesis.speak(unlock);
@@ -698,65 +744,58 @@ Fixed: Void Choice & Meteor Blast logic, UK English Library, Detailed SVG Avatar
             else { window.state.lives--; recordResult(false, input); triggerExplosion(nextRound); }
         };
 
-        // NAV
+        // NAV & DIAGNOSTIC
         window.showStats = () => {
             hideAll();
             document.getElementById('screen-stats').classList.remove('hidden');
             const mList = document.getElementById('mastered-words-list'), sList = document.getElementById('struggling-words-list'), lList = document.getElementById('learning-words-list'), tutor = document.getElementById('tutor-insight-text');
             mList.innerHTML = ""; sList.innerHTML = ""; lList.innerHTML = "";
-            if (window.state.history.length === 0) {
-                mList.innerHTML = '<p class="text-white/20 text-xs">No mission data recorded yet.</p>';
-                tutor.innerText = "Complete some missions to generate tutoring insights.";
-                return;
-            }
+            if (window.state.history.length === 0) { mList.innerHTML = '<p class="text-white/20 text-xs">No data recorded.</p>'; return; }
             const stats = {};
             window.state.history.forEach(h => {
                 if(!stats[h.word]) stats[h.word] = { pass: 0, fail: 0, mistakes: new Set() };
                 if(h.result) stats[h.word].pass++;
                 else { stats[h.word].fail++; if(h.mistake && !["Fail", "Missed", "Timeout"].includes(h.mistake)) stats[h.word].mistakes.add(h.mistake.toLowerCase()); }
             });
-            let mistakesFound = false;
             Object.keys(stats).forEach(w => {
                 const s = stats[w], total = s.pass + s.fail, rate = s.pass / total, mArr = Array.from(s.mistakes), card = `<div class="bg-white/5 p-4 rounded-2xl border border-white/10"><div class="flex justify-between items-center"><span class="font-bold uppercase">${w}</span> <span class="text-[9px] opacity-30">${total} Tries</span></div>${mArr.length > 0 ? `<div class="mt-2 flex flex-wrap gap-1">${mArr.map(m => `<span class="mistake-tag">${m}</span>`).join('')}</div>` : ''}</div>`;
                 if (rate >= 0.8 && s.pass >= 2) mList.innerHTML += `<span class="bg-green-500/10 text-green-400 border border-green-500/20 px-3 py-1 rounded-full text-xs font-black uppercase">${w}</span>`;
-                else if (rate <= 0.4) { sList.innerHTML += card; mistakesFound = true; } else lList.innerHTML += card;
+                else if (rate <= 0.4) { sList.innerHTML += card; } else lList.innerHTML += card;
             });
-            tutor.innerText = mistakesFound ? "Tutoring Insight: Focus on the 'Critical' words. The child may be confusing visual patterns." : "The pilot is doing well! Full speed ahead to higher levels.";
         };
 
-        window.showWithdraw = () => {
-            hideAll();
-            document.getElementById('screen-withdraw').classList.remove('hidden');
-            document.getElementById('withdraw-balance').innerText = window.state.bank + " stars";
-        };
-
-        window.initiateWithdrawal = (type) => {
+        window.showWithdraw = () => { hideAll(); document.getElementById('screen-withdraw').classList.remove('hidden'); document.getElementById('withdraw-balance').innerText = window.state.bank + " stars"; };
+        window.initiateWithdrawal = (type) => { 
             const dialog = document.getElementById('confirm-dialog');
-            document.getElementById('confirm-message').innerText = "Processing this withdrawal will reset your Galactic Bank to zero. Ready to issue certificate?";
+            document.getElementById('confirm-message').innerText = "Withdraw stars? This will reset your balance.";
             dialog.classList.remove('hidden');
-            document.getElementById('execute-reset-btn').onclick = async () => {
-                window.state.bank = 0;
-                await saveStateToCloud();
-                window.closeConfirm();
-                window.showHome();
-            };
+            document.getElementById('execute-reset-btn').onclick = async () => { window.state.bank = 0; await saveStateToCloud(); window.closeConfirm(); window.showHome(); };
         };
 
-        // KEYBOARD
+        function generateSmartDistractors(word) {
+            const wordLower = word.toLowerCase();
+            let variations = new Set();
+            if (distractorsMap[wordLower]) distractorsMap[wordLower].forEach(v => variations.add(v.toLowerCase()));
+            const commonSwaps = [['ie', 'ei'], ['ei', 'ie'], ['ce', 'se'], ['se', 'ce'], ['ance', 'ence'], ['ence', 'ance'], ['able', 'ible'], ['ible', 'able']];
+            commonSwaps.forEach(([from, to]) => { if (wordLower.includes(from)) variations.add(wordLower.replace(new RegExp(from, 'g'), to)); });
+            for (let i = 0; i < wordLower.length - 1; i++) {
+                if (wordLower[i] === wordLower[i+1]) variations.add(wordLower.slice(0, i) + wordLower.slice(i+1)); 
+                else if (/[bcdfghjklmnpqrstvwxyz]/.test(wordLower[i])) variations.add(wordLower.slice(0, i+1) + wordLower[i] + wordLower.slice(i+1)); 
+            }
+            return Array.from(variations).filter(v => v !== wordLower).sort(() => 0.5 - Math.random()).slice(0, 3);
+        }
+
         window.addEventListener('keydown', (e) => {
             if (window.state.isTransitioning) return;
-            const screenGame = document.getElementById('screen-game');
-            if (screenGame.classList.contains('hidden')) return;
+            if (document.getElementById('screen-game').classList.contains('hidden')) return;
             if (window.state.currentGame === 'lunar') {
                 const key = e.key.toLowerCase();
                 if (key.length === 1 && key >= 'a' && key <= 'z') window.handleGuess(key);
             } else if (window.state.currentGame === 'death') {
                 if (e.key === 'Enter') window.submitEcho();
-                else { const f = document.getElementById('echo-field'); if (document.activeElement !== f) f.focus(); }
             }
         });
 
-        // INIT
         const initializeAppSession = async () => {
             const failSafeTimeout = setTimeout(() => { removeOverlay(); }, 5000);
             const removeOverlay = () => { const o = document.getElementById('connection-overlay'); if (o) { o.classList.add('opacity-0'); setTimeout(() => o.classList.add('hidden'), 500); } };
