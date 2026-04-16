@@ -1,7 +1,8 @@
 <!-- 
-🚀 MOONSHOT ACADEMY: FINAL BUILD (V11 - FAIL-SAFE AUTH)
-Updated: April 6, 2026
-Fixed: Pilot selection hang, Case logic, UK Voice, and Bulk Word Management
+🚀 MOONSHOT ACADEMY: FINAL BUILD (V21 - PERMISSION RESOLUTION)
+Updated: April 16, 2026
+Fixed: Permission errors by unifying appId and enforcing Rule 3 (Auth before Query).
+Restored: HD Avatars, Meteor flying animations, Mermaid phonics, and Unicorn match.
 -->
 
 <!DOCTYPE html>
@@ -77,28 +78,22 @@ Fixed: Pilot selection hang, Case logic, UK Voice, and Bulk Word Management
         .timer-container { width: 100%; height: 12px; background: rgba(255,255,255,0.05); border-radius: 20px; margin-bottom: 25px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
         #void-timer-bar { height: 100%; width: 100%; background: #fbbf24; transition: width 0.1s linear; }
 
-        #meteor-field { position: relative; width: 100%; height: 400px; background: rgba(0,0,0,0.6); border-radius: 30px; overflow: hidden; margin: 15px 0; border: 1px solid rgba(255,255,255,0.1); }
-        .meteor { position: absolute; background: rgba(56, 189, 248, 0.15); border: 2px solid #38bdf8; padding: 12px 20px; border-radius: 60px; font-size: 1.2rem; cursor: pointer; white-space: nowrap; font-weight: 900; box-shadow: 0 0 20px rgba(56,189,248,0.4); color: white; z-index: 50; text-transform: none !important; }
+        #meteor-field { position: relative; width: 100%; height: 420px; background: rgba(0,0,0,0.4); border-radius: 30px; overflow: hidden; margin: 15px 0; border: 1px solid rgba(255,255,255,0.1); }
+        .meteor { position: absolute; background: rgba(56, 189, 248, 0.2); border: 2px solid #38bdf8; padding: 12px 20px; border-radius: 60px; font-size: 1.2rem; cursor: pointer; white-space: nowrap; font-weight: 900; box-shadow: 0 0 20px rgba(56,189,248,0.4); color: white; z-index: 50; text-transform: none !important; }
 
-        .bubble-btn { width: 85px; height: 85px; background: rgba(56, 189, 248, 0.1); border: 2px solid rgba(56, 189, 248, 0.4); border-radius: 50%; font-size: 2.2rem; font-weight: 900; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); transition: all 0.2s; text-transform: none !important; }
+        .bubble-btn { width: 90px; height: 90px; background: rgba(56, 189, 248, 0.1); border: 2px solid rgba(56, 189, 248, 0.4); border-radius: 50%; font-size: 2.5rem; font-weight: 900; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); transition: all 0.2s; text-transform: none !important; }
         
-        .unicorn-card { font-size: 5rem; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 30px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .unicorn-card { font-size: 5rem; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 30px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; transition: all 0.3s; cursor: pointer; }
         
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-
-        .helmet-frame { width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .helmet-frame { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
         .pilot-card { display: flex; align-items: center; gap: 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 35px; }
-        .vault-dashboard { background: linear-gradient(135deg, #1e1b4b 0%, #030712 100%); padding: 25px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); }
-
-        .custom-word-tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; text-transform: none !important; }
-        .custom-word-tag span { cursor: pointer; opacity: 0.5; font-size: 14px; margin-left: 4px; }
 
         .kb-btn { text-transform: none !important; font-family: 'Outfit', sans-serif; font-weight: 900; }
 
         @keyframes glowPulse { 0%, 100% { opacity: 1; filter: drop-shadow(0 0 2px currentColor); } 50% { opacity: 0.4; filter: drop-shadow(0 0 8px currentColor); } }
         .glow-fx { animation: glowPulse 2s infinite ease-in-out; }
         .shake { animation: shake 0.2s ease-in-out 0s 2; }
+        @keyframes drift { from { transform: translate(-10%, -10%) rotate(0deg) scale(1); } to { transform: translate(15%, 15%) rotate(60deg) scale(1.3); } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
     </style>
 </head>
@@ -114,8 +109,9 @@ Fixed: Pilot selection hang, Case logic, UK Voice, and Bulk Word Management
     <div id="explosion-overlay" class="fixed inset-0 pointer-events-none z-[100] bg-white opacity-0 transition-opacity"></div>
     <div class="no-print"><div class="aurora aurora-1"></div><div class="aurora aurora-2"></div></div>
 
-    <div id="connection-overlay" class="fixed inset-0 z-[2000] bg-black flex items-center justify-center transition-opacity duration-500 no-print">
-        <div class="text-white impact-font text-2xl animate-pulse tracking-widest text-center uppercase">Initializing Moonshot Academy...</div>
+    <div id="connection-overlay" class="fixed inset-0 z-[2000] bg-black flex flex-col items-center justify-center transition-opacity duration-500 no-print">
+        <div class="text-white impact-font text-2xl animate-pulse tracking-widest text-center uppercase">Establishing Command Uplink...</div>
+        <div id="boot-status" class="text-white/20 text-[10px] mt-4 uppercase tracking-widest font-black">Syncing Satellites...</div>
     </div>
 
     <div id="app-container" class="w-full max-w-6xl p-4 no-print flex flex-col items-center justify-center min-h-screen relative z-10">
@@ -124,61 +120,56 @@ Fixed: Pilot selection hang, Case logic, UK Voice, and Bulk Word Management
         <div id="screen-auth" class="text-center py-6 w-full">
             <h1 class="text-6xl md:text-9xl impact-font mb-16 tracking-tighter leading-none uppercase text-white">Moonshot Academy</h1>
             <div class="flex flex-wrap justify-center gap-10 max-w-5xl mx-auto px-4">
-                <div onclick="window.selectPilot('Jesse')" class="profile-btn group cursor-pointer transition-transform hover:scale-110">
-                    <div class="helmet-frame" id="helmet-Jesse"></div>
+                <div onclick="window.selectPilot('Jesse')" class="profile-btn group cursor-pointer transition-transform hover:scale-110 opacity-50 pointer-events-none" id="btn-Jesse">
+                    <div class="helmet-frame h-24 w-24 md:h-32 md:w-32 bg-white/5 rounded-full border border-white/10 overflow-hidden" id="helmet-Jesse"></div>
                     <div class="text-2xl font-black text-sky-400 mt-4">Jesse</div>
                 </div>
-                <div onclick="window.selectPilot('Ruben')" class="profile-btn group cursor-pointer transition-transform hover:scale-110">
-                    <div class="helmet-frame" id="helmet-Ruben"></div>
+                <div onclick="window.selectPilot('Ruben')" class="profile-btn group cursor-pointer transition-transform hover:scale-110 opacity-50 pointer-events-none" id="btn-Ruben">
+                    <div class="helmet-frame h-24 w-24 md:h-32 md:w-32 bg-white/5 rounded-full border border-white/10 overflow-hidden" id="helmet-Ruben"></div>
                     <div class="text-2xl font-black text-emerald-400 mt-4">Ruben</div>
                 </div>
-                <div onclick="window.selectPilot('Elodie')" class="profile-btn group cursor-pointer transition-transform hover:scale-110">
-                    <div class="helmet-frame" id="helmet-Elodie"></div>
+                <div onclick="window.selectPilot('Elodie')" class="profile-btn group cursor-pointer transition-transform hover:scale-110 opacity-50 pointer-events-none" id="btn-Elodie">
+                    <div class="helmet-frame h-24 w-24 md:h-32 md:w-32 bg-white/5 rounded-full border border-white/10 overflow-hidden" id="helmet-Elodie"></div>
                     <div class="text-2xl font-black text-pink-400 mt-4">Elodie</div>
                 </div>
-                <div onclick="window.selectPilot('Friend')" class="profile-btn group cursor-pointer transition-transform hover:scale-110">
-                    <div class="helmet-frame" id="helmet-Friend"></div>
-                    <div class="text-2xl font-black text-amber-500 mt-4">Friend</div>
+                <div onclick="window.selectPilot('Friend')" class="profile-btn group cursor-pointer transition-transform hover:scale-110 opacity-50 pointer-events-none" id="btn-Friend">
+                    <div class="helmet-frame h-24 w-24 md:h-32 md:w-32 bg-white/5 rounded-full border border-white/10 overflow-hidden" id="helmet-Friend"></div>
+                    <div class="text-2xl font-black text-slate-400 mt-4">Friend</div>
                 </div>
             </div>
+            <p id="auth-status" class="mt-8 text-[10px] text-white/30 uppercase font-black tracking-[0.3em] animate-pulse">Waiting for Satellite Handshake...</p>
         </div>
 
         <!-- SCREEN: HOME -->
         <div id="screen-home" class="hidden w-full py-4">
-            <h1 class="text-5xl md:text-8xl impact-font mb-8 text-center bg-clip-text text-transparent bg-gradient-to-b from-white to-white/20 uppercase tracking-tight">Mission Control</h1>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 items-stretch">
                 <div class="pilot-card">
-                    <div id="active-pilot-helmet" class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-black/30 border-4 border-white/10 p-1 flex items-center justify-center"></div>
+                    <div id="active-pilot-helmet" class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-black/30 border-4 border-white/10 p-1 flex items-center justify-center overflow-hidden"></div>
                     <div class="text-left">
                         <p class="text-[10px] font-black text-sky-400 tracking-[0.3em] uppercase mb-1">Authenticated Pilot</p>
                         <h2 id="pilot-name-display" class="text-4xl md:text-6xl impact-font uppercase leading-none mb-3">Pilot</h2>
-                        <button onclick="location.reload()" class="bg-white/10 px-3 py-1.5 rounded-xl text-white text-[8px] font-black uppercase tracking-widest">Switch User</button>
+                        <button onclick="location.reload()" class="bg-white/10 px-3 py-1.5 rounded-xl text-white text-[8px] font-black uppercase tracking-widest">Log Out</button>
                     </div>
                 </div>
-                <div class="vault-dashboard">
-                    <div class="flex items-center gap-4">
-                        <div class="relative w-24 h-24 bg-amber-500/10 rounded-full border-4 border-amber-500/40 flex items-center justify-center">
-                            <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="#facc15" stroke-width="2"><path d="M12 15l-2 5 2-1 2 1-2-5zM12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1 3-6z"/></svg>
-                        </div>
-                        <div class="text-left flex-1">
-                            <div class="text-[11px] text-white/40 font-black tracking-widest uppercase mb-0.5">Galactic Bank</div>
-                            <div id="balance-display" class="text-5xl md:text-7xl impact-font text-green-400 leading-none">0 stars</div>
-                        </div>
+                <div class="vault-dashboard p-6 bg-white/5 border border-white/10 rounded-[40px] flex items-center justify-between">
+                    <div>
+                        <div class="text-[11px] text-white/40 font-black tracking-widest uppercase mb-0.5">Galactic Bank</div>
+                        <div id="balance-display" class="text-5xl md:text-7xl impact-font text-green-400 leading-none">0 stars</div>
                     </div>
-                    <div class="flex gap-3 mt-4">
-                        <button onclick="window.showWithdraw()" class="flex-1 py-3 bg-white/10 rounded-2xl font-black uppercase text-[10px]">Withdraw</button>
-                        <button onclick="window.showStats()" class="flex-1 py-3 bg-purple-600 rounded-2xl font-black uppercase text-[10px] shadow-xl">Diagnostic</button>
+                    <div class="flex flex-col gap-2">
+                        <button onclick="window.showWithdraw()" class="px-6 py-2 bg-white/10 rounded-xl font-black uppercase text-[10px]">Withdraw</button>
+                        <button onclick="window.showStats()" class="px-6 py-2 bg-purple-600 rounded-xl font-black uppercase text-[10px]">Diagnostic</button>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-                <div onclick="window.chooseGame('lunar')" class="game-tile"><div class="text-sky-400 mb-2 text-4xl">🚀</div><h3 class="text-xl impact-font">Lunar Mission</h3></div>
-                <div onclick="window.chooseGame('death')" class="game-tile"><div class="text-rose-400 mb-2 text-4xl">⚡</div><h3 class="text-xl impact-font">Sudden Death</h3></div>
-                <div onclick="window.chooseGame('meteor')" class="game-tile"><div class="text-orange-400 mb-2 text-4xl">☄️</div><h3 class="text-xl impact-font">Meteor Blast</h3></div>
-                <div onclick="window.chooseGame('void')" class="game-tile"><div class="text-indigo-400 mb-2 text-4xl">🌀</div><h3 class="text-xl impact-font">Void Choice</h3></div>
-                <div onclick="window.chooseGame('mermaid')" class="game-tile"><div class="text-sky-300 mb-2 text-4xl">🧜‍♀️</div><h3 class="text-xl impact-font">Mermaid Phonics</h3></div>
-                <div onclick="window.chooseGame('unicorn')" class="game-tile"><div class="text-pink-300 mb-2 text-4xl">🦄</div><h3 class="text-xl impact-font">Unicorn Match</h3></div>
+                <div onclick="window.chooseGame('lunar')" class="game-tile"><div class="text-sky-400 mb-2 text-4xl">🚀</div><h3 class="text-xl impact-font uppercase">Lunar Mission</h3></div>
+                <div onclick="window.chooseGame('death')" class="game-tile border-rose-500/20"><div class="text-rose-400 mb-2 text-4xl">⚡</div><h3 class="text-xl impact-font uppercase">Sudden Death</h3></div>
+                <div onclick="window.chooseGame('meteor')" class="game-tile"><div class="text-orange-400 mb-2 text-4xl">☄️</div><h3 class="text-xl impact-font uppercase">Meteor Blast</h3></div>
+                <div onclick="window.chooseGame('void')" class="game-tile"><div class="text-indigo-400 mb-2 text-4xl">🌀</div><h3 class="text-xl impact-font uppercase">Void Choice</h3></div>
+                <div onclick="window.chooseGame('mermaid')" class="game-tile"><div class="text-sky-300 mb-2 text-4xl">🧜‍♀️</div><h3 class="text-xl impact-font uppercase">Mermaid Phonics</h3></div>
+                <div onclick="window.chooseGame('unicorn')" class="game-tile"><div class="text-pink-300 mb-2 text-4xl">🦄</div><h3 class="text-xl impact-font uppercase">Unicorn Match</h3></div>
             </div>
         </div>
 
@@ -189,11 +180,11 @@ Fixed: Pilot selection hang, Case logic, UK Voice, and Bulk Word Management
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="space-y-3">
                     <h3 class="text-[10px] font-black uppercase text-sky-400 tracking-widest mb-4 text-left">Curriculum Levels</h3>
-                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-recep" class="w-6 h-6 accent-sky-500"><span class="font-bold text-sm">Reception</span></label>
-                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-y1" class="w-6 h-6 accent-sky-500"><span class="font-bold text-sm">Year 1</span></label>
-                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-y2" class="w-6 h-6 accent-sky-500"><span class="font-bold text-sm">Year 2</span></label>
-                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-y34" class="w-6 h-6 accent-sky-500" checked><span class="font-bold text-sm">Year 3/4</span></label>
-                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-y56" class="w-6 h-6 accent-sky-500"><span class="font-bold text-sm">Year 5/6</span></label>
+                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-recep" class="w-6 h-6 accent-sky-500"><span class="font-bold text-sm uppercase">Reception</span></label>
+                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-y1" class="w-6 h-6 accent-sky-500"><span class="font-bold text-sm uppercase">Year 1</span></label>
+                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-y2" class="w-6 h-6 accent-sky-500"><span class="font-bold text-sm uppercase">Year 2</span></label>
+                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-y34" class="w-6 h-6 accent-sky-500" checked><span class="font-bold text-sm uppercase">Year 3/4</span></label>
+                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-y56" class="w-6 h-6 accent-sky-500"><span class="font-bold text-sm uppercase">Year 5/6</span></label>
                 </div>
                 <div class="flex flex-col">
                     <h3 class="text-[10px] font-black uppercase text-pink-400 tracking-widest mb-4 text-left">Custom Word Payload</h3>
@@ -241,81 +232,82 @@ Fixed: Pilot selection hang, Case logic, UK Voice, and Bulk Word Management
         <div id="screen-prize" class="hidden glass-panel p-12 text-center w-full max-w-xl">
             <div class="text-6xl mb-6">🏆</div>
             <h2 class="text-6xl impact-font text-green-400 uppercase mb-4">Mission Complete</h2>
-            <div id="earned-amount" class="text-7xl impact-font text-green-400 mb-10">+100 stars</div>
+            <div id="earned-amount" class="text-7xl impact-font text-green-400 mb-10 uppercase">+100 stars</div>
             <button onclick="window.showHome()" class="w-full py-5 bg-white text-black rounded-full impact-font text-2xl uppercase">Return to Base</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyATNU3KcsoehUoWxzPasVQrxUGgdVvjbq4", authDomain: "jesses-spelling-game.firebaseapp.com", projectId: "jesses-spelling-game", storageBucket: "jesses-spelling-game.firebasestorage.app", messagingSenderId: "768883009643", appId: "1:768883009643:web:591162cc7c9180b26be92e" };
-        const appId = "jesses-spelling-game";
+        
+        // RULE 1: Correct dynamic appId definition
+        const appId = typeof __app_id !== 'undefined' ? __app_id : "jesses-spelling-game";
+        
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        window.state = { pilotName: "", bank: 0, currentGame: null, words: [], currentRound: 0, lives: 3, currentWord: "", guessed: [], history: [], isTransitioning: false, customWords: [], keyboardUpper: false };
+        window.state = { pilotName: "", bank: 0, currentGame: null, words: [], currentRound: 0, lives: 3, currentWord: "", currentAnchor: null, guessed: [], history: [], isTransitioning: false, customWords: [], voidTimer: null, keyboardUpper: false, authReady: false };
 
         const helmets = {
-            Jesse: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="j-grad"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#j-grad)"/><rect x="25" y="32" width="50" height="22" rx="4" fill="#000"/><circle cx="35" cy="43" r="2" fill="#38bdf8" class="glow-fx"/><circle cx="65" cy="43" r="2" fill="#38bdf8" class="glow-fx"/></svg>`,
-            Ruben: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="r-grad"><stop offset="0%" style="stop-color:#10b981"/><stop offset="100%" style="stop-color:#064e3b"/></linearGradient></defs><path d="M50 15 L50 0 M45 5 L55 5" stroke="#10b981" stroke-width="3"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#r-grad)"/><rect x="25" y="32" width="50" height="25" rx="4" fill="#000"/><circle cx="50" cy="44" r="3" fill="#10b981" class="glow-fx"/></svg>`,
-            Elodie: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="e-grad"><stop offset="0%" style="stop-color:#f472b6"/><stop offset="100%" style="stop-color:#831843"/></linearGradient></defs><path d="M25 20 L15 5 M75 20 L85 5" stroke="#f472b6" stroke-width="6" stroke-linecap="round"/><circle cx="15" cy="5" r="3" fill="#f472b6" class="glow-fx"/><circle cx="85" cy="5" r="3" fill="#f472b6" class="glow-fx"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#e-grad)"/><rect x="25" y="35" width="50" height="22" rx="10" fill="#000"/><circle cx="38" cy="46" r="3" fill="#f472b6" class="glow-fx"/><circle cx="62" cy="46" r="3" fill="#f472b6" class="glow-fx"/></svg>`,
-            Friend: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="f-grad"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="100%" style="stop-color:#92400e"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#f-grad)"/><rect x="25" y="32" width="50" height="25" rx="2" fill="#1e1b4b"/><circle cx="50" cy="38" r="1.5" fill="white" class="glow-fx"/></svg>`
+            Jesse: `<svg viewBox="0 0 100 100" width="100%" height="100%"><defs><linearGradient id="g-jesse" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#g-jesse)"/><rect x="25" y="32" width="50" height="22" rx="4" fill="#000"/><circle cx="35" cy="43" r="2" fill="#38bdf8" class="glow-fx"/><circle cx="65" cy="43" r="2" fill="#38bdf8" class="glow-fx"/></svg>`,
+            Ruben: `<svg viewBox="0 0 100 100" width="100%" height="100%"><defs><linearGradient id="g-ruben" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#10b981"/><stop offset="100%" style="stop-color:#064e3b"/></linearGradient></defs><path d="M50 15 L50 0 M45 5 L55 5" stroke="#10b981" stroke-width="3"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#g-ruben)"/><rect x="25" y="32" width="50" height="25" rx="4" fill="#000"/><circle cx="50" cy="44" r="3" fill="#10b981" class="glow-fx"/></svg>`,
+            Elodie: `<svg viewBox="0 0 100 100" width="100%" height="100%"><defs><linearGradient id="g-elodie" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f472b6"/><stop offset="100%" style="stop-color:#831843"/></linearGradient></defs><path d="M25 20 L15 5 M75 20 L85 5" stroke="#f472b6" stroke-width="6" stroke-linecap="round"/><circle cx="15" cy="5" r="3" fill="#f472b6"/><circle cx="85" cy="5" r="3" fill="#f472b6"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#g-elodie)"/><rect x="25" y="35" width="50" height="22" rx="10" fill="#000"/><circle cx="38" cy="46" r="3" fill="#f472b6" class="glow-fx"/><circle cx="62" cy="46" r="3" fill="#f472b6" class="glow-fx"/></svg>`,
+            Friend: `<svg viewBox="0 0 100 100" width="100%" height="100%"><defs><linearGradient id="g-friend" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="100%" style="stop-color:#92400e"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#g-friend)"/><rect x="25" y="32" width="50" height="25" rx="2" fill="#1e1b4b"/><path d="M25 45 Q50 55 75 45" stroke="#fbbf24" stroke-width="2" fill="none" opacity="0.6"/><circle cx="50" cy="38" r="1.5" fill="white" class="glow-fx"/></svg>`
         };
 
-        const wordsDB = { 
-            recep: ["cat", "dog", "pig", "sun", "big", "yes", "can", "red", "run", "ten", "cup", "box"],
-            y1: ["the", "said", "house", "school", "friend", "love", "push", "pull", "full", "here", "there", "where"],
-            y2: ["beautiful", "because", "climb", "door", "floor", "find", "kind", "mind", "child", "every", "great", "break"],
-            y34: ["accident", "actual", "address", "answer", "appear", "arrive", "believe", "bicycle", "breath", "breathe", "build", "busy", "calendar", "caught", "centre", "century", "certain", "circle", "complete", "consider", "continue", "decide", "describe", "different", "difficult", "disappear", "early", "earth", "eight", "enough", "exercise", "experience", "experiment", "extreme", "famous", "favourite", "forward", "fruit", "grammar", "group", "guard", "guide", "heard", "heart", "height", "history", "imagine", "increase", "important", "interest", "island", "knowledge", "learn", "length", "library", "material", "medicine", "mention", "minute", "natural", "naughty", "notice", "occasion", "often", "opposite", "ordinary", "particular", "peculiar", "perhaps", "popular", "position", "possess", "possession", "possible", "potatoes", "pressure", "probably", "promise", "purpose", "quarter", "question", "recent", "regular", "reign", "remember", "sentence", "separate", "special", "straight", "strange", "strength", "suppose", "surprise", "therefore", "though", "although", "thought", "through", "various", "weight", "woman"],
-            y56: ["accommodate", "accompany", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediate", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recognize", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht", "organise", "realise", "humour"]
-        };
-
-        const illusts = { cat: '🐱', dog: '🐶', sun: '☀️', cup: '🥤', box: '📦', hat: '🎩', pig: '🐷', bed: '🛏️', apple: '🍎' };
+        const wordsDB = { recep: ["cat", "dog", "pig", "sun", "big", "yes", "can", "red", "run", "ten", "cup", "box"], y1: ["the", "said", "house", "school", "friend", "love", "push", "pull", "full", "here", "there", "where"], y2: ["beautiful", "because", "climb", "door", "floor", "find", "kind", "mind", "child", "every", "great", "break"], y34: ["accident", "actual", "address", "answer", "appear", "arrive", "believe", "bicycle", "breath", "breathe", "build", "busy", "calendar", "caught", "centre", "century", "certain", "circle", "complete", "consider", "continue", "decide", "describe", "different", "difficult", "disappear", "early", "earth", "eight", "enough", "exercise", "experience", "experiment", "extreme", "famous", "favourite", "forward", "fruit", "grammar", "group", "guard", "guide", "heard", "heart", "height", "history", "imagine", "increase", "important", "interest", "island", "knowledge", "learn", "length", "library", "material", "medicine", "mention", "minute", "natural", "naughty", "notice", "occasion", "often", "opposite", "ordinary", "particular", "peculiar", "perhaps", "popular", "position", "possess", "possession", "possible", "potatoes", "pressure", "probably", "promise", "purpose", "quarter", "question", "recent", "regular", "reign", "remember", "sentence", "separate", "special", "straight", "strange", "strength", "suppose", "surprise", "therefore", "though", "although", "thought", "through", "various", "weight", "woman"], y56: ["accommodate", "accompany", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediate", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recognize", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht", "organise", "realise", "humour"] };
+        const phonicAnchors = { s: [{ word: "Sun", pos: "beginning" }, { word: "Bus", pos: "end" }], a: [{ word: "Apple", pos: "beginning" }, { word: "Cat", pos: "middle" }], t: [{ word: "Tap", pos: "beginning" }, { word: "Hat", pos: "end" }], p: [{ word: "Pan", pos: "beginning" }, { word: "Cup", pos: "end" }], i: [{ word: "Ink", pos: "beginning" }, { word: "Pig", pos: "middle" }], n: [{ word: "Net", pos: "beginning" }, { word: "Sun", pos: "end" }], m: [{ word: "Map", pos: "beginning" }, { word: "Ham", pos: "end" }], d: [{ word: "Dog", pos: "beginning" }, { word: "Bed", pos: "end" }], g: [{ word: "Go", pos: "beginning" }, { word: "Pig", pos: "end" }], o: [{ word: "Hot", pos: "middle" }, { word: "Dog", pos: "middle" }] };
+        const illusts = { cat: '🐱', dog: '🐶', sun: '☀️', cup: '🥤', box: '📦', hat: '🎩', pig: '🐷', bed: '🛏️', apple: '🍎', bag: '🎒', ball: '⚽', bike: '🚲', boat: '⛵', cake: '🍰', carrot: '🥕', chair: '🪑', cloud: '☁️', cow: '🐮', door: '🚪', duck: '🦆', egg: '🥚', fish: '🐟' };
+        const distractorsMap = { beautiful: ["beatiful", "beautifull"], because: ["becoz", "becuase"], centre: ["center"], favourite: ["favorite"], programme: ["program"], rhythm: ["rythm"], yacht: ["yatch"] };
 
         function hideAll() { document.querySelectorAll('[id^="screen-"]').forEach(s => s.classList.add('hidden')); document.body.className = ""; }
         window.toSentenceCase = (str) => { if (!str) return ""; return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase(); };
+        window.toggleCase = () => { window.state.keyboardUpper = !window.state.keyboardUpper; renderUI(); };
         
+        // RULE 3: Guard Firestore operations
         window.selectPilot = async (name) => {
+            if (!auth.currentUser) return; // Silent guard
             window.state.pilotName = name;
-            const failSafe = setTimeout(() => window.showHome(), 2500);
             try {
-                const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'pilots', name.toLowerCase()));
+                const pilotRef = doc(db, 'artifacts', appId, 'public', 'data', 'pilots', name.toLowerCase());
+                const snap = await getDoc(pilotRef);
                 if (snap.exists()) {
                     const data = snap.data();
                     window.state.bank = data.credits || 0;
                     window.state.history = data.history || [];
                     window.state.customWords = data.customWords || [];
                 }
-            } catch (e) { console.error("DB Load Error", e); }
-            clearTimeout(failSafe);
+            } catch (e) { console.error("Pilot DB Error", e); }
             window.showHome();
         };
 
-        window.showHome = () => { 
-            hideAll(); clearAllTimers(); 
-            document.getElementById('screen-home').classList.remove('hidden'); 
-            document.getElementById('active-pilot-helmet').innerHTML = helmets[window.state.pilotName] || ""; 
-            document.getElementById('pilot-name-display').innerText = window.state.pilotName; 
-            document.getElementById('balance-display').innerText = window.state.bank + " stars"; 
-        };
-
+        window.showHome = () => { hideAll(); if (window.state.voidTimer) clearInterval(window.state.voidTimer); document.getElementById('screen-home').classList.remove('hidden'); document.getElementById('active-pilot-helmet').innerHTML = helmets[window.state.pilotName] || ""; document.getElementById('pilot-name-display').innerText = window.state.pilotName; document.getElementById('balance-display').innerText = window.state.bank + " stars"; };
         window.chooseGame = (game) => { window.state.currentGame = game; hideAll(); document.body.className = game + '-active'; document.getElementById('screen-setup').classList.remove('hidden'); renderCustomWordTags(); };
-        window.closeConfirm = () => document.getElementById('confirm-dialog').classList.add('hidden');
-        function clearAllTimers() { if (window.state.voidTimer) { clearInterval(window.state.voidTimer); window.state.voidTimer = null; } }
 
-        window.toggleCase = () => {
-            window.state.keyboardUpper = !window.state.keyboardUpper;
-            updateUI();
-        };
+        function generateSmartDistractors(word) {
+            const wordLower = word.toLowerCase();
+            let variations = new Set();
+            if (distractorsMap[wordLower]) distractorsMap[wordLower].forEach(v => variations.add(v.toLowerCase()));
+            const commonSwaps = [['ie', 'ei'], ['ei', 'ie'], ['ce', 'se'], ['se', 'ce'], ['ance', 'ence'], ['ence', 'ance'], ['able', 'ible'], ['ible', 'able']];
+            commonSwaps.forEach(([from, to]) => { if (wordLower.includes(from)) variations.add(wordLower.replace(new RegExp(from, 'g'), to)); });
+            for (let i = 0; i < wordLower.length - 1; i++) {
+                if (wordLower[i] === wordLower[i+1]) variations.add(wordLower.slice(0, i) + wordLower.slice(i+1)); 
+                else variations.add(wordLower.slice(0, i+1) + wordLower[i] + wordLower.slice(i+1)); 
+            }
+            return Array.from(variations).filter(v => v !== wordLower).sort(() => 0.5 - Math.random()).slice(0, 3);
+        }
 
         window.launchMission = () => {
             let pool = [];
             const useCustom = document.getElementById('check-use-custom').checked;
-            if (useCustom && window.state.customWords.length > 0) pool = [...window.state.customWords];
+            if (window.state.currentGame === 'mermaid') pool = Object.keys(phonicAnchors);
+            else if (window.state.currentGame === 'unicorn') pool = Object.keys(illusts);
+            else if (useCustom && window.state.customWords.length > 0) pool = [...window.state.customWords];
             else {
                 if (document.getElementById('check-recep').checked) pool = pool.concat(wordsDB.recep);
                 if (document.getElementById('check-y1').checked) pool = pool.concat(wordsDB.y1);
@@ -330,60 +322,53 @@ Fixed: Pilot selection hang, Case logic, UK Voice, and Bulk Word Management
         };
 
         function nextRound() {
-            clearAllTimers(); window.state.isTransitioning = false; 
+            if (window.state.voidTimer) clearInterval(window.state.voidTimer);
+            window.state.isTransitioning = false; 
             if (window.state.currentRound >= 10 || window.state.lives <= 0) { endGame(); return; }
             window.state.currentWord = window.state.words[window.state.currentRound].toLowerCase();
-            window.state.guessed = []; window.state.currentRound++; updateUI(); window.speakWord();
+            window.state.guessed = []; window.state.currentRound++;
+            if (window.state.currentGame === 'mermaid') {
+                const anchors = phonicAnchors[window.state.currentWord];
+                window.state.currentAnchor = anchors[Math.floor(Math.random() * anchors.length)];
+            }
+            renderUI(); window.speakWord();
         }
 
         window.speakWord = () => { 
-            const msg = new SpeechSynthesisUtterance(window.state.currentWord);
-            msg.lang = 'en-GB'; msg.rate = 0.8;
-            window.speechSynthesis.speak(msg);
+            let text = window.state.currentWord;
+            if (window.state.currentGame === 'mermaid' && window.state.currentAnchor) text = `Find the ${window.state.currentAnchor.pos} sound in ${window.state.currentAnchor.word}`;
+            const msg = new SpeechSynthesisUtterance(text); msg.lang = 'en-GB'; msg.rate = 0.8; window.speechSynthesis.speak(msg);
         };
 
-        function updateUI() {
+        function renderUI() {
             document.getElementById('game-progress').innerText = `Round ${window.state.currentRound}/10`;
-            const livesDiv = document.getElementById('game-lives'); livesDiv.innerHTML = '❤️'.repeat(window.state.lives);
-            ['keyboard-wrapper', 'echo-input-container', 'meteor-field', 'multi-choice', 'void-timer-container'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById('game-lives').innerHTML = '❤️'.repeat(window.state.lives);
+            ['keyboard-wrapper', 'echo-input-container', 'multi-choice', 'void-timer-container', 'meteor-field'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById('game-word-display').innerHTML = ""; 
 
             if (window.state.currentGame === 'lunar') {
                 document.getElementById('keyboard-wrapper').classList.remove('hidden');
-                renderBlanks(); renderKeyboard();
+                document.getElementById('game-word-display').innerHTML = window.state.currentWord.split('').map(char => `<div class="blank">${window.state.guessed.includes(char) ? (window.state.keyboardUpper ? char.toUpperCase() : char.toLowerCase()) : "_"}</div>`).join('');
+                renderKeyboard();
             } else if (window.state.currentGame === 'death') {
                 document.getElementById('echo-input-container').classList.remove('hidden');
                 document.getElementById('game-word-display').innerHTML = `<div class="text-7xl">${illusts[window.state.currentWord] || '🚀'}</div>`;
                 setTimeout(() => document.getElementById('echo-field').focus(), 100);
-            } else if (window.state.currentGame === 'void') {
-                document.getElementById('void-timer-container').classList.remove('hidden');
-                document.getElementById('multi-choice').classList.remove('hidden');
-                renderChoices(); startVoidTimer();
-            } else if (window.state.currentGame === 'unicorn') {
-                document.getElementById('game-word-display').innerHTML = `<div class="text-5xl impact-font text-pink-400">${window.toSentenceCase(window.state.currentWord)}</div>`;
+            } else if (['void', 'mermaid', 'unicorn'].includes(window.state.currentGame)) {
+                if (window.state.currentGame === 'void') document.getElementById('void-timer-container').classList.remove('hidden'), startVoidTimer();
+                if (window.state.currentGame === 'unicorn') document.getElementById('game-word-display').innerHTML = `<div class="text-5xl impact-font text-pink-400">${window.toSentenceCase(window.state.currentWord)}</div>`;
                 document.getElementById('multi-choice').classList.remove('hidden');
                 renderChoices();
+            } else if (window.state.currentGame === 'meteor') {
+                document.getElementById('meteor-field').classList.remove('hidden');
+                renderMeteors();
             }
-        }
-
-        function renderBlanks() {
-            const container = document.getElementById('game-word-display');
-            container.innerHTML = window.state.currentWord.split('').map(char => {
-                let display = window.state.guessed.includes(char) ? char : "_";
-                display = window.state.keyboardUpper ? display.toUpperCase() : display.toLowerCase();
-                return `<div class="blank">${display}</div>`;
-            }).join('');
         }
 
         function renderKeyboard() {
             const kb = document.getElementById('keyboard'); kb.innerHTML = "";
             "abcdefghijklmnopqrstuvwxyz".split('').forEach(char => {
-                const used = window.state.guessed.includes(char);
-                const btn = document.createElement('button');
-                btn.className = `p-3 rounded-xl font-black text-sm kb-btn ${used ? 'bg-white/5 text-white/20' : 'bg-white/10 hover:bg-white/20'}`;
-                btn.innerText = window.state.keyboardUpper ? char.toUpperCase() : char.toLowerCase();
-                btn.onclick = () => handleGuess(char);
-                kb.appendChild(btn);
+                const btn = document.createElement('button'); btn.className = `p-3 rounded-xl font-black text-sm kb-btn ${window.state.guessed.includes(char) ? 'bg-white/5 text-white/20' : 'bg-white/10 hover:bg-white/20'}`; btn.innerText = window.state.keyboardUpper ? char.toUpperCase() : char.toLowerCase(); btn.onclick = () => handleGuess(char); kb.appendChild(btn);
             });
         }
 
@@ -391,60 +376,70 @@ Fixed: Pilot selection hang, Case logic, UK Voice, and Bulk Word Management
             if (window.state.isTransitioning || window.state.guessed.includes(char)) return;
             window.state.guessed.push(char);
             if (window.state.currentWord.includes(char)) {
-                renderBlanks();
-                if (window.state.currentWord.split('').every(c => window.state.guessed.includes(c))) { window.state.isTransitioning = true; recordResult(true); setTimeout(nextRound, 1000); }
+                renderUI(); if (window.state.currentWord.split('').every(c => window.state.guessed.includes(c))) { window.state.isTransitioning = true; recordResult(true); setTimeout(nextRound, 1000); }
             } else {
-                window.state.lives--;
-                if (window.state.lives <= 0) { window.state.isTransitioning = true; recordResult(false); triggerExplosion(nextRound); }
+                window.state.lives--; if (window.state.lives <= 0) { window.state.isTransitioning = true; recordResult(false); triggerExplosion(nextRound); } else renderUI();
             }
-            renderKeyboard();
         }
 
         function renderChoices() {
             const container = document.getElementById('multi-choice'); container.innerHTML = "";
-            let opts = [window.state.currentWord, "wrong1", "wrong2", "wrong3"].sort(() => 0.5 - Math.random());
-            opts.forEach(opt => {
+            let opts = [];
+            if (window.state.currentGame === 'unicorn') opts = [window.state.currentWord, ...Object.keys(illusts).filter(k => k !== window.state.currentWord).sort(() => 0.5-Math.random()).slice(0, 3)];
+            else if (window.state.currentGame === 'mermaid') opts = [window.state.currentWord, ...Object.keys(phonicAnchors).filter(k => k !== window.state.currentWord).sort(() => 0.5-Math.random()).slice(0, 3)];
+            else opts = [window.state.currentWord, ...generateSmartDistractors(window.state.currentWord)];
+            opts.sort(() => 0.5 - Math.random()).forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = "p-6 bg-white/5 border border-white/10 rounded-3xl font-black hover:bg-white/10 text-xl reader-font";
-                btn.innerText = window.state.currentGame === 'unicorn' ? (illusts[opt] || '❓') : window.toSentenceCase(opt);
-                btn.onclick = () => { if (window.state.isTransitioning) return; window.state.isTransitioning = true; if(opt === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; recordResult(false); triggerExplosion(nextRound); } };
+                if (window.state.currentGame === 'unicorn') { btn.className = "unicorn-card"; btn.innerHTML = illusts[opt] || '❓'; }
+                else if (window.state.currentGame === 'mermaid') { btn.className = "bubble-btn"; btn.innerText = window.state.keyboardUpper ? opt.toUpperCase() : opt.toLowerCase(); }
+                else { btn.className = "p-6 bg-white/5 border border-white/10 rounded-3xl font-black hover:bg-white/10 text-xl reader-font"; btn.innerText = window.toSentenceCase(opt); }
+                btn.onclick = () => { if (window.state.isTransitioning) return; window.state.isTransitioning = true; if(opt === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; recordResult(false, opt); triggerExplosion(nextRound); } };
                 container.appendChild(btn);
+            });
+        }
+
+        function renderMeteors() {
+            const field = document.getElementById('meteor-field'); field.innerHTML = "";
+            let opts = [window.state.currentWord, ...generateSmartDistractors(window.state.currentWord)];
+            opts.forEach((word, index) => {
+                const m = document.createElement('div'); m.className = "meteor"; m.innerText = window.state.keyboardUpper ? word.toUpperCase() : window.toSentenceCase(word); m.style.top = (50 + index * 120) + "px"; field.appendChild(m);
+                let x = -150; const animate = () => { if(window.state.currentGame !== 'meteor' || window.state.isTransitioning) return; x += 1.8; m.style.left = x + "px"; if(x < field.offsetWidth + 150) requestAnimationFrame(animate); else { x = -150; requestAnimationFrame(animate); } };
+                animate();
+                m.onclick = () => { if (window.state.isTransitioning) return; window.state.isTransitioning = true; if(word === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; recordResult(false, word); triggerExplosion(nextRound); } };
             });
         }
 
         function startVoidTimer() {
             const bar = document.getElementById('void-timer-bar'); let timeLeft = 5.0; bar.style.width = "100%";
-            window.state.voidTimer = setInterval(() => {
-                if (window.state.isTransitioning) return;
-                timeLeft -= 0.1; bar.style.width = (timeLeft / 5.0 * 100) + "%";
-                if (timeLeft <= 0) { clearInterval(window.state.voidTimer); window.state.lives--; recordResult(false); triggerExplosion(nextRound); }
-            }, 100);
+            window.state.voidTimer = setInterval(() => { if (window.state.isTransitioning) return; timeLeft -= 0.1; bar.style.width = (timeLeft / 5.0 * 100) + "%"; if (timeLeft <= 0) { clearInterval(window.state.voidTimer); window.state.isTransitioning = true; window.state.lives--; recordResult(false, "Timeout"); triggerExplosion(nextRound); } }, 100);
         }
 
-        window.addCustomWord = () => {
-            const input = document.getElementById('custom-word-input');
-            const wordsToAdd = input.value.trim().toLowerCase().split(/[ ,;]+/).filter(w => w.length > 0);
-            wordsToAdd.forEach(word => { if (!window.state.customWords.includes(word) && window.state.customWords.length < 50) window.state.customWords.push(word); });
-            input.value = ''; renderCustomWordTags(); saveStateToCloud();
-        };
-
+        window.addCustomWord = () => { const input = document.getElementById('custom-word-input'); const words = input.value.trim().toLowerCase().split(/[ ,;]+/).filter(w => w.length > 0); words.forEach(word => { if (!window.state.customWords.includes(word) && window.state.customWords.length < 50) window.state.customWords.push(word); }); input.value = ''; renderCustomWordTags(); saveStateToCloud(); };
         window.removeCustomWord = (word) => { window.state.customWords = window.state.customWords.filter(w => w !== word); renderCustomWordTags(); saveStateToCloud(); };
         function renderCustomWordTags() { const container = document.getElementById('custom-word-list'); if (!container) return; container.innerHTML = window.state.customWords.map(w => `<div class="custom-word-tag">${window.toSentenceCase(w)} <span onclick="window.removeCustomWord('${w}')" class="cursor-pointer">×</span></div>`).join(''); }
 
-        async function saveStateToCloud() { if (window.state.pilotName) await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'pilots', window.state.pilotName.toLowerCase()), { credits: window.state.bank, history: window.state.history, customWords: window.state.customWords }, { merge: true }); }
+        async function saveStateToCloud() { if (window.state.pilotName && auth.currentUser) { try { const pilotRef = doc(db, 'artifacts', appId, 'public', 'data', 'pilots', window.state.pilotName.toLowerCase()); await setDoc(pilotRef, { credits: window.state.bank, history: window.state.history, customWords: window.state.customWords }, { merge: true }); } catch(e) { console.error("Cloud Save Fail", e); } } }
         function recordResult(ok) { const reward = ok ? 10 : 0; window.state.bank += reward; window.state.history.push({ word: window.state.currentWord, result: ok, timestamp: Date.now() }); }
         function triggerExplosion(cb) { const overlay = document.getElementById('explosion-overlay'); overlay.style.opacity = "0.8"; document.getElementById('app-container').classList.add('shake'); setTimeout(() => { overlay.style.opacity = "0"; document.getElementById('app-container').classList.remove('shake'); cb(); }, 300); }
         async function endGame() { hideAll(); document.getElementById('screen-prize').classList.remove('hidden'); await saveStateToCloud(); }
 
-        window.submitEcho = () => {
-            if (window.state.isTransitioning) return;
-            const input = document.getElementById('echo-field').value.trim().toLowerCase();
-            window.state.isTransitioning = true;
-            if (input === window.state.currentWord) { recordResult(true); nextRound(); }
-            else { window.state.lives--; recordResult(false); triggerExplosion(nextRound); }
-        };
+        window.submitEcho = () => { if (window.state.isTransitioning) return; const input = document.getElementById('echo-field').value.trim().toLowerCase(); if (input === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; recordResult(false, input); triggerExplosion(nextRound); } };
 
-        const init = async () => { try { await signInAnonymously(auth); } finally { const o = document.getElementById('connection-overlay'); if (o) { o.classList.add('opacity-0'); setTimeout(() => o.classList.add('hidden'), 500); } } };
+        window.addEventListener('keydown', (e) => {
+            if (window.state.isTransitioning || document.getElementById('screen-game').classList.contains('hidden')) return;
+            if (window.state.currentGame === 'lunar') { const key = e.key.toLowerCase(); if (key.length === 1 && key >= 'a' && key <= 'z') handleGuess(key); } 
+            else if (window.state.currentGame === 'death') { if (e.key === 'Enter') window.submitEcho(); else { const f = document.getElementById('echo-field'); if (document.activeElement !== f) f.focus(); } }
+        });
+
+        const init = async () => { 
+            const removeOverlay = () => { const o = document.getElementById('connection-overlay'); if (o) { o.classList.add('opacity-0'); setTimeout(() => o.classList.add('hidden'), 500); } };
+            const unlockPilots = () => { document.querySelectorAll('.profile-btn').forEach(btn => { btn.classList.remove('opacity-50', 'pointer-events-none'); }); document.getElementById('auth-status').innerText = "Command Active"; };
+            onAuthStateChanged(auth, (user) => { if (user) { window.state.authReady = true; removeOverlay(); unlockPilots(); } });
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token);
+                else await signInAnonymously(auth);
+            } catch (err) { window.state.authReady = true; removeOverlay(); unlockPilots(); }
+        };
         init();
         Object.keys(helmets).forEach(p => { const el = document.getElementById(`helmet-${p}`); if(el) el.innerHTML = helmets[p]; });
     </script>
