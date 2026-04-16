@@ -1,7 +1,7 @@
 <!-- 
-🚀 MOONSHOT ACADEMY: FINAL BUILD (V9 - READER-FRIENDLY CASE)
+🚀 MOONSHOT ACADEMY: FINAL BUILD (V10 - READER-FRIENDLY CASE & FONT)
 Updated: April 6, 2026
-Fixed: Forced uppercase removal, mixed-case reader support, UK English library, and Bulk Word Logic
+Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unicorn logic, and Bulk Word Add/Remove
 -->
 
 <!DOCTYPE html>
@@ -32,7 +32,10 @@ Fixed: Forced uppercase removal, mixed-case reader support, UK English library, 
             user-select: none;
         }
         
-        h1, h2, h3, .impact-font { font-family: 'Anton', sans-serif; letter-spacing: 0.05em; }
+        h1, h2, h3, .impact-font { font-family: 'Anton', sans-serif; letter-spacing: 0.05em; text-transform: uppercase; }
+        
+        /* Ensure readable child-friendly font for words and buttons */
+        .reader-font { font-family: 'Outfit', sans-serif; text-transform: none !important; }
         
         .glass-panel { 
             background: rgba(255, 255, 255, 0.02); 
@@ -79,15 +82,15 @@ Fixed: Forced uppercase removal, mixed-case reader support, UK English library, 
         }
         .game-tile:hover { transform: translateY(-8px) scale(1.03); border-color: rgba(56, 189, 248, 0.5); }
 
-        .blank { border-bottom: 4px solid #38bdf8; width: clamp(20px, 6vw, 50px); height: 55px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; }
+        .blank { border-bottom: 4px solid #38bdf8; width: clamp(20px, 6vw, 50px); height: 55px; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: 900; text-transform: none !important; }
         
         .timer-container { width: 100%; height: 12px; background: rgba(255,255,255,0.05); border-radius: 20px; margin-bottom: 25px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
         #void-timer-bar { height: 100%; width: 100%; background: #fbbf24; transition: width 0.1s linear; }
 
         #meteor-field { position: relative; width: 100%; height: 400px; background: rgba(0,0,0,0.6); border-radius: 30px; overflow: hidden; margin: 15px 0; border: 1px solid rgba(255,255,255,0.1); }
-        .meteor { position: absolute; background: rgba(56, 189, 248, 0.15); border: 2px solid #38bdf8; padding: 12px 20px; border-radius: 60px; font-size: 1.1rem; cursor: pointer; white-space: nowrap; font-weight: 900; box-shadow: 0 0 20px rgba(56,189,248,0.4); color: white; z-index: 50; }
+        .meteor { position: absolute; background: rgba(56, 189, 248, 0.15); border: 2px solid #38bdf8; padding: 12px 20px; border-radius: 60px; font-size: 1.2rem; cursor: pointer; white-space: nowrap; font-weight: 900; box-shadow: 0 0 20px rgba(56,189,248,0.4); color: white; z-index: 50; text-transform: none !important; }
 
-        .bubble-btn { width: 80px; height: 80px; background: rgba(56, 189, 248, 0.1); border: 2px solid rgba(56, 189, 248, 0.4); border-radius: 50%; font-size: 2.5rem; font-weight: 900; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); transition: all 0.2s; }
+        .bubble-btn { width: 85px; height: 85px; background: rgba(56, 189, 248, 0.1); border: 2px solid rgba(56, 189, 248, 0.4); border-radius: 50%; font-size: 2.2rem; font-weight: 900; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); transition: all 0.2s; text-transform: none !important; }
         .bubble-btn:active { transform: scale(0.9); background: var(--accent); }
 
         .unicorn-card { font-size: 5rem; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 30px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
@@ -111,9 +114,11 @@ Fixed: Forced uppercase removal, mixed-case reader support, UK English library, 
         .pilot-card { display: flex; align-items: center; gap: 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 35px; }
         .vault-dashboard { background: linear-gradient(135deg, #1e1b4b 0%, #030712 100%); padding: 25px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); }
 
-        .custom-word-tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; display: inline-flex; align-items: center; gap: 8px; }
+        .custom-word-tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; text-transform: none !important; }
         .custom-word-tag span { cursor: pointer; opacity: 0.5; font-size: 14px; margin-left: 4px; }
         .custom-word-tag span:hover { opacity: 1; color: var(--danger); }
+
+        .kb-btn { text-transform: none !important; font-family: 'Outfit', sans-serif; font-weight: 900; }
 
         @keyframes glowPulse { 0%, 100% { opacity: 1; filter: drop-shadow(0 0 2px currentColor); } 50% { opacity: 0.4; filter: drop-shadow(0 0 8px currentColor); } }
         .glow-fx { animation: glowPulse 2s infinite ease-in-out; }
@@ -230,7 +235,7 @@ Fixed: Forced uppercase removal, mixed-case reader support, UK English library, 
         </div>
 
         <!-- SETUP SCREEN -->
-        <div id="screen-setup" class="hidden glass-panel p-8 md:p-10 rounded-[40px] text-center w-full max-2xl">
+        <div id="screen-setup" class="hidden glass-panel p-8 md:p-10 rounded-[40px] text-center w-full max-w-2xl">
             <div class="text-left mb-6"><button onclick="window.showHome()" class="text-white/40 hover:text-white uppercase font-black text-xs tracking-widest">← Back</button></div>
             <h2 class="text-4xl impact-font mb-6 uppercase">Mission Loadout</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -297,21 +302,21 @@ Fixed: Forced uppercase removal, mixed-case reader support, UK English library, 
                 </svg>
             </div>
             <div id="void-timer-container" class="timer-container hidden"><div id="void-timer-bar"></div></div>
-            <div id="game-word-display" class="mb-12 flex flex-row items-center justify-center gap-2 flex-wrap min-h-[60px]"></div>
+            <div id="game-word-display" class="mb-12 flex flex-row items-center justify-center gap-2 flex-wrap min-h-[60px] reader-font"></div>
             <button onclick="window.speakWord()" id="speaker-btn" class="w-20 h-20 mx-auto rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-10 hover:bg-white/10 transition">
                 <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
             </button>
             <div id="meteor-field" class="hidden"></div>
-            <div id="multi-choice" class="hidden grid grid-cols-2 gap-4 w-full justify-items-center"></div>
+            <div id="multi-choice" class="hidden grid grid-cols-2 gap-4 w-full justify-items-center reader-font"></div>
             <div id="echo-input-container" class="hidden max-w-sm mx-auto space-y-6 w-full">
-                <input type="text" id="echo-field" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-3xl text-center outline-none focus:border-sky-500 font-black" placeholder="..." autocomplete="off">
+                <input type="text" id="echo-field" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-3xl text-center outline-none focus:border-sky-500 font-black reader-font" placeholder="..." autocomplete="off">
                 <button onclick="window.submitEcho()" class="w-full py-4 bg-sky-600 text-white font-black rounded-3xl uppercase tracking-widest text-sm">Submit Answer</button>
             </div>
             
             <div id="keyboard-wrapper" class="hidden mt-8">
                 <div id="keyboard" class="grid grid-cols-7 md:grid-cols-9 gap-2"></div>
-                <div class="flex justify-center mt-4">
-                    <button onclick="window.toggleCase()" class="bg-white/10 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white/20">Case: <span id="case-display">lower</span></button>
+                <div class="flex justify-center mt-6">
+                    <button onclick="window.toggleCase()" class="bg-white/10 px-8 py-3 rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-white/20 border border-white/10 transition">Aa</button>
                 </div>
             </div>
         </div>
@@ -383,7 +388,7 @@ Fixed: Forced uppercase removal, mixed-case reader support, UK English library, 
             y1: ["the", "said", "house", "school", "friend", "love", "push", "pull", "full", "here", "there", "where", "once", "some", "come", "your", "today", "says"],
             y2: ["beautiful", "because", "climb", "door", "floor", "find", "kind", "mind", "child", "every", "great", "break", "pretty", "after", "again", "colour", "favourite"],
             y34: ["accident", "actual", "address", "answer", "appear", "arrive", "believe", "bicycle", "breath", "breathe", "build", "busy", "calendar", "caught", "centre", "century", "certain", "circle", "complete", "consider", "continue", "decide", "describe", "different", "difficult", "disappear", "early", "earth", "eight", "enough", "exercise", "experience", "experiment", "extreme", "famous", "favourite", "forward", "fruit", "grammar", "group", "guard", "guide", "heard", "heart", "height", "history", "imagine", "increase", "important", "interest", "island", "knowledge", "learn", "length", "library", "material", "medicine", "mention", "minute", "natural", "naughty", "notice", "occasion", "often", "opposite", "ordinary", "particular", "peculiar", "perhaps", "popular", "position", "possess", "possession", "possible", "potatoes", "pressure", "probably", "promise", "purpose", "quarter", "question", "recent", "regular", "reign", "remember", "sentence", "separate", "special", "straight", "strange", "strength", "suppose", "surprise", "therefore", "though", "although", "thought", "through", "various", "weight", "woman"],
-            y56: ["accommodate", "accompany", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediate", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht", "organise", "realise", "humour"]
+            y56: ["accommodate", "accompany", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediate", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recognize", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht", "organise", "realise", "humour"]
         };
 
         const phonicAnchors = {
@@ -412,12 +417,7 @@ Fixed: Forced uppercase removal, mixed-case reader support, UK English library, 
 
         // UI HELPERS
         function hideAll() { document.querySelectorAll('[id^="screen-"]').forEach(s => s.classList.add('hidden')); document.body.className = ""; }
-        
-        // MIXED CASE FORMATTER
-        window.toSentenceCase = (str) => {
-            if (!str) return "";
-            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-        };
+        window.toSentenceCase = (str) => { if (!str) return ""; return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase(); };
         
         window.speakWord = () => { 
             let text = window.state.currentWord;
@@ -512,13 +512,10 @@ Fixed: Forced uppercase removal, mixed-case reader support, UK English library, 
             document.getElementById('game-progress').innerText = `Round ${window.state.currentRound}/10`;
             const livesDiv = document.getElementById('game-lives'); livesDiv.innerHTML = '';
             for(let i=0; i<3; i++) { livesDiv.innerHTML += i < window.state.lives ? '❤️' : '🖤'; }
-            
             ['hangman-area', 'keyboard-wrapper', 'echo-input-container', 'meteor-field', 'multi-choice', 'void-timer-container'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById('game-word-display').innerHTML = ""; 
-            
             const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
             parts.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.add('hidden-part'); });
-
             if (window.state.currentGame === 'lunar') {
                 document.getElementById('hangman-area').classList.remove('hidden');
                 document.getElementById('keyboard-wrapper').classList.remove('hidden');
@@ -573,7 +570,7 @@ Fixed: Forced uppercase removal, mixed-case reader support, UK English library, 
             "abcdefghijklmnopqrstuvwxyz".split('').forEach(char => {
                 const used = window.state.guessed.includes(char);
                 const btn = document.createElement('button');
-                btn.className = `p-3 rounded-xl font-black text-sm ${used ? 'bg-white/5 text-white/20' : 'bg-white/10 hover:bg-white/20'}`;
+                btn.className = `p-3 rounded-xl font-black text-sm kb-btn ${used ? 'bg-white/5 text-white/20' : 'bg-white/10 hover:bg-white/20'}`;
                 btn.innerText = window.state.keyboardUpper ? char.toUpperCase() : char.toLowerCase();
                 btn.onclick = () => window.handleGuess(char);
                 kb.appendChild(btn);
@@ -596,7 +593,7 @@ Fixed: Forced uppercase removal, mixed-case reader support, UK English library, 
                 const btn = document.createElement('button');
                 if (window.state.currentGame === 'unicorn') { btn.className = "unicorn-card"; btn.innerHTML = illusts[opt] || '❓'; } 
                 else if (window.state.currentGame === 'mermaid') { btn.className = "bubble-btn"; btn.innerText = window.state.keyboardUpper ? opt.toUpperCase() : opt.toLowerCase(); } 
-                else { btn.className = "p-6 bg-white/5 border border-white/10 rounded-3xl font-black tracking-widest hover:bg-white/10"; btn.innerText = window.toSentenceCase(opt); }
+                else { btn.className = "p-6 bg-white/5 border border-white/10 rounded-3xl font-black tracking-widest hover:bg-white/10 text-transform-none"; btn.innerText = window.toSentenceCase(opt); }
                 btn.onclick = () => { if (window.state.isTransitioning) return; window.state.isTransitioning = true; if(opt === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; recordResult(false, opt); triggerExplosion(nextRound); } };
                 container.appendChild(btn);
             });
@@ -643,7 +640,7 @@ Fixed: Forced uppercase removal, mixed-case reader support, UK English library, 
         function renderCustomWordTags() {
             const container = document.getElementById('custom-word-list'); if (!container) return;
             container.innerHTML = '';
-            window.state.customWords.forEach(w => { container.innerHTML += `<div class="custom-word-tag">${w.toUpperCase()} <span onclick="window.removeCustomWord('${w}')">×</span></div>`; });
+            window.state.customWords.forEach(w => { container.innerHTML += `<div class="custom-word-tag">${window.toSentenceCase(w)} <span onclick="window.removeCustomWord('${w}')">×</span></div>`; });
         }
 
         // DATABASE & AUTH
