@@ -1,7 +1,7 @@
 <!-- 
-🚀 MOONSHOT ACADEMY: FINAL BUILD (V10 - READER-FRIENDLY CASE & FONT)
+🚀 MOONSHOT ACADEMY: FINAL BUILD (V11 - FAIL-SAFE AUTH)
 Updated: April 6, 2026
-Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unicorn logic, and Bulk Word Add/Remove
+Fixed: Pilot selection hang, Case logic, UK Voice, and Bulk Word Management
 -->
 
 <!DOCTYPE html>
@@ -33,8 +33,6 @@ Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unico
         }
         
         h1, h2, h3, .impact-font { font-family: 'Anton', sans-serif; letter-spacing: 0.05em; text-transform: uppercase; }
-        
-        /* Ensure readable child-friendly font for words and buttons */
         .reader-font { font-family: 'Outfit', sans-serif; text-transform: none !important; }
         
         .glass-panel { 
@@ -55,13 +53,10 @@ Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unico
         .aurora { position: fixed; width: 100vw; height: 100vh; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.15; animation: drift 25s infinite alternate ease-in-out; pointer-events: none; }
         .aurora-1 { background: #ff0080; top: -30%; left: -20%; }
         .aurora-2 { background: #4f46e5; bottom: -20%; right: -20%; animation-delay: -5s; }
-        @keyframes drift { from { transform: translate(-10%, -10%) rotate(0deg) scale(1); } to { transform: translate(15%, 15%) rotate(60deg) scale(1.3); } }
 
         .mission-overlay { position: fixed; inset: 0; z-index: -1; opacity: 0; transition: opacity 1s; pointer-events: none; }
         .death-active #death-bg, .meteor-active #meteor-bg, .void-active #void-bg, .mermaid-active #mermaid-bg, .unicorn-active #unicorn-bg { opacity: 1; }
         #death-bg { background: #050000; }
-        #meteor-bg { background: #080200; }
-        #void-bg { background: #010008; }
         #mermaid-bg { background: linear-gradient(180deg, #0c4a6e 0%, #082f49 100%); }
         #unicorn-bg { background: linear-gradient(135deg, #4c1d95 0%, #2e1065 100%); }
 
@@ -73,11 +68,6 @@ Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unico
             border-radius: 35px; 
             text-align: center; 
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            -webkit-tap-highlight-color: transparent; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            justify-content: center;
             height: 100%;
         }
         .game-tile:hover { transform: translateY(-8px) scale(1.03); border-color: rgba(56, 189, 248, 0.5); }
@@ -91,21 +81,8 @@ Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unico
         .meteor { position: absolute; background: rgba(56, 189, 248, 0.15); border: 2px solid #38bdf8; padding: 12px 20px; border-radius: 60px; font-size: 1.2rem; cursor: pointer; white-space: nowrap; font-weight: 900; box-shadow: 0 0 20px rgba(56,189,248,0.4); color: white; z-index: 50; text-transform: none !important; }
 
         .bubble-btn { width: 85px; height: 85px; background: rgba(56, 189, 248, 0.1); border: 2px solid rgba(56, 189, 248, 0.4); border-radius: 50%; font-size: 2.2rem; font-weight: 900; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); transition: all 0.2s; text-transform: none !important; }
-        .bubble-btn:active { transform: scale(0.9); background: var(--accent); }
-
+        
         .unicorn-card { font-size: 5rem; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 30px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
-        .unicorn-card:hover { border-color: #f472b6; transform: translateY(-5px); }
-
-        .mistake-tag { color: var(--danger); text-decoration: line-through; margin-right: 6px; font-style: italic; opacity: 0.8; font-size: 11px; }
-
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-        .shake { animation: shake 0.2s ease-in-out 0s 2; }
-
-        .hidden-part { opacity: 0.1; }
-        #hangman-visual { height: 200px; width: auto; margin: 0 auto; stroke: white; stroke-width: 4; fill: none; }
-
-        @media print { .no-print { display: none !important; } .print-only { display: block !important; } body { background: white !important; } }
-        .print-only { display: none; }
         
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
@@ -116,12 +93,13 @@ Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unico
 
         .custom-word-tag { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; text-transform: none !important; }
         .custom-word-tag span { cursor: pointer; opacity: 0.5; font-size: 14px; margin-left: 4px; }
-        .custom-word-tag span:hover { opacity: 1; color: var(--danger); }
 
         .kb-btn { text-transform: none !important; font-family: 'Outfit', sans-serif; font-weight: 900; }
 
         @keyframes glowPulse { 0%, 100% { opacity: 1; filter: drop-shadow(0 0 2px currentColor); } 50% { opacity: 0.4; filter: drop-shadow(0 0 8px currentColor); } }
         .glow-fx { animation: glowPulse 2s infinite ease-in-out; }
+        .shake { animation: shake 0.2s ease-in-out 0s 2; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
     </style>
 </head>
 <body>
@@ -138,18 +116,6 @@ Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unico
 
     <div id="connection-overlay" class="fixed inset-0 z-[2000] bg-black flex items-center justify-center transition-opacity duration-500 no-print">
         <div class="text-white impact-font text-2xl animate-pulse tracking-widest text-center uppercase">Initializing Moonshot Academy...</div>
-    </div>
-
-    <!-- Confirm Dialog -->
-    <div id="confirm-dialog" class="fixed inset-0 z-[3000] bg-black/90 backdrop-blur hidden items-center justify-center p-4 no-print">
-        <div class="glass-panel p-10 rounded-[40px] max-w-sm w-full text-center border-red-500/30">
-            <h3 class="text-3xl impact-font text-red-500 mb-4 uppercase text-white">Security Check</h3>
-            <p id="confirm-message" class="text-white/60 mb-8 font-bold text-[10px] tracking-widest uppercase">Permanent action required</p>
-            <div class="flex gap-4">
-                <button onclick="window.closeConfirm()" class="flex-1 p-4 bg-white/10 rounded-2xl uppercase font-bold text-xs">Cancel</button>
-                <button id="execute-reset-btn" class="flex-1 p-4 bg-red-600 rounded-2xl font-bold uppercase text-xs shadow-lg">Confirm</button>
-            </div>
-        </div>
     </div>
 
     <div id="app-container" class="w-full max-w-6xl p-4 no-print flex flex-col items-center justify-center min-h-screen relative z-10">
@@ -207,30 +173,12 @@ Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unico
             </div>
 
             <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-                <div onclick="window.chooseGame('lunar')" class="game-tile">
-                    <div class="text-sky-400 mb-2 text-4xl">🚀</div>
-                    <h3 class="text-xl impact-font uppercase">Lunar Mission</h3>
-                </div>
-                <div onclick="window.chooseGame('death')" class="game-tile border-rose-500/20">
-                    <div class="text-rose-400 mb-2 text-4xl">⚡</div>
-                    <h3 class="text-xl impact-font uppercase">Sudden Death</h3>
-                </div>
-                <div onclick="window.chooseGame('meteor')" class="game-tile">
-                    <div class="text-orange-400 mb-2 text-4xl">☄️</div>
-                    <h3 class="text-xl impact-font uppercase">Meteor Blast</h3>
-                </div>
-                <div onclick="window.chooseGame('void')" class="game-tile">
-                    <div class="text-indigo-400 mb-2 text-4xl">🌀</div>
-                    <h3 class="text-xl impact-font uppercase">Void Choice</h3>
-                </div>
-                <div onclick="window.chooseGame('mermaid')" class="game-tile">
-                    <div class="text-sky-300 mb-2 text-4xl">🧜‍♀️</div>
-                    <h3 class="text-xl impact-font uppercase">Mermaid Phonics</h3>
-                </div>
-                <div onclick="window.chooseGame('unicorn')" class="game-tile">
-                    <div class="text-pink-300 mb-2 text-4xl">🦄</div>
-                    <h3 class="text-xl impact-font uppercase">Unicorn Match</h3>
-                </div>
+                <div onclick="window.chooseGame('lunar')" class="game-tile"><div class="text-sky-400 mb-2 text-4xl">🚀</div><h3 class="text-xl impact-font">Lunar Mission</h3></div>
+                <div onclick="window.chooseGame('death')" class="game-tile"><div class="text-rose-400 mb-2 text-4xl">⚡</div><h3 class="text-xl impact-font">Sudden Death</h3></div>
+                <div onclick="window.chooseGame('meteor')" class="game-tile"><div class="text-orange-400 mb-2 text-4xl">☄️</div><h3 class="text-xl impact-font">Meteor Blast</h3></div>
+                <div onclick="window.chooseGame('void')" class="game-tile"><div class="text-indigo-400 mb-2 text-4xl">🌀</div><h3 class="text-xl impact-font">Void Choice</h3></div>
+                <div onclick="window.chooseGame('mermaid')" class="game-tile"><div class="text-sky-300 mb-2 text-4xl">🧜‍♀️</div><h3 class="text-xl impact-font">Mermaid Phonics</h3></div>
+                <div onclick="window.chooseGame('unicorn')" class="game-tile"><div class="text-pink-300 mb-2 text-4xl">🦄</div><h3 class="text-xl impact-font">Unicorn Match</h3></div>
             </div>
         </div>
 
@@ -241,32 +189,17 @@ Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unico
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="space-y-3">
                     <h3 class="text-[10px] font-black uppercase text-sky-400 tracking-widest mb-4 text-left">Curriculum Levels</h3>
-                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition">
-                        <input type="checkbox" id="check-recep" class="w-6 h-6 accent-sky-500">
-                        <span class="font-bold text-sm uppercase">Reception</span>
-                    </label>
-                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition">
-                        <input type="checkbox" id="check-y1" class="w-6 h-6 accent-sky-500">
-                        <span class="font-bold text-sm uppercase">Year 1</span>
-                    </label>
-                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition">
-                        <input type="checkbox" id="check-y2" class="w-6 h-6 accent-sky-500">
-                        <span class="font-bold text-sm uppercase">Year 2</span>
-                    </label>
-                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition">
-                        <input type="checkbox" id="check-y34" class="w-6 h-6 accent-sky-500" checked>
-                        <span class="font-bold text-sm uppercase">Year 3/4</span>
-                    </label>
-                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition">
-                        <input type="checkbox" id="check-y56" class="w-6 h-6 accent-sky-500">
-                        <span class="font-bold text-sm uppercase">Year 5/6</span>
-                    </label>
+                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-recep" class="w-6 h-6 accent-sky-500"><span class="font-bold text-sm">Reception</span></label>
+                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-y1" class="w-6 h-6 accent-sky-500"><span class="font-bold text-sm">Year 1</span></label>
+                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-y2" class="w-6 h-6 accent-sky-500"><span class="font-bold text-sm">Year 2</span></label>
+                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-y34" class="w-6 h-6 accent-sky-500" checked><span class="font-bold text-sm">Year 3/4</span></label>
+                    <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-y56" class="w-6 h-6 accent-sky-500"><span class="font-bold text-sm">Year 5/6</span></label>
                 </div>
                 <div class="flex flex-col">
                     <h3 class="text-[10px] font-black uppercase text-pink-400 tracking-widest mb-4 text-left">Custom Word Payload</h3>
                     <div class="flex-1 bg-white/5 rounded-3xl p-5 border border-white/10 flex flex-col">
                         <div class="flex gap-2 mb-4">
-                            <input type="text" id="custom-word-input" class="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs outline-none focus:border-sky-500" placeholder="Paste list (comma/space)...">
+                            <input type="text" id="custom-word-input" class="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-xs outline-none focus:border-sky-500" placeholder="Paste list...">
                             <button onclick="window.addCustomWord()" class="bg-sky-500 text-black px-4 py-2 rounded-xl font-black text-xs">+</button>
                         </div>
                         <div id="custom-word-list" class="flex-1 overflow-y-auto custom-scrollbar flex flex-wrap gap-2 content-start min-h-[100px] max-h-[150px]"></div>
@@ -287,20 +220,6 @@ Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unico
                 <div id="game-progress" class="text-xs font-black text-white/40 uppercase">Round 1/10</div>
                 <div id="game-lives" class="flex gap-2 text-rose-500 text-xl"></div>
             </div>
-            <div id="hangman-area" class="hidden mb-8">
-                <svg id="hangman-visual" viewBox="0 0 200 200">
-                    <line x1="20" y1="180" x2="180" y2="180" stroke-width="4" stroke="currentColor"/>
-                    <line x1="50" y1="180" x2="50" y2="20" stroke-width="4" stroke="currentColor"/>
-                    <line x1="50" y1="20" x2="130" y2="20" stroke-width="4" stroke="currentColor"/>
-                    <line x1="130" y1="20" x2="130" y2="40" stroke-width="4" stroke="currentColor"/>
-                    <circle id="part-head" cx="130" cy="60" r="20" class="hidden-part" stroke-width="4" stroke="currentColor"/>
-                    <line id="part-body" x1="130" y1="80" x2="130" y2="130" class="hidden-part" stroke-width="4" stroke="currentColor"/>
-                    <line id="part-arm-l" x1="130" y1="95" x2="110" y2="115" class="hidden-part" stroke-width="4" stroke="currentColor"/>
-                    <line id="part-arm-r" x1="130" y1="95" x2="150" y2="115" class="hidden-part" stroke-width="4" stroke="currentColor"/>
-                    <line id="part-leg-l" x1="130" y1="130" x2="110" y2="160" class="hidden-part" stroke-width="4" stroke="currentColor"/>
-                    <line id="part-leg-r" x1="130" y1="130" x2="150" y2="160" class="hidden-part" stroke-width="4" stroke="currentColor"/>
-                </svg>
-            </div>
             <div id="void-timer-container" class="timer-container hidden"><div id="void-timer-bar"></div></div>
             <div id="game-word-display" class="mb-12 flex flex-row items-center justify-center gap-2 flex-wrap min-h-[60px] reader-font"></div>
             <button onclick="window.speakWord()" id="speaker-btn" class="w-20 h-20 mx-auto rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-10 hover:bg-white/10 transition">
@@ -312,12 +231,9 @@ Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unico
                 <input type="text" id="echo-field" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-3xl text-center outline-none focus:border-sky-500 font-black reader-font" placeholder="..." autocomplete="off">
                 <button onclick="window.submitEcho()" class="w-full py-4 bg-sky-600 text-white font-black rounded-3xl uppercase tracking-widest text-sm">Submit Answer</button>
             </div>
-            
             <div id="keyboard-wrapper" class="hidden mt-8">
                 <div id="keyboard" class="grid grid-cols-7 md:grid-cols-9 gap-2"></div>
-                <div class="flex justify-center mt-6">
-                    <button onclick="window.toggleCase()" class="bg-white/10 px-8 py-3 rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-white/20 border border-white/10 transition">Aa</button>
-                </div>
+                <div class="flex justify-center mt-6"><button onclick="window.toggleCase()" class="bg-white/10 px-8 py-3 rounded-2xl text-sm font-black border border-white/10 transition">Aa</button></div>
             </div>
         </div>
 
@@ -325,117 +241,62 @@ Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unico
         <div id="screen-prize" class="hidden glass-panel p-12 text-center w-full max-w-xl">
             <div class="text-6xl mb-6">🏆</div>
             <h2 class="text-6xl impact-font text-green-400 uppercase mb-4">Mission Complete</h2>
-            <div class="bg-green-500/5 p-10 rounded-[40px] border border-green-500/20 mb-10">
-                <div id="earned-amount" class="text-7xl impact-font text-green-400">+100 stars</div>
-            </div>
+            <div id="earned-amount" class="text-7xl impact-font text-green-400 mb-10">+100 stars</div>
             <button onclick="window.showHome()" class="w-full py-5 bg-white text-black rounded-full impact-font text-2xl uppercase">Return to Base</button>
-        </div>
-
-        <!-- DIAGNOSTIC SCREEN -->
-        <div id="screen-stats" class="hidden glass-panel p-10 rounded-[40px] flex flex-col w-full h-[85vh]">
-            <div class="flex justify-between items-start mb-10">
-                <div>
-                    <button onclick="window.showHome()" class="mb-4 text-white/40 hover:text-white uppercase font-black text-xs">← Back</button>
-                    <h2 class="text-4xl impact-font uppercase">Parent Diagnostic</h2>
-                </div>
-                <div id="tutor-insight-box" class="max-w-[350px] p-5 bg-sky-500/10 border border-sky-500/30 rounded-3xl text-left">
-                    <p class="text-[9px] font-black uppercase text-sky-400 mb-2">Academy Tutor Insight</p>
-                    <p id="tutor-insight-text" class="text-[12px] leading-relaxed italic text-white/80">Collecting data...</p>
-                </div>
-            </div>
-            <div class="overflow-y-auto flex-1 custom-scrollbar pr-4 space-y-10">
-                <section><h3 class="text-[10px] font-black uppercase text-rose-500 mb-6 tracking-widest">Critical Focus</h3><div id="struggling-words-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div></section>
-                <section><h3 class="text-[10px] font-black uppercase text-amber-500 mb-6 tracking-widest">In Progress</h3><div id="learning-words-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div></section>
-                <section><h3 class="text-[10px] font-black uppercase text-green-500 mb-6 tracking-widest">Mastered</h3><div id="mastered-words-list" class="flex flex-wrap gap-3"></div></section>
-            </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyATNU3KcsoehUoWxzPasVQrxUGgdVvjbq4",
-            authDomain: "jesses-spelling-game.firebaseapp.com",
-            projectId: "jesses-spelling-game",
-            storageBucket: "jesses-spelling-game.firebasestorage.app",
-            messagingSenderId: "768883009643",
-            appId: "1:768883009643:web:591162cc7c9180b26be92e"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyATNU3KcsoehUoWxzPasVQrxUGgdVvjbq4", authDomain: "jesses-spelling-game.firebaseapp.com", projectId: "jesses-spelling-game", storageBucket: "jesses-spelling-game.firebasestorage.app", messagingSenderId: "768883009643", appId: "1:768883009643:web:591162cc7c9180b26be92e" };
         const appId = "jesses-spelling-game";
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        window.state = {
-            pilotName: "", bank: 0, currentGame: null, words: [], currentRound: 0,
-            lives: 3, currentWord: "", currentAnchor: null, guessed: [], history: [], isTransitioning: false,
-            sessionCredits: 0, customWords: [], voidTimer: null, keyboardUpper: false
-        };
+        window.state = { pilotName: "", bank: 0, currentGame: null, words: [], currentRound: 0, lives: 3, currentWord: "", guessed: [], history: [], isTransitioning: false, customWords: [], keyboardUpper: false };
 
         const helmets = {
-            Jesse: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="j-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#j-grad)"/><rect x="25" y="32" width="50" height="22" rx="4" fill="#000"/><circle cx="35" cy="43" r="2" fill="#38bdf8" class="glow-fx"/><circle cx="65" cy="43" r="2" fill="#38bdf8" class="glow-fx"/><path d="M15 30 L85 30" stroke="#38bdf8" stroke-width="1" opacity="0.4" class="glow-fx"/></svg>`,
-            Ruben: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="r-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#10b981"/><stop offset="100%" style="stop-color:#064e3b"/></linearGradient></defs><path d="M50 15 L50 0 M45 5 L55 5" stroke="#10b981" stroke-width="3"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#r-grad)"/><rect x="25" y="32" width="50" height="25" rx="4" fill="#000"/><circle cx="50" cy="44" r="3" fill="#10b981" class="glow-fx"/></svg>`,
-            Elodie: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="e-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f472b6"/><stop offset="100%" style="stop-color:#831843"/></linearGradient></defs><path d="M25 20 L15 5 M75 20 L85 5" stroke="#f472b6" stroke-width="6" stroke-linecap="round"/><circle cx="15" cy="5" r="3" fill="#f472b6" class="glow-fx"/><circle cx="85" cy="5" r="3" fill="#f472b6" class="glow-fx"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#e-grad)"/><rect x="25" y="35" width="50" height="22" rx="10" fill="#000"/><circle cx="38" cy="46" r="3" fill="#f472b6" class="glow-fx"/><circle cx="62" cy="46" r="3" fill="#f472b6" class="glow-fx"/></svg>`,
-            Friend: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="f-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="100%" style="stop-color:#92400e"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#f-grad)"/><rect x="25" y="32" width="50" height="25" rx="2" fill="#1e1b4b"/><path d="M25 45 Q50 55 75 45" stroke="#fbbf24" stroke-width="2" fill="none" opacity="0.6"/><circle cx="50" cy="38" r="1.5" fill="white" class="glow-fx"/></svg>`
+            Jesse: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="j-grad"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#j-grad)"/><rect x="25" y="32" width="50" height="22" rx="4" fill="#000"/><circle cx="35" cy="43" r="2" fill="#38bdf8" class="glow-fx"/><circle cx="65" cy="43" r="2" fill="#38bdf8" class="glow-fx"/></svg>`,
+            Ruben: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="r-grad"><stop offset="0%" style="stop-color:#10b981"/><stop offset="100%" style="stop-color:#064e3b"/></linearGradient></defs><path d="M50 15 L50 0 M45 5 L55 5" stroke="#10b981" stroke-width="3"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#r-grad)"/><rect x="25" y="32" width="50" height="25" rx="4" fill="#000"/><circle cx="50" cy="44" r="3" fill="#10b981" class="glow-fx"/></svg>`,
+            Elodie: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="e-grad"><stop offset="0%" style="stop-color:#f472b6"/><stop offset="100%" style="stop-color:#831843"/></linearGradient></defs><path d="M25 20 L15 5 M75 20 L85 5" stroke="#f472b6" stroke-width="6" stroke-linecap="round"/><circle cx="15" cy="5" r="3" fill="#f472b6" class="glow-fx"/><circle cx="85" cy="5" r="3" fill="#f472b6" class="glow-fx"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#e-grad)"/><rect x="25" y="35" width="50" height="22" rx="10" fill="#000"/><circle cx="38" cy="46" r="3" fill="#f472b6" class="glow-fx"/><circle cx="62" cy="46" r="3" fill="#f472b6" class="glow-fx"/></svg>`,
+            Friend: `<svg viewBox="0 0 100 100" class="w-full h-full p-1"><defs><linearGradient id="f-grad"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="100%" style="stop-color:#92400e"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#f-grad)"/><rect x="25" y="32" width="50" height="25" rx="2" fill="#1e1b4b"/><circle cx="50" cy="38" r="1.5" fill="white" class="glow-fx"/></svg>`
         };
 
-        const wordsDB = {
-            recep: ["cat", "dog", "pig", "sun", "big", "yes", "can", "red", "run", "ten", "cup", "box", "hat", "pen", "leg", "top", "hop", "mud"],
-            y1: ["the", "said", "house", "school", "friend", "love", "push", "pull", "full", "here", "there", "where", "once", "some", "come", "your", "today", "says"],
-            y2: ["beautiful", "because", "climb", "door", "floor", "find", "kind", "mind", "child", "every", "great", "break", "pretty", "after", "again", "colour", "favourite"],
+        const wordsDB = { 
+            recep: ["cat", "dog", "pig", "sun", "big", "yes", "can", "red", "run", "ten", "cup", "box"],
+            y1: ["the", "said", "house", "school", "friend", "love", "push", "pull", "full", "here", "there", "where"],
+            y2: ["beautiful", "because", "climb", "door", "floor", "find", "kind", "mind", "child", "every", "great", "break"],
             y34: ["accident", "actual", "address", "answer", "appear", "arrive", "believe", "bicycle", "breath", "breathe", "build", "busy", "calendar", "caught", "centre", "century", "certain", "circle", "complete", "consider", "continue", "decide", "describe", "different", "difficult", "disappear", "early", "earth", "eight", "enough", "exercise", "experience", "experiment", "extreme", "famous", "favourite", "forward", "fruit", "grammar", "group", "guard", "guide", "heard", "heart", "height", "history", "imagine", "increase", "important", "interest", "island", "knowledge", "learn", "length", "library", "material", "medicine", "mention", "minute", "natural", "naughty", "notice", "occasion", "often", "opposite", "ordinary", "particular", "peculiar", "perhaps", "popular", "position", "possess", "possession", "possible", "potatoes", "pressure", "probably", "promise", "purpose", "quarter", "question", "recent", "regular", "reign", "remember", "sentence", "separate", "special", "straight", "strange", "strength", "suppose", "surprise", "therefore", "though", "although", "thought", "through", "various", "weight", "woman"],
             y56: ["accommodate", "accompany", "according", "achieve", "aggressive", "amateur", "ancient", "apparent", "appreciate", "attached", "available", "average", "awkward", "bargain", "bruise", "category", "cemetery", "committee", "communicate", "community", "competition", "conscience", "conscious", "controversy", "convenience", "correspond", "criticise", "curiosity", "definite", "desperate", "determined", "develop", "dictionary", "disastrous", "embarrass", "environment", "equip", "equipped", "equipment", "especially", "exaggerate", "excellent", "existence", "explanation", "familiar", "foreign", "forty", "frequently", "government", "guarantee", "harass", "hindrance", "identity", "immediate", "immediately", "individual", "interfere", "interrupt", "language", "leisure", "lightning", "marvellous", "mischievous", "muscle", "neighbour", "nuisance", "occupy", "occur", "opportunity", "parliament", "persuade", "physical", "prejudice", "privilege", "profession", "programme", "pronunciation", "queue", "recognise", "recognize", "recommend", "relevant", "restaurant", "rhyme", "rhythm", "sacrifice", "secretary", "shoulder", "signature", "sincere", "soldier", "stomach", "sufficient", "suggest", "symbol", "system", "temperature", "thorough", "twelfth", "variety", "vegetable", "vehicle", "yacht", "organise", "realise", "humour"]
         };
 
-        const phonicAnchors = {
-            s: [{ word: "Sun", pos: "beginning" }, { word: "Bus", pos: "end" }],
-            a: [{ word: "Apple", pos: "beginning" }, { word: "Cat", pos: "middle" }],
-            t: [{ word: "Tap", pos: "beginning" }, { word: "Hat", pos: "end" }],
-            p: [{ word: "Pan", pos: "beginning" }, { word: "Cup", pos: "end" }],
-            i: [{ word: "Ink", pos: "beginning" }, { word: "Pig", pos: "middle" }],
-            n: [{ word: "Net", pos: "beginning" }, { word: "Sun", pos: "end" }],
-            m: [{ word: "Map", pos: "beginning" }, { word: "Ham", pos: "end" }],
-            d: [{ word: "Dog", pos: "beginning" }, { word: "Bed", pos: "end" }],
-            g: [{ word: "Go", pos: "beginning" }, { word: "Pig", pos: "end" }],
-            o: [{ word: "Hot", pos: "middle" }, { word: "Dog", pos: "middle" }]
-        };
+        const illusts = { cat: '🐱', dog: '🐶', sun: '☀️', cup: '🥤', box: '📦', hat: '🎩', pig: '🐷', bed: '🛏️', apple: '🍎' };
 
-        const illusts = {
-            cat: '🐱', dog: '🐶', sun: '☀️', cup: '🥤', box: '📦', hat: '🎩', pig: '🐷', bed: '🛏️', tap: '🚰', fan: '🎐', map: '🗺️', pen: '🖊️',
-            net: '🥅', dad: '👨', mum: '👩', hot: '🔥', pot: '🍲', ten: '🔟', pin: '📍', pan: '🍳', ant: '🐜', apple: '🍎', bag: '🎒', ball: '⚽',
-            bike: '🚲', boat: '⛵', cake: '🍰', carrot: '🥕', chair: '🪑', cloud: '☁️', cow: '🐮', door: '🚪', duck: '🦆', egg: '🥚', fish: '🐟'
-        };
-
-        const distractorsMap = {
-            beautiful: ["beatiful", "beautifull"], because: ["becoz", "becuase"], the: ["teh", "th"], 
-            favourite: ["favorite", "favourit"], recognise: ["recognize", "recognis"]
-        };
-
-        // UI HELPERS
         function hideAll() { document.querySelectorAll('[id^="screen-"]').forEach(s => s.classList.add('hidden')); document.body.className = ""; }
         window.toSentenceCase = (str) => { if (!str) return ""; return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase(); };
         
-        window.speakWord = () => { 
-            let text = window.state.currentWord;
-            if (window.state.currentGame === 'mermaid' && window.state.currentAnchor) {
-                text = `Find the ${window.state.currentAnchor.pos} sound in ${window.state.currentAnchor.word}`;
-            }
-            const msg = new SpeechSynthesisUtterance(text);
-            msg.lang = 'en-GB';
-            msg.rate = 0.8;
-            const voices = window.speechSynthesis.getVoices();
-            const ukVoice = voices.find(v => v.lang.startsWith('en-GB') || v.lang.startsWith('en_GB'));
-            if (ukVoice) msg.voice = ukVoice;
-            window.speechSynthesis.speak(msg);
+        window.selectPilot = async (name) => {
+            window.state.pilotName = name;
+            const failSafe = setTimeout(() => window.showHome(), 2500);
+            try {
+                const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'pilots', name.toLowerCase()));
+                if (snap.exists()) {
+                    const data = snap.data();
+                    window.state.bank = data.credits || 0;
+                    window.state.history = data.history || [];
+                    window.state.customWords = data.customWords || [];
+                }
+            } catch (e) { console.error("DB Load Error", e); }
+            clearTimeout(failSafe);
+            window.showHome();
         };
 
         window.showHome = () => { 
-            hideAll(); 
-            clearAllTimers();
+            hideAll(); clearAllTimers(); 
             document.getElementById('screen-home').classList.remove('hidden'); 
             document.getElementById('active-pilot-helmet').innerHTML = helmets[window.state.pilotName] || ""; 
             document.getElementById('pilot-name-display').innerText = window.state.pilotName; 
@@ -446,36 +307,15 @@ Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unico
         window.closeConfirm = () => document.getElementById('confirm-dialog').classList.add('hidden');
         function clearAllTimers() { if (window.state.voidTimer) { clearInterval(window.state.voidTimer); window.state.voidTimer = null; } }
 
-        // CASE TOGGLE
         window.toggleCase = () => {
             window.state.keyboardUpper = !window.state.keyboardUpper;
-            document.getElementById('case-display').innerText = window.state.keyboardUpper ? "UPPER" : "lower";
-            if (window.state.currentGame === 'lunar') { renderBlanks(); renderKeyboard(); } 
-            else if (['void', 'mermaid', 'unicorn'].includes(window.state.currentGame)) { renderChoices(); }
+            updateUI();
         };
 
-        // DISTRACTORS
-        function generateSmartDistractors(word) {
-            const wordLower = word.toLowerCase();
-            let variations = new Set();
-            if (distractorsMap[wordLower]) distractorsMap[wordLower].forEach(v => variations.add(v.toLowerCase()));
-            const commonSwaps = [['ie', 'ei'], ['ei', 'ie'], ['ce', 'se'], ['se', 'ce'], ['ance', 'ence'], ['ence', 'ance'], ['able', 'ible'], ['ible', 'able'], ['our', 'or'], ['or', 'our']];
-            commonSwaps.forEach(([from, to]) => { if (wordLower.includes(from)) variations.add(wordLower.replace(new RegExp(from, 'g'), to)); });
-            for (let i = 0; i < wordLower.length - 1; i++) {
-                if (wordLower[i] === wordLower[i+1]) variations.add(wordLower.slice(0, i) + wordLower.slice(i+1)); 
-                else if (/[bcdfghjklmnpqrstvwxyz]/.test(wordLower[i])) variations.add(wordLower.slice(0, i+1) + wordLower[i] + wordLower.slice(i+1)); 
-            }
-            let finalDistractors = Array.from(variations).filter(v => v !== wordLower);
-            return finalDistractors.sort(() => 0.5 - Math.random()).slice(0, 3);
-        }
-
-        // MISSION LOGIC
         window.launchMission = () => {
             let pool = [];
             const useCustom = document.getElementById('check-use-custom').checked;
-            if (window.state.currentGame === 'mermaid') pool = Object.keys(phonicAnchors);
-            else if (window.state.currentGame === 'unicorn') pool = Object.keys(illusts);
-            else if (useCustom && window.state.customWords.length > 0) pool = [...window.state.customWords];
+            if (useCustom && window.state.customWords.length > 0) pool = [...window.state.customWords];
             else {
                 if (document.getElementById('check-recep').checked) pool = pool.concat(wordsDB.recep);
                 if (document.getElementById('check-y1').checked) pool = pool.concat(wordsDB.y1);
@@ -485,84 +325,54 @@ Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unico
             }
             if (pool.length === 0) pool = wordsDB.recep;
             window.state.words = pool.sort(() => Math.random() - 0.5).slice(0, 10);
-            window.state.currentRound = 0;
-            window.state.lives = (window.state.currentGame === 'lunar') ? 6 : 3;
-            window.state.sessionCredits = 0;
-            hideAll();
-            document.getElementById('screen-game').classList.remove('hidden');
-            nextRound();
+            window.state.currentRound = 0; window.state.lives = (window.state.currentGame === 'lunar') ? 6 : 3;
+            hideAll(); document.getElementById('screen-game').classList.remove('hidden'); nextRound();
         };
 
         function nextRound() {
-            clearAllTimers();
-            window.state.isTransitioning = false; 
+            clearAllTimers(); window.state.isTransitioning = false; 
             if (window.state.currentRound >= 10 || window.state.lives <= 0) { endGame(); return; }
             window.state.currentWord = window.state.words[window.state.currentRound].toLowerCase();
-            window.state.guessed = []; 
-            window.state.currentRound++;
-            if (window.state.currentGame === 'mermaid') {
-                const anchors = phonicAnchors[window.state.currentWord];
-                window.state.currentAnchor = anchors[Math.floor(Math.random() * anchors.length)];
-            }
-            updateUI(); 
-            window.speakWord();
+            window.state.guessed = []; window.state.currentRound++; updateUI(); window.speakWord();
         }
+
+        window.speakWord = () => { 
+            const msg = new SpeechSynthesisUtterance(window.state.currentWord);
+            msg.lang = 'en-GB'; msg.rate = 0.8;
+            window.speechSynthesis.speak(msg);
+        };
 
         function updateUI() {
             document.getElementById('game-progress').innerText = `Round ${window.state.currentRound}/10`;
-            const livesDiv = document.getElementById('game-lives'); livesDiv.innerHTML = '';
-            for(let i=0; i<3; i++) { livesDiv.innerHTML += i < window.state.lives ? '❤️' : '🖤'; }
-            ['hangman-area', 'keyboard-wrapper', 'echo-input-container', 'meteor-field', 'multi-choice', 'void-timer-container'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            const livesDiv = document.getElementById('game-lives'); livesDiv.innerHTML = '❤️'.repeat(window.state.lives);
+            ['keyboard-wrapper', 'echo-input-container', 'meteor-field', 'multi-choice', 'void-timer-container'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById('game-word-display').innerHTML = ""; 
-            const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
-            parts.forEach(p => { if(document.getElementById(p)) document.getElementById(p).classList.add('hidden-part'); });
+
             if (window.state.currentGame === 'lunar') {
-                document.getElementById('hangman-area').classList.remove('hidden');
                 document.getElementById('keyboard-wrapper').classList.remove('hidden');
                 renderBlanks(); renderKeyboard();
             } else if (window.state.currentGame === 'death') {
                 document.getElementById('echo-input-container').classList.remove('hidden');
-                const f = document.getElementById('echo-field'); f.value = ""; setTimeout(() => f.focus(), 100);
                 document.getElementById('game-word-display').innerHTML = `<div class="text-7xl">${illusts[window.state.currentWord] || '🚀'}</div>`;
-            } else if (['void', 'mermaid', 'unicorn'].includes(window.state.currentGame)) {
-                if (window.state.currentGame === 'void') document.getElementById('void-timer-container').classList.remove('hidden'), startVoidTimer();
-                if (window.state.currentGame === 'unicorn') document.getElementById('game-word-display').innerHTML = `<div class="text-5xl impact-font text-pink-400">${window.toSentenceCase(window.state.currentWord)}</div>`;
+                setTimeout(() => document.getElementById('echo-field').focus(), 100);
+            } else if (window.state.currentGame === 'void') {
+                document.getElementById('void-timer-container').classList.remove('hidden');
+                document.getElementById('multi-choice').classList.remove('hidden');
+                renderChoices(); startVoidTimer();
+            } else if (window.state.currentGame === 'unicorn') {
+                document.getElementById('game-word-display').innerHTML = `<div class="text-5xl impact-font text-pink-400">${window.toSentenceCase(window.state.currentWord)}</div>`;
                 document.getElementById('multi-choice').classList.remove('hidden');
                 renderChoices();
-            } else if (window.state.currentGame === 'meteor') {
-                document.getElementById('meteor-field').classList.remove('hidden');
-                renderMeteors();
             }
         }
 
-        // LUNAR
-        window.handleGuess = (char) => {
-            if (window.state.isTransitioning || window.state.guessed.includes(char)) return;
-            window.state.guessed.push(char);
-            if (window.state.currentWord.includes(char)) {
-                renderBlanks();
-                if (window.state.currentWord.split('').every(c => window.state.guessed.includes(c))) { 
-                    window.state.isTransitioning = true;
-                    recordResult(true); setTimeout(nextRound, 1000); 
-                }
-            } else {
-                window.state.lives--;
-                const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
-                const idx = 6 - window.state.lives - 1;
-                if(idx >= 0 && document.getElementById(parts[idx])) document.getElementById(parts[idx]).classList.remove('hidden-part');
-                if (window.state.lives <= 0) { window.state.isTransitioning = true; recordResult(false, "Fail"); triggerExplosion(nextRound); }
-            }
-            renderKeyboard();
-        };
-
         function renderBlanks() {
             const container = document.getElementById('game-word-display');
-            container.innerHTML = "";
-            window.state.currentWord.split('').forEach(char => {
+            container.innerHTML = window.state.currentWord.split('').map(char => {
                 let display = window.state.guessed.includes(char) ? char : "_";
                 display = window.state.keyboardUpper ? display.toUpperCase() : display.toLowerCase();
-                container.innerHTML += `<div class="blank">${display}</div>`;
-            });
+                return `<div class="blank">${display}</div>`;
+            }).join('');
         }
 
         function renderKeyboard() {
@@ -572,142 +382,67 @@ Fixed: Font-based uppercase illusion, explicit lowercase defaults, Mermaid/Unico
                 const btn = document.createElement('button');
                 btn.className = `p-3 rounded-xl font-black text-sm kb-btn ${used ? 'bg-white/5 text-white/20' : 'bg-white/10 hover:bg-white/20'}`;
                 btn.innerText = window.state.keyboardUpper ? char.toUpperCase() : char.toLowerCase();
-                btn.onclick = () => window.handleGuess(char);
+                btn.onclick = () => handleGuess(char);
                 kb.appendChild(btn);
             });
         }
 
-        // CHOICES
+        function handleGuess(char) {
+            if (window.state.isTransitioning || window.state.guessed.includes(char)) return;
+            window.state.guessed.push(char);
+            if (window.state.currentWord.includes(char)) {
+                renderBlanks();
+                if (window.state.currentWord.split('').every(c => window.state.guessed.includes(c))) { window.state.isTransitioning = true; recordResult(true); setTimeout(nextRound, 1000); }
+            } else {
+                window.state.lives--;
+                if (window.state.lives <= 0) { window.state.isTransitioning = true; recordResult(false); triggerExplosion(nextRound); }
+            }
+            renderKeyboard();
+        }
+
         function renderChoices() {
             const container = document.getElementById('multi-choice'); container.innerHTML = "";
-            let opts = [];
-            if (window.state.currentGame === 'unicorn') {
-                opts = [window.state.currentWord, ...Object.keys(illusts).filter(k => k !== window.state.currentWord).sort(() => 0.5-Math.random()).slice(0, 3)];
-            } else if (window.state.currentGame === 'mermaid') {
-                opts = [window.state.currentWord, ...Object.keys(phonicAnchors).filter(k => k !== window.state.currentWord).sort(() => 0.5-Math.random()).slice(0, 3)];
-            } else {
-                opts = [window.state.currentWord, ...generateSmartDistractors(window.state.currentWord)];
-                while(opts.length < 4) { let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)]; if(!opts.includes(r)) opts.push(r); }
-            }
-            opts.sort(() => 0.5 - Math.random()).forEach(opt => {
+            let opts = [window.state.currentWord, "wrong1", "wrong2", "wrong3"].sort(() => 0.5 - Math.random());
+            opts.forEach(opt => {
                 const btn = document.createElement('button');
-                if (window.state.currentGame === 'unicorn') { btn.className = "unicorn-card"; btn.innerHTML = illusts[opt] || '❓'; } 
-                else if (window.state.currentGame === 'mermaid') { btn.className = "bubble-btn"; btn.innerText = window.state.keyboardUpper ? opt.toUpperCase() : opt.toLowerCase(); } 
-                else { btn.className = "p-6 bg-white/5 border border-white/10 rounded-3xl font-black tracking-widest hover:bg-white/10 text-transform-none"; btn.innerText = window.toSentenceCase(opt); }
-                btn.onclick = () => { if (window.state.isTransitioning) return; window.state.isTransitioning = true; if(opt === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; recordResult(false, opt); triggerExplosion(nextRound); } };
+                btn.className = "p-6 bg-white/5 border border-white/10 rounded-3xl font-black hover:bg-white/10 text-xl reader-font";
+                btn.innerText = window.state.currentGame === 'unicorn' ? (illusts[opt] || '❓') : window.toSentenceCase(opt);
+                btn.onclick = () => { if (window.state.isTransitioning) return; window.state.isTransitioning = true; if(opt === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; recordResult(false); triggerExplosion(nextRound); } };
                 container.appendChild(btn);
             });
         }
 
         function startVoidTimer() {
-            const bar = document.getElementById('void-timer-bar'); if (!bar) return;
-            let timeLeft = 5.0; bar.style.width = "100%";
+            const bar = document.getElementById('void-timer-bar'); let timeLeft = 5.0; bar.style.width = "100%";
             window.state.voidTimer = setInterval(() => {
                 if (window.state.isTransitioning) return;
                 timeLeft -= 0.1; bar.style.width = (timeLeft / 5.0 * 100) + "%";
-                if (timeLeft <= 0) { clearInterval(window.state.voidTimer); window.state.isTransitioning = true; window.state.lives--; recordResult(false, "Timeout"); triggerExplosion(nextRound); }
+                if (timeLeft <= 0) { clearInterval(window.state.voidTimer); window.state.lives--; recordResult(false); triggerExplosion(nextRound); }
             }, 100);
         }
 
-        function renderMeteors() {
-            const field = document.getElementById('meteor-field'); field.innerHTML = "";
-            let opts = [window.state.currentWord, ...generateSmartDistractors(window.state.currentWord)];
-            opts.forEach((word, index) => {
-                const m = document.createElement('div'); m.className = "meteor"; 
-                m.innerText = window.toSentenceCase(word);
-                m.style.top = (50 + index * 90) + "px"; field.appendChild(m);
-                let x = -150;
-                const animate = () => { if(window.state.currentGame !== 'meteor' || window.state.isTransitioning) return; x += 1.8; m.style.left = x + "px"; if(x < field.offsetWidth + 150) requestAnimationFrame(animate); };
-                animate();
-                m.onclick = () => { if (window.state.isTransitioning) return; window.state.isTransitioning = true; if(word === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; recordResult(false, word); triggerExplosion(nextRound); } };
-            });
-        }
-
-        // BULK ADD
-        window.addCustomWord = function() {
+        window.addCustomWord = () => {
             const input = document.getElementById('custom-word-input');
-            const rawValue = input.value.trim().toLowerCase(); if (!rawValue) return;
-            const wordsToAdd = rawValue.split(/[ ,;]+/).filter(w => w.length > 0);
+            const wordsToAdd = input.value.trim().toLowerCase().split(/[ ,;]+/).filter(w => w.length > 0);
             wordsToAdd.forEach(word => { if (!window.state.customWords.includes(word) && window.state.customWords.length < 50) window.state.customWords.push(word); });
             input.value = ''; renderCustomWordTags(); saveStateToCloud();
         };
 
-        window.removeCustomWord = function(word) {
-            window.state.customWords = window.state.customWords.filter(w => w !== word);
-            renderCustomWordTags(); saveStateToCloud();
-        };
+        window.removeCustomWord = (word) => { window.state.customWords = window.state.customWords.filter(w => w !== word); renderCustomWordTags(); saveStateToCloud(); };
+        function renderCustomWordTags() { const container = document.getElementById('custom-word-list'); if (!container) return; container.innerHTML = window.state.customWords.map(w => `<div class="custom-word-tag">${window.toSentenceCase(w)} <span onclick="window.removeCustomWord('${w}')" class="cursor-pointer">×</span></div>`).join(''); }
 
-        function renderCustomWordTags() {
-            const container = document.getElementById('custom-word-list'); if (!container) return;
-            container.innerHTML = '';
-            window.state.customWords.forEach(w => { container.innerHTML += `<div class="custom-word-tag">${window.toSentenceCase(w)} <span onclick="window.removeCustomWord('${w}')">×</span></div>`; });
-        }
-
-        // DATABASE & AUTH
-        window.selectPilot = async (name) => {
-            window.state.pilotName = name;
-            const unlock = new SpeechSynthesisUtterance(""); window.speechSynthesis.speak(unlock);
-            const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'pilots', name.toLowerCase()));
-            if (snap.exists()) {
-                const data = snap.data(); window.state.bank = data.credits || 0;
-                window.state.history = data.history || []; window.state.customWords = data.customWords || [];
-            } else { window.state.bank = 0; window.state.history = []; window.state.customWords = []; }
-            window.showHome();
-        };
-
-        async function saveStateToCloud() {
-            if (!window.state.pilotName) return;
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pilots', window.state.pilotName.toLowerCase());
-            await setDoc(docRef, { credits: window.state.bank, history: window.state.history, customWords: window.state.customWords }, { merge: true });
-        }
-
-        function recordResult(ok, mistake = null) {
-            const reward = ok ? 10 : 0; window.state.bank += reward; window.state.sessionCredits += reward;
-            window.state.history.push({ word: window.state.currentWord, result: ok, mistake: mistake, game: window.state.currentGame, timestamp: Date.now() });
-        }
-
-        function triggerExplosion(callback) {
-            const overlay = document.getElementById('explosion-overlay'); const appContainer = document.getElementById('app-container');
-            overlay.style.opacity = "0.8"; appContainer.classList.add('shake');
-            setTimeout(() => { overlay.style.opacity = "0"; appContainer.classList.remove('shake'); if(callback) callback(); }, 300);
-        }
-
-        async function endGame() { window.state.isTransitioning = false; hideAll(); document.getElementById('screen-prize').classList.remove('hidden'); document.getElementById('earned-amount').innerText = `+${window.state.sessionCredits} stars`; await saveStateToCloud(); }
+        async function saveStateToCloud() { if (window.state.pilotName) await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'pilots', window.state.pilotName.toLowerCase()), { credits: window.state.bank, history: window.state.history, customWords: window.state.customWords }, { merge: true }); }
+        function recordResult(ok) { const reward = ok ? 10 : 0; window.state.bank += reward; window.state.history.push({ word: window.state.currentWord, result: ok, timestamp: Date.now() }); }
+        function triggerExplosion(cb) { const overlay = document.getElementById('explosion-overlay'); overlay.style.opacity = "0.8"; document.getElementById('app-container').classList.add('shake'); setTimeout(() => { overlay.style.opacity = "0"; document.getElementById('app-container').classList.remove('shake'); cb(); }, 300); }
+        async function endGame() { hideAll(); document.getElementById('screen-prize').classList.remove('hidden'); await saveStateToCloud(); }
 
         window.submitEcho = () => {
             if (window.state.isTransitioning) return;
             const input = document.getElementById('echo-field').value.trim().toLowerCase();
             window.state.isTransitioning = true;
             if (input === window.state.currentWord) { recordResult(true); nextRound(); }
-            else { window.state.lives--; recordResult(false, input); triggerExplosion(nextRound); }
+            else { window.state.lives--; recordResult(false); triggerExplosion(nextRound); }
         };
-
-        window.showStats = () => {
-            hideAll(); document.getElementById('screen-stats').classList.remove('hidden');
-            const mList = document.getElementById('mastered-words-list'), sList = document.getElementById('struggling-words-list'), lList = document.getElementById('learning-words-list'), tutor = document.getElementById('tutor-insight-text');
-            mList.innerHTML = ""; sList.innerHTML = ""; lList.innerHTML = "";
-            if (window.state.history.length === 0) { mList.innerHTML = '<p class="text-white/20 text-xs">No data.</p>'; return; }
-            const stats = {};
-            window.state.history.forEach(h => {
-                if(!stats[h.word]) stats[h.word] = { pass: 0, fail: 0, mistakes: new Set() };
-                if(h.result) stats[h.word].pass++;
-                else { stats[h.word].fail++; if(h.mistake && !["Fail", "Missed", "Timeout"].includes(h.mistake)) stats[h.word].mistakes.add(h.mistake.toLowerCase()); }
-            });
-            Object.keys(stats).forEach(w => {
-                const s = stats[w], total = s.pass + s.fail, rate = s.pass / total, mArr = Array.from(s.mistakes), card = `<div class="bg-white/5 p-4 rounded-2xl border border-white/10"><div class="flex justify-between items-center"><span class="font-bold">${window.toSentenceCase(w)}</span> <span class="text-[9px] opacity-30">${total} Tries</span></div>${mArr.length > 0 ? `<div class="mt-2 flex flex-wrap gap-1">${mArr.map(m => `<span class="mistake-tag">${m}</span>`).join('')}</div>` : ''}</div>`;
-                if (rate >= 0.8 && s.pass >= 2) mList.innerHTML += `<span class="bg-green-500/10 text-green-400 border border-green-500/20 px-3 py-1 rounded-full text-xs font-black">${window.toSentenceCase(w)}</span>`;
-                else if (rate <= 0.4) { sList.innerHTML += card; } else lList.innerHTML += card;
-            });
-        };
-
-        window.showWithdraw = () => { hideAll(); document.getElementById('screen-withdraw').classList.remove('hidden'); document.getElementById('withdraw-balance').innerText = window.state.bank + " stars"; };
-        window.initiateWithdrawal = (type) => { const dialog = document.getElementById('confirm-dialog'); document.getElementById('confirm-message').innerText = "Withdraw stars? Balance resets to zero."; dialog.classList.remove('hidden'); document.getElementById('execute-reset-btn').onclick = async () => { window.state.bank = 0; await saveStateToCloud(); window.closeConfirm(); window.showHome(); }; };
-
-        window.addEventListener('keydown', (e) => {
-            if (window.state.isTransitioning || document.getElementById('screen-game').classList.contains('hidden')) return;
-            if (window.state.currentGame === 'lunar') { const key = e.key.toLowerCase(); if (key.length === 1 && key >= 'a' && key <= 'z') window.handleGuess(key); } 
-            else if (window.state.currentGame === 'death') { if (e.key === 'Enter') window.submitEcho(); }
-        });
 
         const init = async () => { try { await signInAnonymously(auth); } finally { const o = document.getElementById('connection-overlay'); if (o) { o.classList.add('opacity-0'); setTimeout(() => o.classList.add('hidden'), 500); } } };
         init();
