@@ -1,8 +1,8 @@
 <!-- 
-🚀 MOONSHOT ACADEMY: FINAL BUILD (V24 - CURRICULUM UPDATE)
-Updated: April 16, 2026
-Fixed: Permission errors, HD Avatars, and restored specialized game logic.
-Update: Moved Year 5/6 curriculum into internal DB; Custom area now for Named Weekly Lists.
+🚀 MOONSHOT ACADEMY: FINAL BUILD (V26 - ACCESSIBILITY & LAYOUT FIX)
+Updated: April 18, 2026
+Fixed: Meteor Blast spacing (limited to 3 options); improved voice clarity and added "Speak Slower".
+New: Added "Skip" button escape route for all game modes.
 -->
 
 <!DOCTYPE html>
@@ -176,7 +176,6 @@ Update: Moved Year 5/6 curriculum into internal DB; Custom area now for Named We
             <h2 class="text-4xl impact-font mb-8 uppercase">Mission Loadout</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
-                <!-- Curriculum Selection -->
                 <div class="space-y-3">
                     <h3 class="text-[10px] font-black uppercase text-sky-400 tracking-widest mb-4 text-left">Curriculum Levels</h3>
                     <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-recep" class="w-6 h-6 accent-sky-500"><span class="font-bold text-sm uppercase">Reception</span></label>
@@ -186,7 +185,6 @@ Update: Moved Year 5/6 curriculum into internal DB; Custom area now for Named We
                     <label class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition"><input type="checkbox" id="check-y56" class="w-6 h-6 accent-sky-500"><span class="font-bold text-sm uppercase">Year 5/6</span></label>
                 </div>
 
-                <!-- Custom Lists Manager -->
                 <div class="flex flex-col">
                     <h3 class="text-[10px] font-black uppercase text-pink-400 tracking-widest mb-4 text-left">Weekly Spelling Tests</h3>
                     <div class="flex-1 bg-white/5 rounded-3xl p-6 border border-white/10 flex flex-col">
@@ -209,27 +207,20 @@ Update: Moved Year 5/6 curriculum into internal DB; Custom area now for Named We
             <div class="flex justify-between items-center mb-8">
                 <button onclick="window.showHome()" class="text-white/30 hover:text-white uppercase font-black text-[10px]">Abort</button>
                 <div id="game-progress" class="text-xs font-black text-white/40 uppercase">Round 1/10</div>
+                <button onclick="window.skipRound()" class="bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-white/40 hover:text-white uppercase font-black text-[10px] transition">Skip Mission</button>
                 <div id="game-lives" class="flex gap-2 text-rose-500 text-xl"></div>
             </div>
-            <div id="hangman-area" class="hidden mb-8">
-                <svg id="hangman-visual" viewBox="0 0 200 200" class="h-40 mx-auto stroke-white fill-none stroke-[4]">
-                    <line x1="20" y1="180" x2="180" y2="180"/>
-                    <line x1="50" y1="180" x2="50" y2="20"/>
-                    <line x1="50" y1="20" x2="130" y2="20"/>
-                    <line x1="130" y1="20" x2="130" y2="40"/>
-                    <circle id="part-head" cx="130" cy="60" r="20" class="opacity-10"/>
-                    <line id="part-body" x1="130" y1="80" x2="130" y2="130" class="opacity-10"/>
-                    <line id="part-arm-l" x1="130" y1="95" x2="110" y2="115" class="opacity-10"/>
-                    <line id="part-arm-r" x1="130" y1="95" x2="150" y2="115" class="opacity-10"/>
-                    <line id="part-leg-l" x1="130" y1="130" x2="110" y2="160" class="opacity-10"/>
-                    <line id="part-leg-r" x1="130" y1="130" x2="150" y2="160" class="opacity-10"/>
-                </svg>
-            </div>
+            
             <div id="void-timer-container" class="timer-container hidden"><div id="void-timer-bar"></div></div>
-            <div id="game-word-display" class="mb-12 flex flex-row items-center justify-center gap-2 flex-wrap min-h-[60px] reader-font"></div>
-            <button onclick="window.speakWord()" id="speaker-btn" class="w-20 h-20 mx-auto rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-10 hover:bg-white/10 transition">
-                <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-            </button>
+            <div id="game-word-display" class="mb-8 flex flex-row items-center justify-center gap-2 flex-wrap min-h-[60px] reader-font"></div>
+            
+            <div class="flex flex-col items-center gap-4 mb-10">
+                <button onclick="window.speakWord(false)" id="speaker-btn" class="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition shadow-xl">
+                    <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                </button>
+                <button onclick="window.speakWord(true)" class="bg-sky-500/10 border border-sky-500/20 px-4 py-2 rounded-full text-sky-400 text-[10px] font-black uppercase tracking-widest hover:bg-sky-500/20 transition">Speak Slower</button>
+            </div>
+
             <div id="meteor-field" class="hidden"></div>
             <div id="multi-choice" class="hidden grid grid-cols-2 gap-4 w-full justify-items-center reader-font"></div>
             <div id="echo-input-container" class="hidden max-w-sm mx-auto space-y-6 w-full">
@@ -257,10 +248,10 @@ Update: Moved Year 5/6 curriculum into internal DB; Custom area now for Named We
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyATNU3KcsoehUoWxzPasVQrxUGgdVvjbq4", authDomain: "jesses-spelling-game.firebaseapp.com", projectId: "jesses-spelling-game", storageBucket: "jesses-spelling-game.firebasestorage.app", messagingSenderId: "768883009643", appId: "1:768883009643:web:591162cc7c9180b26be92e" };
-        const moonshotAppId = "jesses-spelling-game";
+        const appId = "jesses-spelling-game";
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -268,7 +259,7 @@ Update: Moved Year 5/6 curriculum into internal DB; Custom area now for Named We
         window.state = { pilotName: "", bank: 0, currentGame: null, words: [], currentRound: 0, lives: 3, currentWord: "", currentAnchor: null, guessed: [], history: [], isTransitioning: false, customLists: [], voidTimer: null, keyboardUpper: false, authReady: false };
 
         const helmets = {
-            Jesse: `<svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="g-jesse" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#g-jesse)"/><rect x="25" y="32" width="50" height="22" rx="4" fill="#000"/><circle cx="35" cy="43" r="2" fill="#38bdf8" class="glow-fx"/><circle cx="65" cy="43" r="2" fill="#38bdf8" class="glow-fx"/><path d="M15 30 L85 30" stroke="#38bdf8" stroke-width="1" opacity="0.4"/></svg>`,
+            Jesse: `<svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="g-jesse" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f1f5f9"/><stop offset="100%" style="stop-color:#1e293b"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#g-jesse)"/><rect x="25" y="32" width="50" height="22" rx="4" fill="#000"/><circle cx="35" cy="43" r="2" fill="#38bdf8" class="glow-fx"/><circle cx="65" cy="43" r="2" fill="#38bdf8" class="glow-fx"/></svg>`,
             Ruben: `<svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="g-ruben" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#10b981"/><stop offset="100%" style="stop-color:#064e3b"/></linearGradient></defs><path d="M50 15 L50 0 M45 5 L55 5" stroke="#10b981" stroke-width="3"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#g-ruben)"/><rect x="25" y="32" width="50" height="25" rx="4" fill="#000"/><circle cx="50" cy="44" r="3" fill="#10b981" class="glow-fx"/></svg>`,
             Elodie: `<svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="g-elodie" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f472b6"/><stop offset="100%" style="stop-color:#831843"/></linearGradient></defs><path d="M25 20 L15 5 M75 20 L85 5" stroke="#f472b6" stroke-width="6" stroke-linecap="round"/><circle cx="15" cy="5" r="3" fill="#f472b6"/><circle cx="85" cy="5" r="3" fill="#f472b6"/><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#g-elodie)"/><rect x="25" y="35" width="50" height="22" rx="10" fill="#000"/><circle cx="38" cy="46" r="3" fill="#f472b6" class="glow-fx"/><circle cx="62" cy="46" r="3" fill="#f472b6" class="glow-fx"/></svg>`,
             Friend: `<svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="g-friend" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#fbbf24"/><stop offset="100%" style="stop-color:#92400e"/></linearGradient></defs><path d="M20 30 Q20 5 50 5 Q80 5 80 30 L80 65 Q80 85 50 85 Q20 85 20 65 Z" fill="url(#g-friend)"/><rect x="25" y="32" width="50" height="25" rx="2" fill="#1e1b4b"/><path d="M25 45 Q50 55 75 45" stroke="#fbbf24" stroke-width="2" fill="none" opacity="0.6"/><circle cx="50" cy="38" r="1.5" fill="white" class="glow-fx"/></svg>`
@@ -294,32 +285,41 @@ Update: Moved Year 5/6 curriculum into internal DB; Custom area now for Named We
             if (!window.state.authReady || !auth.currentUser) return;
             window.state.pilotName = name;
             try {
-                const pilotRef = doc(db, 'artifacts', moonshotAppId, 'public', 'data', name.toLowerCase());
+                const pilotRef = doc(db, 'artifacts', appId, 'public', 'data', 'pilots', name.toLowerCase());
                 const snap = await getDoc(pilotRef);
                 if (snap.exists()) {
                     const data = snap.data();
                     window.state.bank = data.credits || 0;
                     window.state.history = data.history || [];
                     window.state.customLists = data.customLists || [];
+                } else {
+                    window.state.bank = 0; window.state.history = []; window.state.customLists = [];
                 }
             } catch (e) { console.error("Pilot DB Error", e); }
             window.showHome();
         };
 
-        window.showHome = () => { hideAll(); if (window.state.voidTimer) clearInterval(window.state.voidTimer); document.getElementById('screen-home').classList.remove('hidden'); document.getElementById('active-pilot-helmet').innerHTML = helmets[window.state.pilotName] || ""; document.getElementById('pilot-name-display').innerText = window.state.pilotName; document.getElementById('balance-display').innerText = window.state.bank + " stars"; };
+        window.showHome = () => { 
+            hideAll(); if (window.state.voidTimer) clearInterval(window.state.voidTimer);
+            document.getElementById('screen-home').classList.remove('hidden'); 
+            document.getElementById('active-pilot-helmet').innerHTML = helmets[window.state.pilotName] || ""; 
+            document.getElementById('pilot-name-display').innerText = window.state.pilotName; 
+            document.getElementById('balance-display').innerText = window.state.bank + " stars"; 
+        };
+
         window.chooseGame = (game) => { window.state.currentGame = game; hideAll(); document.body.className = game + '-active'; document.getElementById('screen-setup').classList.remove('hidden'); renderNamedLists(); };
 
         function generateSmartDistractors(word) {
             const wordLower = word.toLowerCase();
             let variations = new Set();
             if (distractorsMap[wordLower]) distractorsMap[wordLower].forEach(v => variations.add(v.toLowerCase()));
-            const commonSwaps = [['ie', 'ei'], ['ei', 'ie'], ['ce', 'se'], ['se', 'ce'], ['ance', 'ence'], ['ence', 'ance'], ['able', 'ible'], ['ible', 'able'], ['our', 'or'], ['or', 'our']];
+            const commonSwaps = [['ie', 'ei'], ['ei', 'ie'], ['ce', 'se'], ['se', 'ce'], ['ance', 'ence'], ['ence', 'ance'], ['able', 'ible'], ['ible', 'able']];
             commonSwaps.forEach(([from, to]) => { if (wordLower.includes(from)) variations.add(wordLower.replace(new RegExp(from, 'g'), to)); });
             for (let i = 0; i < wordLower.length - 1; i++) {
                 if (wordLower[i] === wordLower[i+1]) variations.add(wordLower.slice(0, i) + wordLower.slice(i+1)); 
                 else if (/[bcdfghjklmnpqrstvwxyz]/.test(wordLower[i])) variations.add(wordLower.slice(0, i+1) + wordLower[i] + wordLower.slice(i+1)); 
             }
-            return Array.from(variations).filter(v => v !== wordLower).sort(() => 0.5 - Math.random()).slice(0, 3);
+            return Array.from(variations).filter(v => v !== wordLower).sort(() => 0.5 - Math.random());
         }
 
         window.launchMission = () => {
@@ -341,6 +341,12 @@ Update: Moved Year 5/6 curriculum into internal DB; Custom area now for Named We
             hideAll(); document.getElementById('screen-game').classList.remove('hidden'); nextRound();
         };
 
+        window.skipRound = () => {
+            if (window.state.isTransitioning) return;
+            recordResult(false, "Skipped");
+            nextRound();
+        };
+
         function nextRound() {
             if (window.state.voidTimer) clearInterval(window.state.voidTimer);
             window.state.isTransitioning = false; 
@@ -351,23 +357,27 @@ Update: Moved Year 5/6 curriculum into internal DB; Custom area now for Named We
                 const anchors = phonicAnchors[window.state.currentWord];
                 window.state.currentAnchor = anchors[Math.floor(Math.random() * anchors.length)];
             }
-            renderUI(); window.speakWord();
+            renderUI(); window.speakWord(false);
         }
 
-        window.speakWord = () => { 
+        window.speakWord = (isSlow = false) => { 
+            window.speechSynthesis.cancel();
             let text = window.state.currentWord;
             if (window.state.currentGame === 'mermaid' && window.state.currentAnchor) text = `Find the ${window.state.currentAnchor.pos} sound in ${window.state.currentAnchor.word}`;
-            const msg = new SpeechSynthesisUtterance(text); msg.lang = 'en-GB'; msg.rate = 0.8; window.speechSynthesis.speak(msg);
+            const msg = new SpeechSynthesisUtterance(text); 
+            msg.lang = 'en-GB'; 
+            msg.rate = isSlow ? 0.45 : 0.75; 
+            msg.pitch = 1.0;
+            window.speechSynthesis.speak(msg);
         };
 
         function renderUI() {
             document.getElementById('game-progress').innerText = `Round ${window.state.currentRound}/10`;
             document.getElementById('game-lives').innerHTML = '❤️'.repeat(window.state.lives);
-            ['keyboard-wrapper', 'echo-input-container', 'multi-choice', 'void-timer-container', 'hangman-area', 'meteor-field'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            ['keyboard-wrapper', 'echo-input-container', 'multi-choice', 'void-timer-container', 'meteor-field'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById('game-word-display').innerHTML = ""; 
 
             if (window.state.currentGame === 'lunar') {
-                document.getElementById('hangman-area').classList.remove('hidden');
                 document.getElementById('keyboard-wrapper').classList.remove('hidden');
                 document.getElementById('game-word-display').innerHTML = window.state.currentWord.split('').map(char => `<div class="blank">${window.state.guessed.includes(char) ? (window.state.keyboardUpper ? char.toUpperCase() : char.toLowerCase()) : "_"}</div>`).join('');
                 renderKeyboard();
@@ -400,16 +410,8 @@ Update: Moved Year 5/6 curriculum into internal DB; Custom area now for Named We
                 renderUI(); if (window.state.currentWord.split('').every(c => window.state.guessed.includes(c))) { window.state.isTransitioning = true; recordResult(true); setTimeout(nextRound, 1000); }
             } else {
                 window.state.lives--;
-                if (window.state.lives <= 0) { 
-                    const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
-                    parts.forEach(id => document.getElementById(id).classList.remove('opacity-10'));
-                    window.state.isTransitioning = true; recordResult(false); triggerExplosion(nextRound); 
-                } else {
-                    const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
-                    const idx = 6 - window.state.lives - 1;
-                    if (idx >= 0) document.getElementById(parts[idx]).classList.remove('opacity-10');
-                    renderUI();
-                }
+                if (window.state.lives <= 0) { window.state.isTransitioning = true; recordResult(false); triggerExplosion(nextRound); }
+                else renderUI();
             }
         }
 
@@ -418,7 +420,10 @@ Update: Moved Year 5/6 curriculum into internal DB; Custom area now for Named We
             let opts = [];
             if (window.state.currentGame === 'unicorn') opts = [window.state.currentWord, ...Object.keys(illusts).filter(k => k !== window.state.currentWord).sort(() => 0.5-Math.random()).slice(0, 3)];
             else if (window.state.currentGame === 'mermaid') opts = [window.state.currentWord, ...Object.keys(phonicAnchors).filter(k => k !== window.state.currentWord).sort(() => 0.5-Math.random()).slice(0, 3)];
-            else opts = [window.state.currentWord, ...generateSmartDistractors(window.state.currentWord)];
+            else {
+                opts = [window.state.currentWord, ...generateSmartDistractors(window.state.currentWord).slice(0, 3)];
+                while(opts.length < 4) { let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)]; if(!opts.includes(r.toLowerCase())) opts.push(r.toLowerCase()); }
+            }
             opts.sort(() => 0.5 - Math.random()).forEach(opt => {
                 const btn = document.createElement('button');
                 if (window.state.currentGame === 'unicorn') { btn.className = "unicorn-card"; btn.innerHTML = illusts[opt] || '❓'; }
@@ -431,11 +436,23 @@ Update: Moved Year 5/6 curriculum into internal DB; Custom area now for Named We
 
         function renderMeteors() {
             const field = document.getElementById('meteor-field'); field.innerHTML = "";
-            let opts = [window.state.currentWord, ...generateSmartDistractors(window.state.currentWord)];
+            // Strictly limit to Correct Word + 2 Distractors
+            let opts = [window.state.currentWord, ...generateSmartDistractors(window.state.currentWord).slice(0, 2)];
             while(opts.length < 3) { let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)]; if(!opts.includes(r.toLowerCase())) opts.push(r.toLowerCase()); }
+            
             opts.forEach((word, index) => {
-                const m = document.createElement('div'); m.className = "meteor"; m.innerText = window.state.keyboardUpper ? word.toUpperCase() : window.toSentenceCase(word); m.style.top = (50 + index * 120) + "px"; field.appendChild(m);
-                let x = -150; const animate = () => { if(window.state.currentGame !== 'meteor' || window.state.isTransitioning) return; x += 1.8; m.style.left = x + "px"; if(x < field.offsetWidth + 150) requestAnimationFrame(animate); else { x = -150; requestAnimationFrame(animate); } };
+                const m = document.createElement('div'); m.className = "meteor"; 
+                m.innerText = window.state.keyboardUpper ? word.toUpperCase() : window.toSentenceCase(word);
+                // Optimized spacing to prevent cutting off: 60, 180, 300
+                m.style.top = (60 + index * 120) + "px"; 
+                field.appendChild(m);
+                let x = -150;
+                const animate = () => { 
+                    if(window.state.currentGame !== 'meteor' || window.state.isTransitioning) return; 
+                    x += 1.6; m.style.left = x + "px"; 
+                    if(x < field.offsetWidth + 150) requestAnimationFrame(animate); 
+                    else { x = -150; requestAnimationFrame(animate); } 
+                };
                 animate();
                 m.onclick = () => { if (window.state.isTransitioning) return; window.state.isTransitioning = true; if(word === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; recordResult(false, word); triggerExplosion(nextRound); } };
             });
@@ -465,7 +482,7 @@ Update: Moved Year 5/6 curriculum into internal DB; Custom area now for Named We
                 <div class="named-list-card ${list.active ? 'border-sky-500/50' : 'opacity-50'}">
                     <div class="flex items-center gap-3">
                         <input type="checkbox" ${list.active ? 'checked' : ''} onclick="window.toggleList(${list.id})" class="w-5 h-5 accent-sky-500">
-                        <span class="font-black text-[10px] uppercase tracking-widest">${list.name}</span>
+                        <span class="font-black text-[10px] uppercase tracking-widest text-white/80">${list.name}</span>
                         <span class="text-[10px] opacity-30">(${list.words.length} words)</span>
                     </div>
                     <button onclick="window.deleteList(${list.id})" class="text-rose-500 font-black text-lg">×</button>
@@ -473,7 +490,14 @@ Update: Moved Year 5/6 curriculum into internal DB; Custom area now for Named We
             `).join('');
         }
 
-        async function saveStateToCloud() { if (window.state.pilotName && auth.currentUser) { try { const pilotRef = doc(db, 'artifacts', moonshotAppId, 'public', 'data', window.state.pilotName.toLowerCase()); await setDoc(pilotRef, { credits: window.state.bank, history: window.state.history, customLists: window.state.customLists }, { merge: true }); } catch(e) { console.error("Cloud Save Fail", e); } } }
+        async function saveStateToCloud() { 
+            if (window.state.pilotName && auth.currentUser) { 
+                try { 
+                    const pilotRef = doc(db, 'artifacts', appId, 'public', 'data', 'pilots', window.state.pilotName.toLowerCase()); 
+                    await setDoc(pilotRef, { credits: window.state.bank, history: window.state.history, customLists: window.state.customLists }, { merge: true }); 
+                } catch(e) { console.error("Cloud Save Fail", e); } 
+            } 
+        }
         function recordResult(ok) { const reward = ok ? 10 : 0; window.state.bank += reward; window.state.history.push({ word: window.state.currentWord, result: ok, timestamp: Date.now() }); }
         function triggerExplosion(cb) { const overlay = document.getElementById('explosion-overlay'); overlay.style.opacity = "0.8"; document.getElementById('app-container').classList.add('shake'); setTimeout(() => { overlay.style.opacity = "0"; document.getElementById('app-container').classList.remove('shake'); cb(); }, 300); }
         async function endGame() { hideAll(); document.getElementById('screen-prize').classList.remove('hidden'); await saveStateToCloud(); }
@@ -493,7 +517,10 @@ Update: Moved Year 5/6 curriculum into internal DB; Custom area now for Named We
             try { await signInAnonymously(auth); } catch (err) { window.state.authReady = true; removeOverlay(); unlockPilots(); }
         };
         init();
-        Object.keys(helmets).forEach(p => { const el = document.getElementById(`helmet-${p}`); if(el) el.innerHTML = helmets[p]; });
+        Object.keys(helmets).forEach(p => { 
+            const el = document.getElementById(`helmet-${p}`); 
+            if(el) el.innerHTML = helmets[p]; 
+        });
     </script>
 </body>
 </html>
