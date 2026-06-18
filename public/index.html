@@ -1,8 +1,8 @@
 <!-- 
-🚀 MOONSHOT ACADEMY: FINAL BUILD (V26 - ACCESSIBILITY & LAYOUT FIX)
+🚀 MOONSHOT ACADEMY: FINAL BUILD (V27 - HANGMAN RECOVERY)
 Updated: April 18, 2026
-Fixed: Meteor Blast spacing (limited to 3 options); improved voice clarity and added "Speak Slower".
-New: Added "Skip" button escape route for all game modes.
+Fixed: Restored complete Hangman visual drawing logic; renamed game mode to "Hangman".
+Fixed: Slower speech default, "Speak Slower" secondary option, and "Skip" button.
 -->
 
 <!DOCTYPE html>
@@ -161,7 +161,7 @@ New: Added "Skip" button escape route for all game modes.
             </div>
 
             <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-                <div onclick="window.chooseGame('lunar')" class="game-tile"><div class="text-sky-400 mb-2 text-4xl">🚀</div><h3 class="text-xl impact-font uppercase">Lunar Mission</h3></div>
+                <div onclick="window.chooseGame('lunar')" class="game-tile"><div class="text-sky-400 mb-2 text-4xl">🚀</div><h3 class="text-xl impact-font uppercase">Hangman</h3></div>
                 <div onclick="window.chooseGame('death')" class="game-tile border-rose-500/20"><div class="text-rose-400 mb-2 text-4xl">⚡</div><h3 class="text-xl impact-font uppercase">Sudden Death</h3></div>
                 <div onclick="window.chooseGame('meteor')" class="game-tile"><div class="text-orange-400 mb-2 text-4xl">☄️</div><h3 class="text-xl impact-font uppercase">Meteor Blast</h3></div>
                 <div onclick="window.chooseGame('void')" class="game-tile"><div class="text-indigo-400 mb-2 text-4xl">🌀</div><h3 class="text-xl impact-font uppercase">Void Choice</h3></div>
@@ -209,6 +209,21 @@ New: Added "Skip" button escape route for all game modes.
                 <div id="game-progress" class="text-xs font-black text-white/40 uppercase">Round 1/10</div>
                 <button onclick="window.skipRound()" class="bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-white/40 hover:text-white uppercase font-black text-[10px] transition">Skip Mission</button>
                 <div id="game-lives" class="flex gap-2 text-rose-500 text-xl"></div>
+            </div>
+            
+            <div id="hangman-area" class="hidden mb-8">
+                <svg id="hangman-visual" viewBox="0 0 200 200" class="h-40 mx-auto stroke-white fill-none stroke-[4]">
+                    <line x1="20" y1="180" x2="180" y2="180"/>
+                    <line x1="50" y1="180" x2="50" y2="20"/>
+                    <line x1="50" y1="20" x2="130" y2="20"/>
+                    <line x1="130" y1="20" x2="130" y2="40"/>
+                    <circle id="part-head" cx="130" cy="60" r="20" class="opacity-10"/>
+                    <line id="part-body" x1="130" y1="80" x2="130" y2="130" class="opacity-10"/>
+                    <line id="part-arm-l" x1="130" y1="95" x2="110" y2="115" class="opacity-10"/>
+                    <line id="part-arm-r" x1="130" y1="95" x2="150" y2="115" class="opacity-10"/>
+                    <line id="part-leg-l" x1="130" y1="130" x2="110" y2="160" class="opacity-10"/>
+                    <line id="part-leg-r" x1="130" y1="130" x2="150" y2="160" class="opacity-10"/>
+                </svg>
             </div>
             
             <div id="void-timer-container" class="timer-container hidden"><div id="void-timer-bar"></div></div>
@@ -374,13 +389,28 @@ New: Added "Skip" button escape route for all game modes.
         function renderUI() {
             document.getElementById('game-progress').innerText = `Round ${window.state.currentRound}/10`;
             document.getElementById('game-lives').innerHTML = '❤️'.repeat(window.state.lives);
-            ['keyboard-wrapper', 'echo-input-container', 'multi-choice', 'void-timer-container', 'meteor-field'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            ['keyboard-wrapper', 'echo-input-container', 'multi-choice', 'void-timer-container', 'hangman-area', 'meteor-field'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById('game-word-display').innerHTML = ""; 
 
             if (window.state.currentGame === 'lunar') {
+                document.getElementById('hangman-area').classList.remove('hidden');
                 document.getElementById('keyboard-wrapper').classList.remove('hidden');
                 document.getElementById('game-word-display').innerHTML = window.state.currentWord.split('').map(char => `<div class="blank">${window.state.guessed.includes(char) ? (window.state.keyboardUpper ? char.toUpperCase() : char.toLowerCase()) : "_"}</div>`).join('');
                 renderKeyboard();
+                
+                // Update Hangman SVG limb opacities dynamically based on remaining lives
+                const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
+                const errorsMade = 6 - window.state.lives;
+                parts.forEach((partId, idx) => {
+                    const el = document.getElementById(partId);
+                    if (el) {
+                        if (idx < errorsMade) {
+                            el.classList.remove('opacity-10');
+                        } else {
+                            el.classList.add('opacity-10');
+                        }
+                    }
+                });
             } else if (window.state.currentGame === 'death') {
                 document.getElementById('echo-input-container').classList.remove('hidden');
                 document.getElementById('game-word-display').innerHTML = `<div class="text-7xl">${illusts[window.state.currentWord] || '🚀'}</div>`;
@@ -410,8 +440,16 @@ New: Added "Skip" button escape route for all game modes.
                 renderUI(); if (window.state.currentWord.split('').every(c => window.state.guessed.includes(c))) { window.state.isTransitioning = true; recordResult(true); setTimeout(nextRound, 1000); }
             } else {
                 window.state.lives--;
-                if (window.state.lives <= 0) { window.state.isTransitioning = true; recordResult(false); triggerExplosion(nextRound); }
-                else renderUI();
+                if (window.state.lives <= 0) { 
+                    const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
+                    parts.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.classList.remove('opacity-10');
+                    });
+                    window.state.isTransitioning = true; recordResult(false); triggerExplosion(nextRound); 
+                } else {
+                    renderUI();
+                }
             }
         }
 
