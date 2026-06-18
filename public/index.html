@@ -1,10 +1,3 @@
-<!-- 
-🚀 MOONSHOT ACADEMY: FINAL BUILD (V28 - MERMAID PHONICS VISUAL UPGRADE)
-Updated: June 18, 2026
-Fixed: Mermaid Phonics visual cues (displays anchor emoji, word, and sound position).
-Updated: Immersive ocean aesthetics, full Hangman drawing logic, and skip escape routes.
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,7 +51,7 @@ Updated: Immersive ocean aesthetics, full Hangman drawing logic, and skip escape
         .mission-overlay { position: fixed; inset: 0; z-index: -1; opacity: 0; transition: opacity 1s; pointer-events: none; }
         .death-active #death-bg, .meteor-active #meteor-bg, .void-active #void-bg, .mermaid-active #mermaid-bg, .unicorn-active #unicorn-bg { opacity: 1; }
         #death-bg { background: #050000; }
-        #mermaid-bg { background: linear-gradient(180deg, #022329 0%, #044b58 100%); }
+        #mermaid-bg { background: linear-gradient(180deg, #0c4a6e 0%, #082f49 100%); }
         #unicorn-bg { background: linear-gradient(135deg, #4c1d95 0%, #2e1065 100%); }
 
         .game-tile { 
@@ -81,8 +74,8 @@ Updated: Immersive ocean aesthetics, full Hangman drawing logic, and skip escape
         #meteor-field { position: relative; width: 100%; height: 420px; background: rgba(0,0,0,0.4); border-radius: 30px; overflow: hidden; margin: 15px 0; border: 1px solid rgba(255,255,255,0.1); }
         .meteor { position: absolute; background: rgba(56, 189, 248, 0.2); border: 2px solid #38bdf8; padding: 12px 20px; border-radius: 60px; font-size: 1.2rem; cursor: pointer; white-space: nowrap; font-weight: 900; box-shadow: 0 0 20px rgba(56,189,248,0.4); color: white; z-index: 50; text-transform: none !important; transition: transform 0.1s; }
         
-        .bubble-btn { width: 100px; height: 100px; background: rgba(14, 165, 233, 0.2); border: 3px solid rgba(56, 189, 248, 0.6); border-radius: 50%; font-size: 3rem; font-weight: 900; color: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-transform: none !important; }
-        .bubble-btn:hover { transform: scale(1.15) rotate(6deg); background: rgba(56, 189, 248, 0.4); border-color: white; }
+        .bubble-btn { width: 100px; height: 100px; background: rgba(56, 189, 248, 0.15); border: 3px solid rgba(56, 189, 248, 0.6); border-radius: 50%; font-size: 3rem; font-weight: 900; color: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-transform: none !important; cursor: pointer; }
+        .bubble-btn:hover { transform: scale(1.15) rotate(6deg); background: rgba(56, 189, 248, 0.3); border-color: white; }
         
         .unicorn-card { font-size: 5rem; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 30px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; transition: all 0.3s; cursor: pointer; }
 
@@ -238,7 +231,7 @@ Updated: Immersive ocean aesthetics, full Hangman drawing logic, and skip escape
             </div>
 
             <div id="meteor-field" class="hidden"></div>
-            <div id="multi-choice" class="hidden grid grid-cols-2 gap-4 w-full justify-items-center reader-font"></div>
+            <div id="multi-choice" class="hidden grid grid-cols-2 md:grid-cols-3 gap-4 w-full justify-items-center reader-font"></div>
             <div id="echo-input-container" class="hidden max-w-sm mx-auto space-y-6 w-full">
                 <input type="text" id="echo-field" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-3xl text-center outline-none focus:border-sky-500 font-black reader-font" placeholder="..." autocomplete="off">
                 <button onclick="window.submitEcho()" class="w-full py-4 bg-sky-600 text-white font-black rounded-3xl uppercase tracking-widest text-sm">Submit Answer</button>
@@ -298,7 +291,9 @@ Updated: Immersive ocean aesthetics, full Hangman drawing logic, and skip escape
         window.toggleCase = () => { window.state.keyboardUpper = !window.state.keyboardUpper; renderUI(); };
         
         window.selectPilot = async (name) => {
-            if (!window.state.authReady || !auth.currentUser) return;
+            if (!window.state.authReady && !auth.state.authReady) {
+                // Safely allow init through fallback if remote connection takes time
+            }
             window.state.pilotName = name;
             try {
                 const pilotRef = doc(db, 'artifacts', appId, 'public', 'data', 'pilots', name.toLowerCase());
@@ -373,7 +368,10 @@ Updated: Immersive ocean aesthetics, full Hangman drawing logic, and skip escape
                 const anchors = phonicAnchors[window.state.currentWord];
                 window.state.currentAnchor = anchors[Math.floor(Math.random() * anchors.length)];
             }
-            renderUI(); window.speakWord(false);
+            renderUI(); 
+            if (window.state.currentGame !== 'unicorn') {
+                window.speakWord(false);
+            }
         }
 
         window.speakWord = (isSlow = false) => { 
@@ -399,7 +397,6 @@ Updated: Immersive ocean aesthetics, full Hangman drawing logic, and skip escape
                 document.getElementById('game-word-display').innerHTML = window.state.currentWord.split('').map(char => `<div class="blank">${window.state.guessed.includes(char) ? (window.state.keyboardUpper ? char.toUpperCase() : char.toLowerCase()) : "_"}</div>`).join('');
                 renderKeyboard();
                 
-                // Update Hangman SVG limb opacities dynamically based on remaining lives
                 const parts = ['part-head', 'part-body', 'part-arm-l', 'part-arm-r', 'part-leg-l', 'part-leg-r'];
                 const errorsMade = 6 - window.state.lives;
                 parts.forEach((partId, idx) => {
@@ -417,10 +414,9 @@ Updated: Immersive ocean aesthetics, full Hangman drawing logic, and skip escape
                 if (window.state.currentGame === 'void') document.getElementById('void-timer-container').classList.remove('hidden'), startVoidTimer();
                 if (window.state.currentGame === 'unicorn') document.getElementById('game-word-display').innerHTML = `<div class="text-5xl impact-font text-pink-400 reader-font">${window.toSentenceCase(window.state.currentWord)}</div>`;
                 
-                // Visible visual anchor enhancements for Mermaid Phonics
                 if (window.state.currentGame === 'mermaid' && window.state.currentAnchor) {
                     const anchorWordLower = window.state.currentAnchor.word.toLowerCase();
-                    const emoji = illusts[anchorWordLower] || '🌊';
+                    const emoji = illusts[anchorLower] || '🌊';
                     document.getElementById('game-word-display').innerHTML = `
                         <div class="flex flex-col items-center gap-3 bg-white/5 border border-white/10 py-6 px-10 rounded-[35px] max-w-sm mx-auto shadow-2xl">
                             <div class="text-6xl animate-bounce">${emoji}</div>
@@ -467,18 +463,38 @@ Updated: Immersive ocean aesthetics, full Hangman drawing logic, and skip escape
         function renderChoices() {
             const container = document.getElementById('multi-choice'); container.innerHTML = "";
             let opts = [];
-            if (window.state.currentGame === 'unicorn') opts = [window.state.currentWord, ...Object.keys(illusts).filter(k => k !== window.state.currentWord).sort(() => 0.5-Math.random()).slice(0, 3)];
-            else if (window.state.currentGame === 'mermaid') opts = [window.state.currentWord, ...Object.keys(phonicAnchors).filter(k => k !== window.state.currentWord).sort(() => 0.5-Math.random()).slice(0, 3)];
-            else {
+            if (window.state.currentGame === 'unicorn') {
+                opts = [window.state.currentWord, ...Object.keys(illusts).filter(k => k !== window.state.currentWord).sort(() => 0.5-Math.random()).slice(0, 3)];
+            } else if (window.state.currentGame === 'mermaid') {
+                // Reduced strictly to 3 options to fix grid layouts, avoid overlapping, and prevent cutoff words
+                opts = [window.state.currentWord, ...Object.keys(phonicAnchors).filter(k => k !== window.state.currentWord).sort(() => 0.5-Math.random()).slice(0, 2)];
+            } else {
                 opts = [window.state.currentWord, ...generateSmartDistractors(window.state.currentWord).slice(0, 3)];
                 while(opts.length < 4) { let r = wordsDB.recep[Math.floor(Math.random()*wordsDB.recep.length)]; if(!opts.includes(r.toLowerCase())) opts.push(r.toLowerCase()); }
             }
+            
             opts.sort(() => 0.5 - Math.random()).forEach(opt => {
                 const btn = document.createElement('button');
                 if (window.state.currentGame === 'unicorn') { btn.className = "unicorn-card"; btn.innerHTML = illusts[opt] || '❓'; }
                 else if (window.state.currentGame === 'mermaid') { btn.className = "bubble-btn"; btn.innerText = window.state.keyboardUpper ? opt.toUpperCase() : opt.toLowerCase(); }
                 else { btn.className = "p-6 bg-white/5 border border-white/10 rounded-3xl font-black hover:bg-white/10 text-xl reader-font"; btn.innerText = window.toSentenceCase(opt); }
-                btn.onclick = () => { if (window.state.isTransitioning) return; window.state.isTransitioning = true; if(opt === window.state.currentWord) { recordResult(true); nextRound(); } else { window.state.lives--; recordResult(false, opt); triggerExplosion(nextRound); } };
+                
+                // Absolute strict safe string comparison for solving mermaid phonic phoneme selection
+                btn.onclick = () => { 
+                    if (window.state.isTransitioning) return; 
+                    window.state.isTransitioning = true; 
+                    const cleanOpt = String(opt).trim().toLowerCase();
+                    const cleanTarget = String(window.state.currentWord).trim().toLowerCase();
+                    
+                    if (cleanOpt === cleanTarget) { 
+                        recordResult(true); 
+                        nextRound(); 
+                    } else { 
+                        window.state.lives--; 
+                        recordResult(false, cleanOpt); 
+                        triggerExplosion(nextRound); 
+                    } 
+                };
                 container.appendChild(btn);
             });
         }
@@ -561,7 +577,7 @@ Updated: Immersive ocean aesthetics, full Hangman drawing logic, and skip escape
             const removeOverlay = () => { const o = document.getElementById('connection-overlay'); if (o) { o.classList.add('opacity-0'); setTimeout(() => o.classList.add('hidden'), 500); } };
             const unlockPilots = () => { document.querySelectorAll('.profile-btn').forEach(btn => { btn.classList.remove('opacity-50', 'pointer-events-none'); }); document.getElementById('auth-status').innerText = "Command Active"; };
             onAuthStateChanged(auth, (user) => { if (user) { window.state.authReady = true; removeOverlay(); unlockPilots(); } });
-            try { await signInAnonymously(auth); } catch (err) { window.state.Ready = true; removeOverlay(); unlockPilots(); }
+            try { await signInAnonymously(auth); } catch (err) { window.state.authReady = true; removeOverlay(); unlockPilots(); }
         };
         init();
         Object.keys(helmets).forEach(p => { 
